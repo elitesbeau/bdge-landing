@@ -43,7 +43,7 @@
 
         /* ======================== PAGE WRAPPER ======================== */
         .page {
-            overflow: hidden;
+            overflow: clip;
             border-radius: 4px;
         }
 
@@ -51,7 +51,7 @@
         .hero {
             position: relative;
             background: #0A0A0A;
-            min-height: 100vh;
+            min-height: max(100vh, 800px);
             overflow: hidden;
             display: flex;
             flex-direction: column;
@@ -101,11 +101,9 @@
             right: 0;
             z-index: 100;
             background: transparent;
-            transition: background 0.4s, padding 0.4s, backdrop-filter 0.4s;
+            transition: padding 0.4s;
         }
         .nav.scrolled {
-            background: rgba(10, 10, 10, 0.85);
-            backdrop-filter: blur(12px);
             padding: 16px 48px;
         }
         .nav .nav-signup {
@@ -163,7 +161,7 @@
             align-items: center;
         }
         .nav-logo img {
-            height: 52px;
+            height: 72px;
             width: auto;
             filter: brightness(1.1);
             transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1);
@@ -299,7 +297,7 @@
             padding: 0;
             position: relative;
             overflow: hidden;
-            min-height: 100vh;
+            min-height: max(100vh, 800px);
         }
         /* Grain texture overlay */
         .community::before {
@@ -369,30 +367,30 @@
         }
         /* Top-left photo */
         .community-photo--tl {
-            width: clamp(200px, 20vw, 300px);
-            height: clamp(220px, 24vw, 360px);
-            top: 12%;
+            width: 20%;
+            height: 38%;
+            top: 8%;
             left: 3%;
         }
         /* Top-right photo */
         .community-photo--tr {
-            width: clamp(200px, 20vw, 300px);
-            height: clamp(180px, 20vw, 300px);
-            top: 10%;
+            width: 20%;
+            height: 32%;
+            top: 8%;
             right: 4%;
         }
         /* Bottom-left photo */
         .community-photo--bl {
-            width: clamp(200px, 20vw, 300px);
-            height: clamp(220px, 24vw, 360px);
+            width: 20%;
+            height: 38%;
             bottom: 8%;
             left: 3%;
         }
         /* Bottom-right photo */
         .community-photo--br {
-            width: clamp(200px, 20vw, 300px);
-            height: clamp(180px, 20vw, 300px);
-            bottom: 6%;
+            width: 20%;
+            height: 32%;
+            bottom: 8%;
             right: 4%;
         }
 
@@ -400,7 +398,7 @@
         .community-text-block {
             position: absolute;
             right: 5%;
-            top: 30%;
+            top: 14%;
             text-align: right;
             z-index: 6;
         }
@@ -427,7 +425,7 @@
             position: absolute;
             left: 50%;
             transform: translateX(-50%);
-            bottom: 30%;
+            bottom: 14%;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -489,20 +487,18 @@
             );
         }
 
-        /* ======================== SECTION 3: LEGENDS ======================== */
-        .legends {
+        /* ======================== SECTION 3: TOOLS SHOWCASE ======================== */
+        .tools {
             background: var(--cream);
             padding: 80px 48px 80px;
         }
-
-        /* Legends Header */
-        .legends-header {
+        .tools-header {
             display: flex;
             justify-content: space-between;
             align-items: flex-end;
             margin-bottom: 48px;
         }
-        .legends-title {
+        .tools-title {
             font-family: var(--font-serif);
             font-style: italic;
             font-weight: 900;
@@ -511,70 +507,52 @@
             text-transform: uppercase;
             letter-spacing: 1px;
         }
+        .tools-subtitle {
+            font-size: 14px;
+            color: rgba(255,255,255,0.4);
+            letter-spacing: 1px;
+        }
 
-        /* Legends Carousel — auto-scrolling */
-        .legends-track-wrapper {
-            overflow: hidden;
-            margin: 0 -48px;
-            padding: 0 48px;
+        /* Grid layout */
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
         }
-        .legends-carousel {
-            display: flex;
-            gap: 24px;
-            animation: legendsScroll 30s linear infinite;
-            width: max-content;
-        }
-        .legends-carousel:hover {
-            animation-play-state: paused;
-        }
-        @keyframes legendsScroll {
-            0% { transform: translateX(0); }
-            100% { transform: translateX(-50%); }
-        }
-        .legend-card {
-            flex: 0 0 340px;
+        .tool-card {
             background: #1E1A1C;
             border-radius: 14px;
             overflow: hidden;
             border: 1px solid rgba(255,255,255,0.06);
-            display: flex;
-            flex-direction: column;
-            transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1), border-color 0.3s;
             cursor: pointer;
+            position: relative;
+            transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1), border-color 0.3s, box-shadow 0.3s;
         }
-        .legend-card:hover {
+        .tool-card:hover {
             transform: translateY(-6px);
-            border-color: rgba(255,255,255,0.12);
+            border-color: rgba(255,255,255,0.15);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.4);
         }
-
-        /* Card image — big, dominant */
-        .legend-card-image {
+        .tool-card-image {
             width: 100%;
-            height: 280px;
+            height: 220px;
             overflow: hidden;
             background: linear-gradient(135deg, #2A2228, #3E3038);
             position: relative;
         }
-        .legend-card-image img {
+        .tool-card-image img {
             width: 100%;
             height: 100%;
             object-fit: cover;
             transition: transform 0.5s;
         }
-        .legend-card:hover .legend-card-image img {
-            transform: scale(1.05);
+        .tool-card:hover .tool-card-image img {
+            transform: scale(1.06);
         }
-
-        /* Tag overlaid on image */
-        .legend-card-tags {
+        .tool-card-tag {
             position: absolute;
-            top: 14px;
-            left: 14px;
-            display: flex;
-            gap: 6px;
-            z-index: 2;
-        }
-        .legend-card-tag {
+            top: 12px;
+            left: 12px;
             font-size: 10px;
             font-weight: 600;
             letter-spacing: 0.8px;
@@ -584,181 +562,359 @@
             background: rgba(0,0,0,0.55);
             backdrop-filter: blur(6px);
             color: rgba(255,255,255,0.9);
+            z-index: 2;
         }
-
-        /* Card body */
-        .legend-card-body {
-            padding: 22px 22px 26px;
-            flex: 1;
-            display: flex;
-            flex-direction: column;
+        .tool-card-body {
+            padding: 20px;
         }
-        .legend-card-name {
+        .tool-card-name {
             font-family: var(--font-display);
-            font-size: clamp(22px, 2vw, 28px);
+            font-size: clamp(20px, 2vw, 26px);
             color: var(--white);
-            margin-bottom: 8px;
-            line-height: 1.1;
             text-transform: uppercase;
             letter-spacing: 0.5px;
-        }
-        .legend-card-desc {
-            font-size: 14px;
-            font-weight: 400;
-            color: var(--gray-light);
-            line-height: 1.6;
-        }
-
-        /* ======================== SECTION 4: PRICING ======================== */
-        .pricing {
-            background: var(--black);
-            padding: 80px 48px 60px;
-            position: relative;
-        }
-
-        /* Top header row */
-        .pricing-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 40px;
-        }
-        .pricing-title {
-            font-family: var(--font-display);
-            font-size: clamp(42px, 6vw, 80px);
-            line-height: 1;
-            color: var(--white);
-            text-transform: uppercase;
-            max-width: 500px;
-        }
-        .pricing-label {
-            display: flex;
-            align-items: flex-start;
-            gap: 24px;
-        }
-        .pricing-label-slash {
-            font-family: var(--font-body);
-            font-size: 18px;
-            color: var(--gray-light);
-            margin-top: 8px;
-        }
-        .pricing-label-text {
-            font-family: var(--font-display);
-            font-size: clamp(42px, 6vw, 80px);
-            color: var(--white);
-            text-transform: uppercase;
-        }
-
-        /* Center image */
-        .pricing-image {
-            width: clamp(400px, 50vw, 640px);
-            height: clamp(260px, 30vw, 380px);
-            margin: 0 auto 32px;
-            border-radius: 8px;
-            overflow: hidden;
-            background: linear-gradient(135deg, #2A2228, #342830, #3E3038);
-        }
-        .pricing-image img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        /* Scrolling marquee */
-        .pricing-marquee {
-            overflow: hidden;
-            padding: 32px 0;
-            border-top: 1px solid rgba(255,255,255,0.08);
-            border-bottom: 1px solid rgba(255,255,255,0.08);
-            margin-bottom: 36px;
-        }
-        .pricing-marquee-track {
-            display: flex;
-            gap: 80px;
-            animation: marquee 25s linear infinite;
-            white-space: nowrap;
-        }
-        .pricing-marquee-text {
-            font-family: var(--font-body);
-            font-size: clamp(14px, 1.5vw, 18px);
-            font-weight: 400;
-            color: rgba(255,255,255,0.5);
-            letter-spacing: 0.5px;
-            flex-shrink: 0;
-        }
-        @keyframes marquee {
-            0% { transform: translateX(0); }
-            100% { transform: translateX(-50%); }
-        }
-
-        /* Bottom: info left + plans right */
-        .pricing-bottom-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-end;
-        }
-
-        /* Info (left) */
-        .pricing-info { max-width: 400px; }
-        .pricing-info-title {
-            font-family: var(--font-body);
-            font-size: 16px;
-            font-weight: 600;
-            color: var(--white);
-            margin-bottom: 12px;
-        }
-        .pricing-info-desc {
-            font-size: 14px;
-            font-weight: 400;
-            color: var(--gray-light);
-            line-height: 1.6;
-            margin-bottom: 20px;
-        }
-        .pricing-info-price {
-            font-family: var(--font-display);
-            font-size: clamp(32px, 4vw, 48px);
-            color: var(--white);
-            line-height: 1;
             margin-bottom: 6px;
         }
-        .pricing-info-price span {
-            font-family: var(--font-body);
-            font-size: 14px;
+        .tool-card-desc {
+            font-size: 13px;
             color: var(--gray-light);
-            font-weight: 400;
+            line-height: 1.5;
         }
-        .pricing-info-billed {
-            font-size: 12px;
-            color: var(--gray-dark);
-            margin-bottom: 20px;
-        }
-        .pricing-badges {
+        .tool-card-expand {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.08);
             display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-            margin-bottom: 24px;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transform: scale(0.8);
+            transition: opacity 0.3s, transform 0.3s, background 0.3s;
         }
-        .pricing-badge {
-            padding: 6px 16px;
-            border-radius: 20px;
-            font-size: 11px;
-            font-weight: 600;
-            letter-spacing: 1px;
-            text-transform: uppercase;
+        .tool-card:hover .tool-card-expand {
+            opacity: 1;
+            transform: scale(1);
         }
-        .pricing-badge--filled {
+        .tool-card-expand:hover {
             background: var(--red);
+        }
+        .tool-card-expand svg {
+            width: 14px;
+            height: 14px;
+            fill: none;
+            stroke: var(--white);
+            stroke-width: 2;
+        }
+
+        /* Fullscreen overlay */
+        .tool-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 200;
+            background: rgba(0,0,0,0);
+            backdrop-filter: blur(0px);
+            pointer-events: none;
+            transition: background 0.4s, backdrop-filter 0.4s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .tool-overlay.active {
+            background: rgba(0,0,0,0.85);
+            backdrop-filter: blur(16px);
+            pointer-events: auto;
+        }
+        .tool-overlay-content {
+            width: 92%;
+            max-width: 1300px;
+            max-height: 90vh;
+            display: grid;
+            grid-template-columns: 1.6fr 1fr;
+            gap: 48px;
+            align-items: center;
+            opacity: 0;
+            transform: translateY(30px) scale(0.96);
+            transition: opacity 0.4s cubic-bezier(0.25, 1, 0.5, 1), transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+        .tool-overlay.active .tool-overlay-content {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+        .tool-overlay-image {
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 40px 80px rgba(0,0,0,0.5);
+        }
+        .tool-overlay-image img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+        .tool-overlay-info {
             color: var(--white);
         }
-        .pricing-badge--outline {
-            border: 1px solid rgba(255,255,255,0.25);
-            color: rgba(255,255,255,0.6);
+        .tool-overlay-tag {
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--red);
+            margin-bottom: 16px;
         }
-        .pricing-info-cta {
-            display: inline-flex;
+        .tool-overlay-name {
+            font-family: var(--font-display);
+            font-size: clamp(36px, 5vw, 64px);
+            text-transform: uppercase;
+            line-height: 1;
+            margin-bottom: 20px;
+        }
+        .tool-overlay-desc {
+            font-size: 16px;
+            color: rgba(255,255,255,0.65);
+            line-height: 1.7;
+            margin-bottom: 28px;
+        }
+        .tool-overlay-features {
+            list-style: none;
+            margin-bottom: 32px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .tool-overlay-features li {
+            font-size: 14px;
+            color: rgba(255,255,255,0.7);
+            padding-left: 20px;
+            position: relative;
+        }
+        .tool-overlay-features li::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 7px;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--red);
+        }
+        .tool-overlay-plan {
+            display: inline-block;
+            padding: 8px 20px;
+            border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: rgba(255,255,255,0.5);
+        }
+        .tool-overlay-close {
+            position: absolute;
+            top: 32px;
+            right: 32px;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.08);
+            display: none;
             align-items: center;
-            gap: 8px;
-            padding: 14px 32px;
+            justify-content: center;
+            cursor: pointer;
+            transition: background 0.3s, transform 0.3s;
+            z-index: 201;
+        }
+        .tool-overlay.active .tool-overlay-close {
+            display: flex;
+        }
+        .tool-overlay-close:hover {
+            background: rgba(255,255,255,0.15);
+            transform: rotate(90deg);
+        }
+        .tool-overlay-close svg {
+            width: 20px;
+            height: 20px;
+            stroke: var(--white);
+            stroke-width: 2;
+            fill: none;
+        }
+
+        /* ======================== SECTION 4: BECOME A STEIN ======================== */
+        .stein-container {
+            height: max(500vh, 4000px);
+            position: relative;
+        }
+        .stein {
+            position: sticky;
+            top: 0;
+            height: max(100vh, 800px);
+            width: 100%;
+            background: var(--black);
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Title */
+        .stein-title {
+            position: absolute;
+            z-index: 3;
+            text-align: center;
+            will-change: transform, opacity;
+        }
+        .stein-title h2 {
+            font-family: var(--font-display);
+            font-size: clamp(64px, 12vw, 160px);
+            color: var(--white);
+            text-transform: uppercase;
+            line-height: 0.92;
+            letter-spacing: 2px;
+        }
+        .stein-title h2 span {
+            color: var(--red);
+        }
+
+        /* Scroll hint */
+        .stein-hint {
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 5;
+            font-family: var(--font-body);
+            font-size: 11px;
+            font-weight: 500;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: rgba(255,255,255,0.35);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            animation: steinHintPulse 2.5s ease-in-out infinite;
+            transition: opacity 0.4s;
+        }
+        .stein-hint::after {
+            content: '';
+            width: 1px;
+            height: 36px;
+            background: linear-gradient(to bottom, rgba(255,255,255,0.5), rgba(255,255,255,0));
+            animation: steinLineDrop 1.8s ease-in-out infinite;
+        }
+        @keyframes steinHintPulse {
+            0%, 100% { opacity: 0.35; }
+            50% { opacity: 0.7; }
+        }
+        @keyframes steinLineDrop {
+            0% { transform: scaleY(0.4); transform-origin: top; opacity: 0.2; }
+            50% { transform: scaleY(1); transform-origin: top; opacity: 0.6; }
+            100% { transform: scaleY(0.4); transform-origin: top; opacity: 0.2; }
+        }
+
+        /* Video */
+        .stein-video {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2;
+        }
+        .stein-video-inner {
+            width: 50vw;
+            height: 30vw;
+            min-height: 240px;
+            background: linear-gradient(135deg, #2A2228, #342830, #3E3038);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: rgba(255,255,255,0.35);
+            font-family: var(--font-body);
+            font-size: 13px;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            will-change: width, height, border-radius;
+            overflow: hidden;
+            position: relative;
+        }
+        .stein-video-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(0,0,0,0);
+            z-index: 1;
+            transition: background 0.05s;
+        }
+
+        /* Plan cards */
+        .stein-plans {
+            position: absolute;
+            inset: 0;
+            z-index: 4;
+            pointer-events: none;
+        }
+        .stein-plan {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) translateY(50px);
+            opacity: 0;
+            text-align: center;
+            pointer-events: none;
+            max-width: 600px;
+            width: 90%;
+            will-change: transform, opacity;
+        }
+        .stein-plan-number {
+            font-family: var(--font-body);
+            font-size: 13px;
+            font-weight: 500;
+            color: rgba(255,255,255,0.4);
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            margin-bottom: 16px;
+        }
+        .stein-plan h3 {
+            font-family: var(--font-display);
+            font-size: clamp(48px, 8vw, 100px);
+            color: var(--white);
+            text-transform: uppercase;
+            line-height: 1;
+            margin-bottom: 20px;
+        }
+        .stein-plan p {
+            font-size: 16px;
+            color: rgba(255,255,255,0.65);
+            line-height: 1.7;
+            margin-bottom: 32px;
+            max-width: 440px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .stein-plan-price {
+            font-family: var(--font-display);
+            font-size: clamp(36px, 5vw, 56px);
+            color: var(--white);
+            margin-bottom: 6px;
+        }
+        .stein-plan-price span {
+            font-family: var(--font-body);
+            font-size: 16px;
+            color: rgba(255,255,255,0.45);
+            font-weight: 400;
+        }
+        .stein-plan-billed {
+            font-size: 13px;
+            color: rgba(255,255,255,0.35);
+            margin-bottom: 36px;
+        }
+        .stein-plan-cta {
+            display: inline-block;
+            padding: 16px 44px;
             background: var(--red);
             color: var(--white);
             font-family: var(--font-display);
@@ -768,182 +924,216 @@
             border-radius: 4px;
             transition: background 0.3s, transform 0.3s;
         }
-        .pricing-info-cta:hover {
+        .stein-plan-cta:hover {
             background: var(--red-bright);
-            transform: scale(1.03);
-        }
-        .pricing-info-cta:active {
-            transform: scale(0.97);
-            transition-duration: 0.1s;
-        }
-        .pricing-info-cta::after {
-            content: '→';
-            transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1);
-        }
-        .pricing-info-cta:hover::after {
-            transform: translateX(4px);
+            transform: scale(1.04);
         }
 
-        /* Plans list (right) — stacked clickable names */
-        .pricing-plans {
-            text-align: right;
+        /* Plan features list */
+        .stein-plan-features {
             display: flex;
             flex-direction: column;
-            gap: 4px;
+            gap: 8px;
+            margin-bottom: 28px;
+            text-align: left;
+            max-width: 400px;
+            margin-left: auto;
+            margin-right: auto;
         }
-        .pricing-plan {
-            font-family: var(--font-display);
-            font-size: clamp(36px, 5vw, 72px);
-            text-transform: uppercase;
-            line-height: 1.05;
-            letter-spacing: 2px;
-            transform: skewX(-4deg);
-            cursor: pointer;
+        .stein-plan-features span {
+            font-size: 14px;
+            color: rgba(255,255,255,0.6);
+            padding-left: 18px;
+            position: relative;
+            line-height: 1.4;
+        }
+        .stein-plan-features span::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 6px;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--red);
+        }
+        .stein-plan-pricing {
+            margin-bottom: 8px;
+        }
+
+        /* Annual/Monthly toggle */
+        .stein-toggle {
+            position: absolute;
+            bottom: 48px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 6;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        .stein-toggle-label {
+            font-family: var(--font-body);
+            font-size: 13px;
+            font-weight: 500;
+            color: rgba(255,255,255,0.3);
+            letter-spacing: 0.5px;
             transition: color 0.3s;
         }
-        .pricing-plan--active { color: var(--red-bright); }
-        .pricing-plan--muted { color: var(--gray-dark); }
-        .pricing-plan--default { color: rgba(255,255,255,0.85); }
-        .pricing-plan:hover { color: var(--white); }
+        .stein-toggle-label.active {
+            color: var(--white);
+        }
+        .stein-toggle-switch {
+            width: 44px;
+            height: 24px;
+            border-radius: 12px;
+            background: rgba(255,255,255,0.15);
+            position: relative;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .stein-toggle-switch::after {
+            content: '';
+            position: absolute;
+            top: 3px;
+            left: 3px;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: var(--white);
+            transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+        .stein-toggle-switch.annual {
+            background: var(--red);
+        }
+        .stein-toggle-switch.annual::after {
+            transform: translateX(20px);
+        }
+
+        /* Progress bar */
+        .stein-progress {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: rgba(255,255,255,0.08);
+            z-index: 10;
+        }
+        .stein-progress-bar {
+            height: 100%;
+            width: 0%;
+            background: var(--red);
+            will-change: width;
+        }
+
+        /* Plan dots */
+        .stein-dots {
+            position: absolute;
+            right: 40px;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 6;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        .stein-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.2);
+            transition: background 0.3s, transform 0.3s;
+        }
+        .stein-dot.active {
+            background: var(--red);
+            transform: scale(1.4);
+        }
 
         /* ======================== SECTION 5: FOOTER ======================== */
         .footer {
             background: var(--black);
-            padding: 80px 48px 0;
+            padding: 0 64px;
+        }
+        .footer-inner {
+            max-width: 1440px;
+            margin: 0 auto;
+            padding: 80px 0 0;
         }
 
-        /* Footer Top */
+        /* Footer Top — centered grid */
         .footer-top {
             display: grid;
-            grid-template-columns: 1.5fr 1fr 1fr;
-            gap: 60px;
-            padding-bottom: 60px;
+            grid-template-columns: 240px 1fr 1fr 1fr;
+            gap: 80px;
+            padding-bottom: 64px;
             border-bottom: 1px solid rgba(255,255,255,0.08);
         }
+        .footer-brand {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .footer-brand img {
+            width: 140px;
+            height: auto;
+        }
+        .footer-brand-desc {
+            font-size: 14px;
+            color: rgba(255,255,255,0.45);
+            line-height: 1.7;
+        }
+        .footer-brand-email {
+            font-size: 14px;
+            color: rgba(255,255,255,0.5);
+            transition: color 0.3s;
+        }
+        .footer-brand-email:hover { color: var(--white); }
         .footer-links-col h4 {
-            font-size: 13px;
-            font-weight: 500;
-            color: rgba(255,255,255,0.3);
+            font-size: 11px;
+            font-weight: 600;
+            color: rgba(255,255,255,0.45);
             text-transform: uppercase;
-            letter-spacing: 1px;
+            letter-spacing: 2px;
             margin-bottom: 20px;
         }
         .footer-links-list {
             list-style: none;
             display: flex;
             flex-direction: column;
-            gap: 14px;
+            gap: 10px;
         }
         .footer-links-list li a {
-            font-size: clamp(24px, 3vw, 36px);
+            font-size: 14px;
             font-weight: 400;
-            color: rgba(255,255,255,0.7);
+            color: rgba(255,255,255,0.55);
             transition: color 0.3s;
         }
         .footer-links-list li a:hover { color: var(--white); }
 
-        .footer-secondary-links {
-            list-style: none;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-        .footer-secondary-links li a {
-            font-size: 14px;
-            font-weight: 400;
-            color: rgba(255,255,255,0.5);
-            transition: color 0.3s;
-        }
-        .footer-secondary-links li a:hover { color: var(--white); }
-
-        .footer-copyright {
-            font-size: 14px;
-            color: rgba(255,255,255,0.3);
-        }
-
-        /* Footer Contact */
-        .footer-contact {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 40px 0;
-        }
-        .footer-contact-label {
-            font-size: 11px;
-            font-weight: 500;
-            letter-spacing: 1.5px;
-            text-transform: uppercase;
-            color: rgba(255,255,255,0.3);
-            margin-bottom: 10px;
-        }
-        .footer-contact-info a {
-            display: block;
-            font-size: 14px;
-            color: rgba(255,255,255,0.6);
-            margin-bottom: 4px;
-            transition: color 0.3s;
-        }
-        .footer-contact-info a:hover { color: var(--white); }
-        .footer-socials {
-            display: flex;
-            gap: 12px;
-        }
-        .footer-social-btn {
-            padding: 10px 20px;
-            border: 1px solid rgba(255,255,255,0.2);
-            border-radius: 24px;
-            font-size: 14px;
-            font-weight: 400;
-            color: rgba(255,255,255,0.6);
-            transition: all 0.3s;
-        }
-        .footer-social-btn:hover {
-            background: var(--white);
-            color: var(--black);
-            border-color: var(--white);
-        }
-        .footer-social-btn:active {
-            transform: scale(0.95);
-            transition-duration: 0.1s;
-        }
-
-        /* Footer CTA */
-        .footer-cta {
-            padding: 60px 0 40px;
-            overflow: hidden;
-        }
-        .footer-cta-text {
-            font-family: var(--font-display);
-            font-size: clamp(60px, 12vw, 180px);
-            color: var(--red);
-            text-transform: uppercase;
-            line-height: 0.9;
-            letter-spacing: -1px;
-            transform: skewX(-4deg);
-            white-space: nowrap;
-            display: block;
-            transition: letter-spacing 0.4s cubic-bezier(0.25, 1, 0.5, 1), color 0.3s;
-        }
-        .footer-cta-text:hover {
-            letter-spacing: 6px;
-            color: var(--red-bright);
-        }
-
-        /* Footer Legal */
+        /* Footer Legal bar */
         .footer-legal {
             display: flex;
             justify-content: space-between;
             align-items: center;
             padding: 24px 0;
-            border-top: 1px solid rgba(255,255,255,0.08);
+            margin-top: 48px;
         }
         .footer-legal a,
         .footer-legal span {
-            font-size: 12px;
-            color: rgba(255,255,255,0.3);
+            font-size: 11px;
+            color: rgba(255,255,255,0.25);
             transition: color 0.3s;
         }
         .footer-legal a:hover { color: rgba(255,255,255,0.6); }
+        .footer-legal-right {
+            display: flex;
+            gap: 24px;
+        }
 
         /* ======================== FOCUS & ACCESSIBILITY ======================== */
         a:focus-visible, button:focus-visible, .pricing-toggle-switch:focus-visible {
@@ -971,21 +1161,20 @@
                 transition-duration: 0.01ms !important;
             }
             .fade-up { opacity: 1; transform: none; }
-            .legends-carousel { animation: none; }
+            .tool-overlay-content { grid-template-columns: 1fr; }
             .hero-tag, .hero-title, .hero-cta, .hero-vertical {
                 opacity: 1; transform: none; animation: none;
             }
             .hero-vertical { opacity: 0.15; }
-            .pricing-save-badge { animation: none; }
+            .stein-hint::after { animation: none; }
         }
 
         /* ======================== RESPONSIVE ======================== */
         @media (max-width: 1024px) {
             .nav { padding: 20px 32px; }
             .hero-content { padding: 0 32px 40px; }
-            .legends, .pricing, .footer { padding-left: 32px; padding-right: 32px; }
-            .community-text-block { right: 32px; }
-            .legend-card { flex: 0 0 280px; }
+            .tools, .footer { padding-left: 32px; padding-right: 32px; }
+            .tools-grid { grid-template-columns: repeat(2, 1fr); }
         }
 
         @media (max-width: 768px) {
@@ -999,23 +1188,20 @@
                 width: 300vw;
                 height: 300vh;
             }
-            .legends, .pricing, .footer { padding-left: 20px; padding-right: 20px; }
-            .pricing-header { flex-direction: column; gap: 16px; }
-            .pricing-bottom-row { flex-direction: column; gap: 40px; }
-            .pricing-plans { text-align: left; }
-            .community { min-height: 70vh; }
+            .tools, .footer { padding-left: 20px; padding-right: 20px; }
+            .tools-grid { grid-template-columns: 1fr; }
+            .tool-overlay-content { grid-template-columns: 1fr; gap: 24px; }
+            .stein-dots { right: 16px; }
+            .community { min-height: max(70vh, 700px); }
             .community-photo--tl, .community-photo--tr,
-            .community-photo--bl, .community-photo--br { width: 38% !important; height: auto !important; aspect-ratio: 4/3; }
+            .community-photo--bl, .community-photo--br { width: 30%; height: 35%; }
             .community-text-block { position: absolute; right: 5%; top: auto; bottom: 5%; text-align: right; }
             .community-big-text { font-size: clamp(60px, 16vw, 140px); letter-spacing: -2px; }
             .community-center { bottom: 20%; }
-            .legend-card { flex: 0 0 260px; }
-            .legend-card-image { height: 200px; }
             .hero-cta { right: 20px; bottom: 80px; }
             .hero-cta-btn { font-size: 16px; padding: 14px 28px; }
             .nav.scrolled { padding: 12px 20px; }
-            .footer-top { grid-template-columns: 1fr; gap: 40px; }
-            .footer-contact { flex-direction: column; gap: 24px; align-items: flex-start; }
+            .footer-top { grid-template-columns: 1fr 1fr; gap: 40px; }
             .footer-legal { flex-wrap: wrap; gap: 12px; }
         }
     </style>
@@ -1056,148 +1242,174 @@
             <div class="hero-bottom-gradient"></div>
         </section>
 
-        <!-- ==================== SECTION 3: LEGENDS OF THE GAME ==================== -->
-        <section class="legends">
-            <div class="legends-header">
-                <h2 class="legends-title fade-up">Look At These Fancy Things</h2>
+        <!-- ==================== SECTION 3: TOOLS SHOWCASE ==================== -->
+        <section class="tools">
+            <div class="tools-header">
+                <h2 class="tools-title fade-up">Look At These Fancy Things</h2>
+                <span class="tools-subtitle">Click to explore</span>
             </div>
 
-            <div class="legends-track-wrapper">
-            <div class="legends-carousel" id="legendsCarousel">
-                <!-- Card 1 -->
-                <div class="legend-card">
-                    <div class="legend-card-image">
-                        <div class="legend-card-tags"><span class="legend-card-tag">Fantasy Football</span></div>
+            <div class="tools-grid">
+                <div class="tool-card" data-tool="0">
+                    <div class="tool-card-image">
+                        <span class="tool-card-tag">Fantasy Football</span>
                         <img src="rankings.png" alt="Draft Rankings" loading="lazy">
                     </div>
-                    <div class="legend-card-body">
-                        <h3 class="legend-card-name">Draft Rankings</h3>
-                        <p class="legend-card-desc">Real Vegas lines, real weather data, real player props. Still gonna overthink it and bench the wrong guy.</p>
+                    <div class="tool-card-body">
+                        <h3 class="tool-card-name">Draft Rankings</h3>
+                        <p class="tool-card-desc">Vegas lines, weather, player props &mdash; updated daily.</p>
                     </div>
+                    <div class="tool-card-expand"><svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg></div>
                 </div>
-                <!-- Card 2 -->
-                <div class="legend-card">
-                    <div class="legend-card-image">
-                        <div class="legend-card-tags"><span class="legend-card-tag">Decision Engine</span></div>
+                <div class="tool-card" data-tool="1">
+                    <div class="tool-card-image">
+                        <span class="tool-card-tag">Decision Engine</span>
                         <img src="sitstart.png" alt="Start/Sit Decider" loading="lazy">
                     </div>
-                    <div class="legend-card-body">
-                        <h3 class="legend-card-name">Start/Sit Decider</h3>
-                        <p class="legend-card-desc">Our opinions, which are slightly better than your opinions. Powered by data you'll ignore anyway.</p>
+                    <div class="tool-card-body">
+                        <h3 class="tool-card-name">Start/Sit Decider</h3>
+                        <p class="tool-card-desc">Data-backed recommendations for every lineup slot.</p>
                     </div>
+                    <div class="tool-card-expand"><svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg></div>
                 </div>
-                <!-- Card 3 -->
-                <div class="legend-card">
-                    <div class="legend-card-image">
-                        <div class="legend-card-tags"><span class="legend-card-tag">Trivia Games</span></div>
+                <div class="tool-card" data-tool="2">
+                    <div class="tool-card-image">
+                        <span class="tool-card-tag">Trivia Games</span>
                         <img src="dailytrivia.png" alt="Daily Grid Trivia" loading="lazy">
                     </div>
-                    <div class="legend-card-body">
-                        <h3 class="legend-card-name">Daily Grid Trivia</h3>
-                        <p class="legend-card-desc">Historical daily grid games for the NFL obsessed. Play against friends, flex on strangers.</p>
+                    <div class="tool-card-body">
+                        <h3 class="tool-card-name">Daily Grid Trivia</h3>
+                        <p class="tool-card-desc">Historical daily grids for the NFL-obsessed.</p>
                     </div>
+                    <div class="tool-card-expand"><svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg></div>
                 </div>
-                <!-- Card 4 -->
-                <div class="legend-card">
-                    <div class="legend-card-image">
-                        <div class="legend-card-tags"><span class="legend-card-tag">Community</span></div>
+                <div class="tool-card" data-tool="3">
+                    <div class="tool-card-image">
+                        <span class="tool-card-tag">Community</span>
                         <img src="fantasydrafts.png" alt="Fantasy Drafts" loading="lazy">
                     </div>
-                    <div class="legend-card-body">
-                        <h3 class="legend-card-name">Fantasy Drafts</h3>
-                        <p class="legend-card-desc">Weekly livestreams, waiver wire rankings, and a private Discord full of people with questionable priorities.</p>
+                    <div class="tool-card-body">
+                        <h3 class="tool-card-name">Fantasy Drafts</h3>
+                        <p class="tool-card-desc">Weekly livestreams, waiver wire, private Discord.</p>
                     </div>
+                    <div class="tool-card-expand"><svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg></div>
                 </div>
-                <!-- Duplicates for seamless loop -->
-                <div class="legend-card">
-                    <div class="legend-card-image">
-                        <div class="legend-card-tags"><span class="legend-card-tag">Fantasy Football</span></div>
-                        <img src="rankings.png" alt="Draft Rankings" loading="lazy">
-                    </div>
-                    <div class="legend-card-body">
-                        <h3 class="legend-card-name">Draft Rankings</h3>
-                        <p class="legend-card-desc">Real Vegas lines, real weather data, real player props. Still gonna overthink it and bench the wrong guy.</p>
-                    </div>
-                </div>
-                <div class="legend-card">
-                    <div class="legend-card-image">
-                        <div class="legend-card-tags"><span class="legend-card-tag">Decision Engine</span></div>
-                        <img src="sitstart.png" alt="Start/Sit Decider" loading="lazy">
-                    </div>
-                    <div class="legend-card-body">
-                        <h3 class="legend-card-name">Start/Sit Decider</h3>
-                        <p class="legend-card-desc">Our opinions, which are slightly better than your opinions. Powered by data you'll ignore anyway.</p>
-                    </div>
-                </div>
-                <div class="legend-card">
-                    <div class="legend-card-image">
-                        <div class="legend-card-tags"><span class="legend-card-tag">Trivia Games</span></div>
-                        <img src="dailytrivia.png" alt="Daily Grid Trivia" loading="lazy">
-                    </div>
-                    <div class="legend-card-body">
-                        <h3 class="legend-card-name">Daily Grid Trivia</h3>
-                        <p class="legend-card-desc">Historical daily grid games for the NFL obsessed. Play against friends, flex on strangers.</p>
-                    </div>
-                </div>
-                <div class="legend-card">
-                    <div class="legend-card-image">
-                        <div class="legend-card-tags"><span class="legend-card-tag">Community</span></div>
-                        <img src="fantasydrafts.png" alt="Fantasy Drafts" loading="lazy">
-                    </div>
-                    <div class="legend-card-body">
-                        <h3 class="legend-card-name">Fantasy Drafts</h3>
-                        <p class="legend-card-desc">Weekly livestreams, waiver wire rankings, and a private Discord full of people with questionable priorities.</p>
-                    </div>
-                </div>
-            </div>
             </div>
         </section>
+
+        <!-- Tool overlay -->
+        <div class="tool-overlay" id="toolOverlay">
+            <button class="tool-overlay-close" onclick="closeToolOverlay()">
+                <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>
+            <div class="tool-overlay-content">
+                <div class="tool-overlay-image"><img id="toolOverlayImg" src="" alt=""></div>
+                <div class="tool-overlay-info">
+                    <div class="tool-overlay-tag" id="toolOverlayTag"></div>
+                    <h2 class="tool-overlay-name" id="toolOverlayName"></h2>
+                    <p class="tool-overlay-desc" id="toolOverlayDesc"></p>
+                    <ul class="tool-overlay-features" id="toolOverlayFeatures"></ul>
+                    <span class="tool-overlay-plan" id="toolOverlayPlan"></span>
+                </div>
+            </div>
+        </div>
 
         <!-- ==================== SECTION 4: BECOME A STEIN ==================== -->
-        <section class="pricing">
-            <div class="pricing-header">
-                <h2 class="pricing-title">Become a<br>Stein &mdash;</h2>
-                <div class="pricing-label">
-                    <span class="pricing-label-slash">/</span>
-                    <span class="pricing-label-text">Plans</span>
+        <div class="stein-container">
+            <section class="stein">
+                <!-- Title -->
+                <div class="stein-title">
+                    <h2>Become a</h2>
+                    <h2>Stein <span>&mdash;</span></h2>
                 </div>
-            </div>
 
-            <!-- Center image -->
-            <div class="pricing-image">
-                <div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:13px;color:rgba(255,255,255,0.4);letter-spacing:1px;text-transform:uppercase;">[ Membership Video ]</div>
-            </div>
+                <!-- Scroll hint -->
+                <div class="stein-hint">Scroll to explore</div>
 
-            <!-- Scrolling marquee -->
-            <div class="pricing-marquee">
-                <div class="pricing-marquee-track">
-                    <span class="pricing-marquee-text">Rankings &middot; Start/Sit Decider Tool &middot; Daily Grid Games &middot; Weekly Livestreams &middot; Waiver Wire Rankings &middot; Fantasy Drafts &middot; Trivia Leaderboards &middot; Play Trivia vs. Friends</span>
-                    <span class="pricing-marquee-text">Rankings &middot; Start/Sit Decider Tool &middot; Daily Grid Games &middot; Weekly Livestreams &middot; Waiver Wire Rankings &middot; Fantasy Drafts &middot; Trivia Leaderboards &middot; Play Trivia vs. Friends</span>
-                    <span class="pricing-marquee-text">Rankings &middot; Start/Sit Decider Tool &middot; Daily Grid Games &middot; Weekly Livestreams &middot; Waiver Wire Rankings &middot; Fantasy Drafts &middot; Trivia Leaderboards &middot; Play Trivia vs. Friends</span>
-                </div>
-            </div>
-
-            <!-- Bottom: Info + Plans -->
-            <div class="pricing-bottom-row">
-                <div class="pricing-info" id="pricingInfo">
-                    <h3 class="pricing-info-title" id="pricingInfoTitle">The Entire Thing</h3>
-                    <p class="pricing-info-desc" id="pricingInfoDesc">Everything we make. For people who have fully given up on having a personality outside of knowing ball.</p>
-                    <div class="pricing-info-price" id="pricingInfoPrice">$18.33<span>/mo</span></div>
-                    <p class="pricing-info-billed" id="pricingInfoBilled">billed annually ($220/yr)</p>
-                    <div class="pricing-badges">
-                        <span class="pricing-badge pricing-badge--filled">Most Popular</span>
-                        <span class="pricing-badge pricing-badge--outline">Early Access</span>
-                        <span class="pricing-badge pricing-badge--outline">5K+ Members</span>
+                <!-- Video -->
+                <div class="stein-video">
+                    <div class="stein-video-inner">
+                        <div class="stein-video-overlay"></div>
+                        <video id="steinVideo" muted loop playsinline style="width:100%;height:100%;object-fit:cover;">
+                            <source src="membership-video.mp4" type="video/mp4">
+                        </video>
                     </div>
-                    <a href="#" class="pricing-info-cta">Get Started</a>
                 </div>
-                <div class="pricing-plans">
-                    <div class="pricing-plan pricing-plan--default" onclick="selectPlan(0)">Fantasy</div>
-                    <div class="pricing-plan pricing-plan--active" onclick="selectPlan(1)">The Whole Thing</div>
-                    <div class="pricing-plan pricing-plan--muted" onclick="selectPlan(2)">Trivia</div>
+
+                <!-- Plan cards -->
+                <div class="stein-plans">
+                    <div class="stein-plan">
+                        <div class="stein-plan-number">01 / 03 &middot; Most Popular</div>
+                        <h3>The Entire Thing</h3>
+                        <p>Everything we make. For people who have fully given up on having a personality outside of knowing ball.</p>
+                        <div class="stein-plan-features">
+                            <span>Everything in the Fantasy Membership</span>
+                            <span>Everything in the Trivia Membership</span>
+                            <span>At a heavy discount</span>
+                            <span>Early Access to Features</span>
+                        </div>
+                        <div class="stein-plan-pricing">
+                            <div class="stein-plan-price" data-annual="$18.33" data-monthly="$24.99">$18.33<span>/mo</span></div>
+                            <div class="stein-plan-billed" data-annual="billed annually ($220/yr)" data-monthly="billed monthly">billed annually ($220/yr)</div>
+                        </div>
+                        <a href="#" class="stein-plan-cta">Get Started &rarr;</a>
+                    </div>
+                    <div class="stein-plan">
+                        <div class="stein-plan-number">02 / 03</div>
+                        <h3>Fantasy</h3>
+                        <p>For both the casual &amp; year-round fantasy sicko. Draft guide, rankings, decider tool, and private Discord.</p>
+                        <div class="stein-plan-features">
+                            <span>The BDGE Draft Guide</span>
+                            <span>Draft, Start/Sit, Waiver Wire Rankings</span>
+                            <span>Tie-Breaker Mania</span>
+                            <span>Start/Sit Decider Tool</span>
+                            <span>Real-time Vegas, Player Props &amp; Weather</span>
+                            <span>Weekly Fantasy Q&amp;A</span>
+                            <span>Private Discord</span>
+                        </div>
+                        <div class="stein-plan-pricing">
+                            <div class="stein-plan-price" data-annual="$12.50" data-monthly="$16.99">$12.50<span>/mo</span></div>
+                            <div class="stein-plan-billed" data-annual="billed annually ($150/yr)" data-monthly="billed monthly">billed annually ($150/yr)</div>
+                        </div>
+                        <a href="#" class="stein-plan-cta">Get Started &rarr;</a>
+                    </div>
+                    <div class="stein-plan">
+                        <div class="stein-plan-number">03 / 03</div>
+                        <h3>Trivia</h3>
+                        <p>All the games we play in content, you can now beat your friends in.</p>
+                        <div class="stein-plan-features">
+                            <span>Access to all BDGE historical daily grid games</span>
+                            <span>Fantasy Drafts</span>
+                            <span>Luck of the Draw</span>
+                            <span>Weekly trivia live streams</span>
+                            <span>Private Discord channel for trivia &amp; geography</span>
+                        </div>
+                        <div class="stein-plan-pricing">
+                            <div class="stein-plan-price" data-annual="$8.33" data-monthly="$11.99">$8.33<span>/mo</span></div>
+                            <div class="stein-plan-billed" data-annual="billed annually ($100/yr)" data-monthly="billed monthly">billed annually ($100/yr)</div>
+                        </div>
+                        <a href="#" class="stein-plan-cta">Get Started &rarr;</a>
+                    </div>
                 </div>
-            </div>
-        </section>
+
+                <!-- Annual/Monthly toggle -->
+                <div class="stein-toggle">
+                    <span class="stein-toggle-label" data-plan="monthly">Monthly</span>
+                    <button class="stein-toggle-switch annual" id="steinToggle" onclick="toggleSteinPricing()" aria-checked="true" role="switch"></button>
+                    <span class="stein-toggle-label active" data-plan="annual">Annual</span>
+                </div>
+
+                <!-- Plan dots -->
+                <div class="stein-dots">
+                    <div class="stein-dot"></div>
+                    <div class="stein-dot"></div>
+                    <div class="stein-dot"></div>
+                </div>
+
+                <!-- Progress bar -->
+                <div class="stein-progress"><div class="stein-progress-bar"></div></div>
+            </section>
+        </div>
 
         <!-- ==================== COMMUNITY ==================== -->
         <section class="community">
@@ -1222,10 +1434,6 @@
             </div>
 
             <!-- Right side text -->
-            <div class="community-text-block">
-                <p class="community-subtitle">BDGE</p>
-                <p class="community-tagline">Fantasy &amp; Growth</p>
-            </div>
 
             <!-- Center: follow + socials -->
             <div class="community-center">
@@ -1246,51 +1454,51 @@
 
         <!-- ==================== SECTION 5: FOOTER ==================== -->
         <footer class="footer">
-            <div class="footer-top">
-                <div class="footer-links-col">
-                    <ul class="footer-links-list">
-                        <li><a href="#">Rankings</a></li>
-                        <li><a href="#">Trivia</a></li>
-                        <li><a href="#">Drafts</a></li>
-                        <li><a href="#">Pricing</a></li>
-                    </ul>
-                </div>
-                <div class="footer-links-col">
-                    <ul class="footer-secondary-links">
-                        <li><a href="#">Home</a></li>
-                        <li><a href="#">Pricing</a></li>
-                        <li><a href="#">Work for BDGE</a></li>
-                    </ul>
-                </div>
-                <div class="footer-links-col" style="text-align: right;">
-                    <p class="footer-copyright">&copy; 2025 BDGE Media, Inc.</p>
-                </div>
-            </div>
-
-            <div class="footer-contact">
-                <div>
-                    <p class="footer-contact-label">BDGE Media, Inc.</p>
-                    <div class="footer-contact-info">
-                        <a href="#">Fantasy football rankings, tools and</a>
-                        <a href="#">trivia games for every level of fan.</a>
+            <div class="footer-inner">
+                <div class="footer-top">
+                    <div class="footer-brand">
+                        <img src="bdge-transparent.png" alt="BDGE">
+                        <p class="footer-brand-desc">Fantasy football rankings, tools, and trivia games for every level of fan.</p>
+                        <a href="#" class="footer-brand-email">hello@bdge.co</a>
+                    </div>
+                    <div class="footer-links-col">
+                        <h4>Products</h4>
+                        <ul class="footer-links-list">
+                            <li><a href="#">Rankings</a></li>
+                            <li><a href="#">Trivia</a></li>
+                            <li><a href="#">Drafts</a></li>
+                            <li><a href="#">Pricing</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-links-col">
+                        <h4>Company</h4>
+                        <ul class="footer-links-list">
+                            <li><a href="#">About Us</a></li>
+                            <li><a href="#">Work for BDGE</a></li>
+                            <li><a href="#">Blog</a></li>
+                            <li><a href="#">Contacts</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-links-col">
+                        <h4>Socials</h4>
+                        <ul class="footer-links-list">
+                            <li><a href="#">Instagram</a></li>
+                            <li><a href="#">TikTok</a></li>
+                            <li><a href="#">YouTube</a></li>
+                            <li><a href="#">Discord</a></li>
+                            <li><a href="#">X / Twitter</a></li>
+                        </ul>
                     </div>
                 </div>
-                <div class="footer-socials">
-                    <a href="#" class="footer-social-btn">Instagram</a>
-                    <a href="#" class="footer-social-btn">Discord</a>
-                    <a href="#" class="footer-social-btn">X / Twitter</a>
+
+                <div class="footer-legal">
+                    <div class="footer-legal-right">
+                        <a href="#">Privacy Policy</a>
+                        <a href="#">Terms of Use</a>
+                        <a href="#">FAQ</a>
+                    </div>
+                    <span>&copy; 2025 BDGE Media, Inc. All rights reserved.</span>
                 </div>
-            </div>
-
-            <div class="footer-cta">
-                <a href="#" class="footer-cta-text">/ Let's Play</a>
-            </div>
-
-            <div class="footer-legal">
-                <a href="#">Terms of Service</a>
-                <a href="#">Acceptable Use Policy</a>
-                <span>BDGE Media, Inc. &copy; 2025. All rights reserved.</span>
-                <a href="#">Privacy Policy</a>
             </div>
         </footer>
     </div>
@@ -1313,46 +1521,190 @@
             nav.classList.toggle('scrolled', window.scrollY > 80);
         }, { passive: true });
 
-        /* Carousel scroll */
-        function scrollCarousel(dir) {
-            const el = document.getElementById('legendsCarousel');
-            const cardWidth = el.querySelector('.legend-card').offsetWidth;
-            el.scrollBy({ left: cardWidth * dir, behavior: 'smooth' });
-        }
-
-        /* Plan selector */
-        const plans = [
-            { name: 'Fantasy Membership', desc: 'For both the casual & year-round fantasy sicko. Draft guide, rankings, decider tool, and private Discord.', price: '$12.50', billed: 'billed annually ($150/yr)', badges: ['Daily Updated', 'Draft Guide', 'Private Discord'] },
-            { name: 'The Entire Thing', desc: 'Everything we make. For people who have fully given up on having a personality outside of knowing ball.', price: '$18.33', billed: 'billed annually ($220/yr)', badges: ['Most Popular', 'Early Access', '5K+ Members'] },
-            { name: 'Trivia Membership', desc: 'All the games we play in content, you can now beat your friends in. Daily grids, drafts, and live streams.', price: '$8.33', billed: 'billed annually ($100/yr)', badges: ['Daily Games', 'Live Streams', 'Private Discord'] }
+        /* Tool overlay */
+        const toolData = [
+            {
+                tag: 'Fantasy Football',
+                name: 'Draft Rankings',
+                img: 'rankings.png',
+                desc: 'Real Vegas lines, real weather data, real player props. Daily-updated rankings across every position \u2014 QB, WR, RB, TE, FLEX, D/ST \u2014 with ADP comparisons and prop overlays. Filter by position, compare players head-to-head, track who you\'ve already drafted, and build tiers. Built for people who take draft day more seriously than most holidays.',
+                features: ['Real-time data with Vegas lines, weather, and player props baked in', 'Filter by position (QB, WR, RB, TE, FLEX, D/ST) with ADP and prop columns', 'Compare tool for head-to-head player matchups', 'Tier system and drafted player tracking for live drafts', '"My Team" view to manage your roster as you pick', 'Works for redraft, dynasty, and best ball formats'],
+                plan: 'Included in Fantasy + The Whole Thing'
+            },
+            {
+                tag: 'Decision Engine',
+                name: 'Start/Sit Decider',
+                img: 'sitstart.png',
+                desc: 'Stop texting your group chat for lineup advice. Our start/sit tool crunches matchup data, snap counts, target shares, and defensive rankings to give you a clear answer for every roster decision. Select two players, get a verdict backed by data \u2014 not vibes.',
+                features: ['Head-to-head player comparisons with a clear verdict', 'Matchup grades factoring defensive rankings and schemes', 'Snap count, target share, and red zone usage trends', 'Weather and game script projections for every matchup', 'Works for PPR, half-PPR, and standard scoring', 'Covers every position including FLEX and D/ST'],
+                plan: 'Included in Fantasy + The Whole Thing'
+            },
+            {
+                tag: 'Trivia Games',
+                name: 'Daily Grid Trivia',
+                img: 'dailytrivia.png',
+                desc: 'A new grid puzzle drops every morning. Connect players across teams, stats, and seasons. Compete against friends, climb the leaderboard, and prove you know more useless football facts than everyone else. Plus Tie-Breaker Mania and Luck of the Draw for even more ways to play.',
+                features: ['Fresh grid puzzle every day', 'Historical player data going back 20+ years', 'Friends leaderboard and global rankings with streak tracking', 'Multiple game modes: Daily Grid, Tie-Breaker Mania, Luck of the Draw', 'Share results without spoilers', 'Achievement badges and collectibles for streaks'],
+                plan: 'Included in Trivia + The Whole Thing'
+            },
+            {
+                tag: 'Community',
+                name: 'Fantasy Drafts',
+                img: 'fantasydrafts.png',
+                desc: 'Weekly livestreams where we draft, debate, and occasionally roast each other\'s takes. Plus waiver wire rankings, trade evaluations, and a private Discord full of people with questionable priorities. This is where the BDGE community actually lives.',
+                features: ['Weekly draft livestreams with the crew', 'Waiver wire rankings updated every Tuesday', 'Trade calculator and sit/start polls with the community', 'Private Discord with 5,000+ members and active channels', 'Early access to every new tool and feature before public launch', 'Direct interaction with Nick and the BDGE team'],
+                plan: 'Included in all plans'
+            }
         ];
-        function selectPlan(i) {
-            const p = plans[i];
-            document.getElementById('pricingInfoTitle').textContent = p.name;
-            document.getElementById('pricingInfoDesc').textContent = p.desc;
-            document.getElementById('pricingInfoPrice').innerHTML = p.price + '<span>/mo</span>';
-            document.getElementById('pricingInfoBilled').textContent = p.billed;
-            const badgeWrap = document.querySelector('.pricing-badges');
-            badgeWrap.innerHTML = p.badges.map((b,j) => `<span class="pricing-badge pricing-badge--${j===0?'filled':'outline'}">${b}</span>`).join('');
-            document.querySelectorAll('.pricing-plan').forEach((el, idx) => {
-                el.className = 'pricing-plan ' + (idx === i ? 'pricing-plan--active' : (idx < i ? 'pricing-plan--default' : 'pricing-plan--muted'));
-            });
+
+        function openToolOverlay(i) {
+            const d = toolData[i];
+            document.getElementById('toolOverlayImg').src = d.img;
+            document.getElementById('toolOverlayTag').textContent = d.tag;
+            document.getElementById('toolOverlayName').textContent = d.name;
+            document.getElementById('toolOverlayDesc').textContent = d.desc;
+            document.getElementById('toolOverlayFeatures').innerHTML = d.features.map(function(f) { return '<li>' + f + '</li>'; }).join('');
+            document.getElementById('toolOverlayPlan').textContent = d.plan;
+            document.getElementById('toolOverlay').classList.add('active');
+            document.body.style.overflow = 'hidden';
         }
+        function closeToolOverlay() {
+            document.getElementById('toolOverlay').classList.remove('active');
+            document.body.style.overflow = '';
+        }
+        document.querySelectorAll('.tool-card').forEach(function(card) {
+            card.addEventListener('mouseenter', function() {
+                openToolOverlay(parseInt(card.dataset.tool));
+            });
+        });
+        /* Close when cursor hits the dark backdrop (outside the content) */
+        document.getElementById('toolOverlay').addEventListener('mousemove', function(e) {
+            if (e.target === this) closeToolOverlay();
+        });
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') closeToolOverlay();
+        });
 
-        /* Pricing toggle */
-        function togglePricing() {
-            const toggle = document.getElementById('pricingToggle');
-            const isAnnual = toggle.classList.toggle('annual');
+        /* Stein pricing toggle */
+        function toggleSteinPricing() {
+            var toggle = document.getElementById('steinToggle');
+            var isAnnual = toggle.classList.toggle('annual');
             toggle.setAttribute('aria-checked', isAnnual);
-            const plan = isAnnual ? 'annual' : 'monthly';
-
-            document.querySelectorAll('.pricing-toggle-label').forEach(l => {
+            var plan = isAnnual ? 'annual' : 'monthly';
+            document.querySelectorAll('.stein-toggle-label').forEach(function(l) {
                 l.classList.toggle('active', l.dataset.plan === plan);
             });
-            document.querySelectorAll('[data-monthly][data-annual]').forEach(el => {
-                if (el.dataset[plan]) el.textContent = el.dataset[plan];
+            document.querySelectorAll('.stein-plan-price[data-annual]').forEach(function(el) {
+                el.innerHTML = el.dataset[plan] + '<span>/mo</span>';
+            });
+            document.querySelectorAll('.stein-plan-billed[data-annual]').forEach(function(el) {
+                el.textContent = el.dataset[plan];
             });
         }
+
+        /* Stein scroll-driven experience */
+        (function() {
+            const container = document.querySelector('.stein-container');
+            const title = document.querySelector('.stein-title');
+            const hint = document.querySelector('.stein-hint');
+            const videoInner = document.querySelector('.stein-video-inner');
+            const overlay = document.querySelector('.stein-video-overlay');
+            const plans = document.querySelectorAll('.stein-plan');
+            const dots = document.querySelector('.stein-dots');
+            const dotEls = document.querySelectorAll('.stein-dot');
+            const progressBar = document.querySelector('.stein-progress-bar');
+            if (!container) return;
+
+            function lerp(a, b, t) { return a + (b - a) * t; }
+            function clamp01(t) { return Math.max(0, Math.min(1, t)); }
+
+            function update() {
+                const rect = container.getBoundingClientRect();
+                const scrollRoom = container.offsetHeight - window.innerHeight;
+                const progress = clamp01(-rect.top / scrollRoom);
+
+                /* Progress bar */
+                progressBar.style.width = (progress * 100) + '%';
+
+                /* Phase 1: Title (0 - 0.2) */
+                const titleFade = progress < 0.12 ? 1 : Math.max(0, 1 - (progress - 0.12) / 0.08);
+                const titleScale = 1 + progress * 0.15;
+                title.style.opacity = titleFade;
+                title.style.transform = 'scale(' + titleScale + ')';
+                var hintFade = progress < 0.4 ? 1 : Math.max(0, 1 - (progress - 0.4) / 0.08);
+                hint.style.opacity = hintFade;
+
+                /* Toggle visibility during plans */
+                var steinToggleEl = document.querySelector('.stein-toggle');
+                if (steinToggleEl) steinToggleEl.style.opacity = progress > 0.42 ? 1 : 0;
+
+                /* Phase 2: Video scales (0.05 - 0.45) */
+                const vp = clamp01((progress - 0.05) / 0.4);
+                const vw = window.innerWidth;
+                const vh = window.innerHeight;
+                const startW = vw * 0.5;
+                const startH = Math.max(vw * 0.3, 240);
+                const w = lerp(startW, vw, vp);
+                const h = lerp(startH, vh, vp);
+                const r = lerp(12, 0, vp);
+                videoInner.style.width = w + 'px';
+                videoInner.style.height = h + 'px';
+                videoInner.style.borderRadius = r + 'px';
+
+                /* Video darkens for plan cards */
+                const dark = progress > 0.38 ? clamp01((progress - 0.38) / 0.1) * 0.65 : 0;
+                overlay.style.background = 'rgba(0,0,0,' + dark + ')';
+
+                /* Phase 3: Plan cards (0.45 - 1.0) */
+                const planZones = [[0.45, 0.63], [0.63, 0.81], [0.81, 1.0]];
+                const showDots = progress > 0.42;
+                dots.style.opacity = showDots ? 1 : 0;
+
+                plans.forEach(function(plan, i) {
+                    const start = planZones[i][0];
+                    const end = planZones[i][1];
+                    var opacity = 0, y = 50;
+
+                    if (progress >= start && progress <= end) {
+                        var fadeIn = clamp01((progress - start) / 0.06);
+                        opacity = fadeIn;
+                        y = lerp(50, 0, fadeIn);
+
+                        /* Fade out (not last) */
+                        if (i < 2 && progress > end - 0.06) {
+                            var fadeOut = clamp01((progress - (end - 0.06)) / 0.06);
+                            opacity = 1 - fadeOut;
+                            y = lerp(0, -30, fadeOut);
+                        }
+                    }
+
+                    plan.style.opacity = opacity;
+                    plan.style.transform = 'translate(-50%,-50%) translateY(' + y + 'px)';
+                    plan.style.pointerEvents = opacity > 0.5 ? 'auto' : 'none';
+
+                    /* Dot state */
+                    if (dotEls[i]) {
+                        dotEls[i].classList.toggle('active', progress >= start && progress <= end);
+                    }
+                });
+            }
+
+            window.addEventListener('scroll', update, { passive: true });
+            window.addEventListener('resize', update);
+            update();
+        })();
+
+        /* Play stein video only when section is visible */
+        (function() {
+            var vid = document.getElementById('steinVideo');
+            if (!vid) return;
+            new IntersectionObserver(function(entries) {
+                entries.forEach(function(e) {
+                    if (e.isIntersecting) vid.play();
+                    else vid.pause();
+                });
+            }, { threshold: 0.1 }).observe(vid.closest('.stein-container'));
+        })();
 
     </script>
 </body>
