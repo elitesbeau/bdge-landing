@@ -938,31 +938,16 @@
 
         /* Plan features list */
         .stein-plan-features {
-            display: flex;
+            display: inline-flex;
             flex-direction: column;
+            align-items: center;
             gap: 8px;
             margin-bottom: 28px;
-            text-align: left;
-            max-width: 400px;
-            margin-left: auto;
-            margin-right: auto;
         }
         .stein-plan-features span {
             font-size: 14px;
             color: rgba(255,255,255,0.6);
-            padding-left: 18px;
-            position: relative;
             line-height: 1.4;
-        }
-        .stein-plan-features span::before {
-            content: '';
-            position: absolute;
-            left: 0;
-            top: 6px;
-            width: 6px;
-            height: 6px;
-            border-radius: 50%;
-            background: var(--red);
         }
         .stein-plan-pricing {
             margin-bottom: 8px;
