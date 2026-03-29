@@ -949,19 +949,20 @@
         }
         .stein-plan-features span {
             font-size: 14px;
-            color: rgba(255,255,255,0.6);
-            padding-left: 28px;
+            color: rgba(255,255,255,0.55);
+            padding-left: 20px;
             position: relative;
             line-height: 1.5;
         }
         .stein-plan-features span::before {
-            content: '✓';
+            content: '';
             position: absolute;
             left: 0;
-            top: 0;
-            color: var(--red);
-            font-weight: 700;
-            font-size: 15px;
+            top: 7px;
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            background: var(--red);
         }
         .stein-plan-pricing {
             margin-bottom: 8px;
