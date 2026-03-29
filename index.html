@@ -942,16 +942,21 @@
         /* Plan features list */
         .stein-plan-features {
             display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 28px;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 32px;
+            padding: 0 10px;
         }
         .stein-plan-features span {
-            font-size: 14px;
-            color: rgba(255,255,255,0.55);
-            line-height: 1.5;
-            text-align: center;
+            font-size: 13px;
+            color: rgba(255,255,255,0.7);
+            line-height: 1.4;
+            padding: 6px 16px;
+            border-radius: 20px;
+            border: 1px solid rgba(255,255,255,0.1);
+            background: rgba(255,255,255,0.04);
+            white-space: nowrap;
         }
         .stein-plan-pricing {
             margin-bottom: 8px;
@@ -1340,10 +1345,10 @@
                         <h3>The Entire Thing</h3>
                         <p>Everything we make. For people who have fully given up on having a personality outside of knowing ball.</p>
                         <div class="stein-plan-features">
-                            <span>Everything in the Fantasy Membership</span>
-                            <span>Everything in the Trivia Membership</span>
-                            <span>At a heavy discount</span>
-                            <span>Early Access to Features</span>
+                            <span>All Fantasy Tools</span>
+                            <span>All Trivia Games</span>
+                            <span>Heavy Discount</span>
+                            <span>Early Access</span>
                         </div>
                         <div class="stein-plan-pricing">
                             <div class="stein-plan-price" data-annual="$18.33" data-monthly="$24.99">$18.33<span>/mo</span></div>
@@ -1357,10 +1362,10 @@
                         <p>For both the casual &amp; year-round fantasy sicko.</p>
                         <div class="stein-plan-features">
                             <span>The BDGE Draft Guide</span>
-                            <span>Draft, Start/Sit, Waiver Wire Rankings</span>
+                            <span>Rankings &amp; Waivers</span>
                             <span>Tie-Breaker Mania</span>
                             <span>Start/Sit Decider Tool</span>
-                            <span>Real-time Vegas, Player Prop &amp; Weather Integration</span>
+                            <span>Vegas Lines &amp; Weather</span>
                             <span>Weekly Fantasy Q&amp;A</span>
                             <span>Private Discord</span>
                         </div>
@@ -1375,11 +1380,12 @@
                         <h3>Trivia Membership</h3>
                         <p>All the games we play in content, you can now beat your friends in.</p>
                         <div class="stein-plan-features">
-                            <span>Access to all of the BDGE historical daily grid games (&amp; replay them!)</span>
+                            <span>Historical Daily Grids</span>
+                            <span>Replay Past Games</span>
                             <span>Fantasy Drafts</span>
                             <span>Luck of the Draw</span>
-                            <span>Play, engage and participate in our private weekly trivia live stream</span>
-                            <span>Access to a private Discord channel where you can ask Mo geography questions</span>
+                            <span>Weekly Trivia Livestream</span>
+                            <span>Private Discord</span>
                         </div>
                         <div class="stein-plan-pricing">
                             <div class="stein-plan-price" data-annual="$8.33" data-monthly="$11.99">$8.33<span>/mo</span></div>
