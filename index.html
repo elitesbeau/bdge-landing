@@ -938,16 +938,30 @@
 
         /* Plan features list */
         .stein-plan-features {
-            display: inline-flex;
+            display: flex;
             flex-direction: column;
-            align-items: center;
-            gap: 8px;
+            gap: 10px;
             margin-bottom: 28px;
+            text-align: left;
+            max-width: 340px;
+            margin-left: auto;
+            margin-right: auto;
         }
         .stein-plan-features span {
             font-size: 14px;
             color: rgba(255,255,255,0.6);
-            line-height: 1.4;
+            padding-left: 28px;
+            position: relative;
+            line-height: 1.5;
+        }
+        .stein-plan-features span::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            top: 0;
+            color: var(--red);
+            font-weight: 700;
+            font-size: 15px;
         }
         .stein-plan-pricing {
             margin-bottom: 8px;
@@ -1312,8 +1326,8 @@
             <section class="stein">
                 <!-- Title -->
                 <div class="stein-title">
-                    <h2>Become a</h2>
-                    <h2>Stein <span>&mdash;</span></h2>
+                    <h2>Pick Your</h2>
+                    <h2>Poison <span>&mdash;</span></h2>
                 </div>
 
                 <!-- Scroll hint -->
@@ -1349,14 +1363,14 @@
                     </div>
                     <div class="stein-plan">
                         <div class="stein-plan-number">02 / 03</div>
-                        <h3>Fantasy</h3>
-                        <p>For both the casual &amp; year-round fantasy sicko. Draft guide, rankings, decider tool, and private Discord.</p>
+                        <h3>Fantasy Membership</h3>
+                        <p>For both the casual &amp; year-round fantasy sicko.</p>
                         <div class="stein-plan-features">
                             <span>The BDGE Draft Guide</span>
                             <span>Draft, Start/Sit, Waiver Wire Rankings</span>
                             <span>Tie-Breaker Mania</span>
                             <span>Start/Sit Decider Tool</span>
-                            <span>Real-time Vegas, Player Props &amp; Weather</span>
+                            <span>Real-time Vegas, Player Prop &amp; Weather Integration</span>
                             <span>Weekly Fantasy Q&amp;A</span>
                             <span>Private Discord</span>
                         </div>
@@ -1368,14 +1382,14 @@
                     </div>
                     <div class="stein-plan">
                         <div class="stein-plan-number">03 / 03</div>
-                        <h3>Trivia</h3>
+                        <h3>Trivia Membership</h3>
                         <p>All the games we play in content, you can now beat your friends in.</p>
                         <div class="stein-plan-features">
-                            <span>Access to all BDGE historical daily grid games</span>
+                            <span>Access to all of the BDGE historical daily grid games (&amp; replay them!)</span>
                             <span>Fantasy Drafts</span>
                             <span>Luck of the Draw</span>
-                            <span>Weekly trivia live streams</span>
-                            <span>Private Discord channel for trivia &amp; geography</span>
+                            <span>Play, engage and participate in our private weekly trivia live stream</span>
+                            <span>Access to a private Discord channel where you can ask Mo geography questions</span>
                         </div>
                         <div class="stein-plan-pricing">
                             <div class="stein-plan-price" data-annual="$8.33" data-monthly="$11.99">$8.33<span>/mo</span></div>
