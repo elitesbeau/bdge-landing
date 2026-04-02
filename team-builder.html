@@ -1,0 +1,2114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BDGE Team Builder | Big Dogs Gotta Eat</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ========== RESET & BASE ========== */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #0A0A0A;
+  --bg2: #111111;
+  --bg3: #1A1A1A;
+  --bg4: #222222;
+  --red: #F6587A;
+  --red-bright: #FF6B8A;
+  --red-glow: rgba(246, 88, 122, 0.15);
+  --red-glow2: rgba(246, 88, 122, 0.08);
+  --white: #FFFFFF;
+  --t1: rgba(255,255,255,0.92);
+  --t2: rgba(255,255,255,0.70);
+  --t3: rgba(255,255,255,0.50);
+  --t4: rgba(255,255,255,0.30);
+  --t5: rgba(255,255,255,0.12);
+  --t6: rgba(255,255,255,0.06);
+  --green: #4ADE80;
+  --blue: #60A5FA;
+  --gold: #FBBF24;
+  --fd: 'Bebas Neue', sans-serif;
+  --fb: 'Inter', sans-serif;
+  --radius: 12px;
+  --radius-sm: 8px;
+  --radius-lg: 16px;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--fb);
+  background: var(--bg);
+  color: var(--t1);
+  min-height: 100vh;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ========== CANVAS PARTICLES BG ========== */
+#particleCanvas {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw; height: 100vh;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.6;
+}
+
+/* ========== GRAIN OVERLAY ========== */
+.grain {
+  position: fixed;
+  top: -50%; left: -50%;
+  width: 200%; height: 200%;
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0.03;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  animation: grainShift 0.5s steps(6) infinite;
+}
+@keyframes grainShift { 0% { transform: translate(0,0) } 100% { transform: translate(-10%,-10%) } }
+
+/* ========== LAYOUT ========== */
+.app {
+  position: relative;
+  z-index: 1;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+/* ========== HEADER ========== */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24px 0;
+  border-bottom: 1px solid var(--t6);
+}
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.header-logo {
+  height: 32px;
+  opacity: 0.9;
+}
+.header-divider {
+  width: 1px;
+  height: 24px;
+  background: var(--t4);
+}
+.header-title {
+  font-family: var(--fd);
+  font-size: 24px;
+  letter-spacing: 2px;
+  color: var(--red);
+}
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.api-status {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  color: var(--t3);
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+.api-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--red);
+  animation: breathe 3s ease-in-out infinite;
+}
+.api-dot.connected { background: var(--green); }
+@keyframes breathe { 0%,100% { opacity: 0.5 } 50% { opacity: 1 } }
+
+.key-btn {
+  background: var(--bg3);
+  border: 1px solid var(--t5);
+  color: var(--t2);
+  font-size: 12px;
+  font-family: var(--fb);
+  padding: 6px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.key-btn:hover { border-color: var(--red); color: var(--red); }
+
+/* ========== HERO ========== */
+.hero {
+  text-align: center;
+  padding: 80px 0 48px;
+  position: relative;
+}
+.hero-eyebrow {
+  font-size: 12px;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: var(--red);
+  margin-bottom: 16px;
+  font-weight: 500;
+}
+.hero-title {
+  font-family: var(--fd);
+  font-size: clamp(48px, 8vw, 96px);
+  line-height: 0.95;
+  letter-spacing: 2px;
+  margin-bottom: 16px;
+}
+.hero-title .shimmer {
+  background: linear-gradient(90deg, var(--t1) 0%, var(--red) 50%, var(--t1) 100%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: shimmer 6s ease-in-out infinite;
+}
+@keyframes shimmer {
+  0% { background-position: -200% center }
+  100% { background-position: 200% center }
+}
+.hero-sub {
+  font-size: 16px;
+  color: var(--t3);
+  max-width: 500px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+/* ========== STEP INDICATOR ========== */
+.steps-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  margin: 0 auto 48px;
+  max-width: 600px;
+}
+.step-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  padding: 12px 20px;
+  border-radius: var(--radius);
+  transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+  position: relative;
+}
+.step-item:hover { background: var(--t6); }
+.step-item.active .step-num {
+  background: var(--red);
+  color: var(--white);
+  box-shadow: 0 0 20px var(--red-glow);
+}
+.step-item.completed .step-num {
+  background: var(--green);
+  color: var(--bg);
+}
+.step-num {
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 600;
+  background: var(--bg3);
+  color: var(--t3);
+  border: 1px solid var(--t5);
+  transition: all 0.3s;
+  flex-shrink: 0;
+}
+.step-label {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--t3);
+  letter-spacing: 0.3px;
+  white-space: nowrap;
+  transition: color 0.3s;
+}
+.step-item.active .step-label { color: var(--t1); }
+.step-item.completed .step-label { color: var(--green); }
+.step-connector {
+  width: 40px;
+  height: 1px;
+  background: var(--t5);
+  flex-shrink: 0;
+}
+.step-connector.done { background: var(--green); }
+
+/* ========== SECTIONS ========== */
+.section {
+  display: none;
+  animation: fadeUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.section.active { display: block; }
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(12px) }
+  to { opacity: 1; transform: translateY(0) }
+}
+
+.section-header {
+  margin-bottom: 32px;
+}
+.section-title {
+  font-family: var(--fd);
+  font-size: 36px;
+  letter-spacing: 2px;
+  margin-bottom: 8px;
+}
+.section-desc {
+  font-size: 14px;
+  color: var(--t3);
+  line-height: 1.6;
+}
+
+/* ========== IMPORT FROM SCREENSHOT ========== */
+.import-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+.btn-import {
+  background: var(--bg3);
+  border: 1px dashed var(--t4);
+  color: var(--t1);
+  gap: 8px;
+}
+.btn-import:hover {
+  border-color: var(--red);
+  background: var(--red-glow2);
+  color: var(--red);
+}
+.import-hint {
+  font-size: 12px;
+  color: var(--t4);
+}
+.import-status {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 20px;
+  background: var(--bg2);
+  border: 1px solid var(--t5);
+  border-radius: var(--radius);
+  margin-bottom: 16px;
+  font-size: 13px;
+  color: var(--t2);
+}
+.divider-or {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 20px;
+  color: var(--t4);
+  font-size: 12px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+.divider-or::before, .divider-or::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--t5);
+}
+
+/* ========== PLAYER SEARCH ========== */
+.search-wrap {
+  position: relative;
+  margin-bottom: 32px;
+}
+.search-input {
+  width: 100%;
+  padding: 16px 20px 16px 48px;
+  background: var(--bg2);
+  border: 1px solid var(--t5);
+  border-radius: var(--radius);
+  color: var(--t1);
+  font-size: 16px;
+  font-family: var(--fb);
+  outline: none;
+  transition: all 0.25s;
+}
+.search-input:focus {
+  border-color: var(--red);
+  box-shadow: 0 0 0 3px var(--red-glow2), 0 0 30px var(--red-glow2);
+}
+.search-input::placeholder { color: var(--t4); }
+.search-icon {
+  position: absolute;
+  left: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--t4);
+  pointer-events: none;
+}
+.search-loading {
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 12px;
+  color: var(--t3);
+}
+
+/* ========== AUTOCOMPLETE DROPDOWN ========== */
+.autocomplete {
+  position: absolute;
+  top: 100%;
+  left: 0; right: 0;
+  background: var(--bg2);
+  border: 1px solid var(--t5);
+  border-top: none;
+  border-radius: 0 0 var(--radius) var(--radius);
+  max-height: 320px;
+  overflow-y: auto;
+  z-index: 100;
+  display: none;
+  box-shadow: 0 16px 48px rgba(0,0,0,0.5);
+}
+.autocomplete.open { display: block; }
+.ac-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 16px;
+  cursor: pointer;
+  transition: background 0.15s;
+  border-bottom: 1px solid var(--t6);
+}
+.ac-item:hover, .ac-item.highlighted { background: var(--bg3); }
+.ac-item:last-child { border-bottom: none; }
+.ac-avatar {
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  background: var(--bg3);
+  flex-shrink: 0;
+}
+.ac-info { flex: 1; min-width: 0; }
+.ac-name {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--t1);
+}
+.ac-meta {
+  font-size: 12px;
+  color: var(--t3);
+}
+.ac-pos {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 4px;
+  letter-spacing: 0.5px;
+  flex-shrink: 0;
+}
+.ac-pos.QB { background: rgba(246,88,122,0.15); color: var(--red); }
+.ac-pos.RB { background: rgba(96,165,250,0.15); color: var(--blue); }
+.ac-pos.WR { background: rgba(251,191,36,0.15); color: var(--gold); }
+.ac-pos.TE { background: rgba(74,222,128,0.15); color: var(--green); }
+.ac-pos.K { background: rgba(167,139,250,0.15); color: #A78BFA; }
+.ac-pos.DEF { background: rgba(255,255,255,0.08); color: var(--t2); }
+
+/* ========== ROSTER GRID ========== */
+.roster-label {
+  font-size: 12px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--t3);
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.roster-count {
+  background: var(--red);
+  color: var(--white);
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 10px;
+  letter-spacing: 0;
+}
+.roster-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 12px;
+  margin-bottom: 32px;
+  min-height: 80px;
+}
+.roster-empty {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 48px 24px;
+  border: 2px dashed var(--t5);
+  border-radius: var(--radius-lg);
+  color: var(--t4);
+  font-size: 14px;
+}
+.roster-empty-icon {
+  font-size: 32px;
+  margin-bottom: 8px;
+  opacity: 0.5;
+}
+
+/* ========== PLAYER CARDS ========== */
+.player-card {
+  background: var(--bg2);
+  border: 1px solid var(--t5);
+  border-radius: var(--radius);
+  padding: 14px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  position: relative;
+  cursor: default;
+  transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+  animation: cardIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
+  overflow: hidden;
+}
+@keyframes cardIn {
+  from { opacity: 0; transform: translateY(12px) scale(0.95) }
+  to { opacity: 1; transform: translateY(0) scale(1) }
+}
+.player-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: var(--radius);
+  opacity: 0;
+  transition: opacity 0.3s;
+  background: radial-gradient(circle at var(--mx, 50%) var(--my, 50%), var(--red-glow) 0%, transparent 60%);
+  pointer-events: none;
+}
+.player-card:hover::before { opacity: 1; }
+.player-card:hover {
+  border-color: rgba(246, 88, 122, 0.3);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+}
+
+.pc-avatar {
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  object-fit: cover;
+  background: var(--bg3);
+  flex-shrink: 0;
+  border: 2px solid var(--t5);
+}
+.pc-info { flex: 1; min-width: 0; }
+.pc-name {
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.pc-detail {
+  font-size: 11px;
+  color: var(--t3);
+  margin-top: 2px;
+}
+.pc-remove {
+  position: absolute;
+  top: 8px; right: 8px;
+  width: 20px; height: 20px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.06);
+  border: none;
+  color: var(--t3);
+  font-size: 12px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  opacity: 0;
+}
+.player-card:hover .pc-remove { opacity: 1; }
+.pc-remove:hover { background: var(--red); color: var(--white); }
+
+/* ========== BUTTONS ========== */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--fb);
+  font-size: 14px;
+  font-weight: 600;
+  padding: 14px 28px;
+  border-radius: var(--radius);
+  border: none;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.25, 1, 0.5, 1);
+  position: relative;
+  overflow: hidden;
+  letter-spacing: 0.3px;
+}
+.btn-primary {
+  background: var(--red);
+  color: var(--white);
+  box-shadow: 0 4px 20px var(--red-glow);
+}
+.btn-primary:hover {
+  background: var(--red-bright);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 32px rgba(246, 88, 122, 0.3);
+}
+.btn-primary:active { transform: translateY(0); }
+.btn-primary:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+.btn-secondary {
+  background: var(--bg3);
+  color: var(--t1);
+  border: 1px solid var(--t5);
+}
+.btn-secondary:hover {
+  background: var(--bg4);
+  border-color: var(--t4);
+  transform: translateY(-1px);
+}
+
+/* Ripple effect */
+.btn .ripple {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.2);
+  transform: scale(0);
+  animation: ripple 0.5s linear;
+  pointer-events: none;
+}
+@keyframes ripple { to { transform: scale(4); opacity: 0; } }
+
+.actions-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+/* ========== STEP 2: TEAM NAMES ========== */
+.generating-wrap {
+  text-align: center;
+  padding: 48px 0;
+}
+.gen-spinner {
+  width: 48px; height: 48px;
+  border: 3px solid var(--t5);
+  border-top-color: var(--red);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  margin: 0 auto 20px;
+}
+@keyframes spin { to { transform: rotate(360deg) } }
+.gen-text {
+  font-size: 14px;
+  color: var(--t3);
+}
+.gen-text .typing-dots::after {
+  content: '';
+  animation: dots 1.5s steps(4) infinite;
+}
+@keyframes dots {
+  0% { content: '' }
+  25% { content: '.' }
+  50% { content: '..' }
+  75% { content: '...' }
+}
+
+.names-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+  margin-bottom: 32px;
+}
+.name-card {
+  background: var(--bg2);
+  border: 2px solid var(--t5);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+  position: relative;
+  animation: cardIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+.name-card:hover {
+  border-color: rgba(246, 88, 122, 0.4);
+  transform: translateY(-4px);
+  box-shadow: 0 12px 40px rgba(0,0,0,0.3), 0 0 30px var(--red-glow2);
+}
+.name-card.selected {
+  border-color: var(--red);
+  background: linear-gradient(135deg, var(--bg2), rgba(246,88,122,0.08));
+  box-shadow: 0 0 30px var(--red-glow), inset 0 0 30px var(--red-glow2);
+}
+.name-card.selected::after {
+  content: '\2713';
+  position: absolute;
+  top: 12px; right: 12px;
+  width: 24px; height: 24px;
+  border-radius: 50%;
+  background: var(--red);
+  color: var(--white);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 700;
+}
+.nc-name {
+  font-family: var(--fd);
+  font-size: 28px;
+  letter-spacing: 1px;
+  margin-bottom: 8px;
+  line-height: 1.1;
+}
+.nc-reason {
+  font-size: 12px;
+  color: var(--t3);
+  line-height: 1.5;
+}
+.nc-tag {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border-radius: 4px;
+  margin-top: 12px;
+  background: var(--red-glow);
+  color: var(--red);
+}
+
+/* ========== STEP 3: PFP GENERATOR ========== */
+/* ========== AI PFP GENERATOR ========== */
+.pfp-gen-status {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 20px 24px;
+  background: var(--bg2);
+  border: 1px solid var(--t5);
+  border-radius: var(--radius);
+  margin-bottom: 32px;
+}
+.pfp-gen-spinner {
+  width: 32px; height: 32px;
+  border: 3px solid var(--t5);
+  border-top-color: var(--red);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  flex-shrink: 0;
+}
+@keyframes spin { to { transform: rotate(360deg) } }
+.pfp-gen-title {
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--t1);
+  margin-bottom: 2px;
+}
+.pfp-gen-sub {
+  font-size: 12px;
+  color: var(--t3);
+}
+
+.pfp-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  margin-bottom: 32px;
+}
+.pfp-card {
+  position: relative;
+  border-radius: var(--radius);
+  overflow: hidden;
+  border: 2px solid var(--t5);
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+  background: var(--bg2);
+  min-height: 200px;
+}
+.pfp-card img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+.pfp-card:hover {
+  border-color: var(--t4);
+  transform: translateY(-4px);
+  box-shadow: 0 12px 40px rgba(0,0,0,0.4);
+}
+.pfp-card.selected {
+  border-color: var(--red);
+  box-shadow: 0 0 0 3px var(--red-glow), 0 12px 40px rgba(0,0,0,0.4);
+  transform: translateY(-4px);
+}
+.pfp-card .pfp-loading {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  background: var(--bg2);
+}
+.pfp-card .pfp-loading .pfp-gen-spinner {
+  width: 24px; height: 24px;
+}
+.pfp-card .pfp-loading span {
+  font-size: 11px;
+  color: var(--t4);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+.pfp-card .pfp-check {
+  position: absolute;
+  top: 10px; right: 10px;
+  width: 28px; height: 28px;
+  background: var(--red);
+  border-radius: 50%;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+}
+.pfp-card.selected .pfp-check { display: flex; }
+.pfp-card .pfp-style-tag {
+  position: absolute;
+  bottom: 8px; left: 8px;
+  padding: 4px 10px;
+  background: rgba(0,0,0,0.7);
+  backdrop-filter: blur(8px);
+  border-radius: 6px;
+  font-size: 10px;
+  color: var(--t2);
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  font-weight: 500;
+}
+
+.pfp-selected-wrap {
+  text-align: center;
+  margin-bottom: 32px;
+}
+.pfp-selected-label {
+  font-size: 11px;
+  letter-spacing: 3px;
+  color: var(--t4);
+  text-transform: uppercase;
+  margin-bottom: 16px;
+  font-weight: 600;
+}
+.pfp-selected-img {
+  width: 320px;
+  height: 320px;
+  object-fit: cover;
+  border-radius: var(--radius-lg);
+  border: 2px solid var(--red);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.5), 0 0 40px var(--red-glow2);
+}
+
+
+.download-row {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.btn-share {
+  background: #000;
+  border: 1px solid var(--t4);
+  color: var(--white);
+}
+.btn-share:hover {
+  background: #1a1a1a;
+  border-color: var(--t2);
+}
+
+/* ========== MODAL (API KEY) ========== */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.7);
+  backdrop-filter: blur(8px);
+  z-index: 1000;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  animation: fadeIn 0.2s;
+}
+.modal-overlay.open { display: flex; }
+@keyframes fadeIn { from { opacity: 0 } to { opacity: 1 } }
+.modal {
+  background: var(--bg2);
+  border: 1px solid var(--t5);
+  border-radius: var(--radius-lg);
+  padding: 32px;
+  max-width: 420px;
+  width: 90%;
+  animation: modalIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+@keyframes modalIn {
+  from { opacity: 0; transform: translateY(20px) scale(0.95) }
+  to { opacity: 1; transform: translateY(0) scale(1) }
+}
+.modal h3 {
+  font-family: var(--fd);
+  font-size: 28px;
+  letter-spacing: 1px;
+  margin-bottom: 8px;
+}
+.modal p {
+  font-size: 13px;
+  color: var(--t3);
+  margin-bottom: 20px;
+  line-height: 1.6;
+}
+.modal input {
+  width: 100%;
+  padding: 12px 16px;
+  background: var(--bg);
+  border: 1px solid var(--t5);
+  border-radius: var(--radius-sm);
+  color: var(--t1);
+  font-size: 14px;
+  font-family: var(--fb);
+  outline: none;
+  margin-bottom: 16px;
+  transition: border-color 0.2s;
+}
+.modal input:focus { border-color: var(--red); }
+.modal-actions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+/* ========== CONFETTI ========== */
+.confetti-piece {
+  position: fixed;
+  width: 8px;
+  height: 8px;
+  z-index: 9998;
+  pointer-events: none;
+  animation: confettiFall var(--fall-duration, 2s) ease-out forwards;
+}
+@keyframes confettiFall {
+  0% { transform: translateY(0) rotate(0deg) scale(1); opacity: 1; }
+  100% { transform: translateY(100vh) rotate(720deg) scale(0); opacity: 0; }
+}
+
+/* ========== RESPONSIVE ========== */
+@media (max-width: 768px) {
+  .app { padding: 0 16px; }
+  .header { flex-direction: column; gap: 12px; }
+  .steps-bar { flex-wrap: wrap; gap: 4px; }
+  .step-connector { width: 20px; }
+  .step-label { font-size: 11px; }
+  .roster-grid { grid-template-columns: 1fr; }
+  .names-grid { grid-template-columns: 1fr; }
+  .hero-title { font-size: 48px; }
+  .hero { padding: 48px 0 32px; }
+  .hero-sub { font-size: 14px; }
+  .section-title { font-size: 28px; }
+  .search-input { font-size: 14px; padding: 14px 16px 14px 44px; }
+  .star-grid { gap: 8px; }
+  .star-option { padding: 6px 10px; font-size: 12px; }
+  .star-option img { width: 24px; height: 24px; }
+  .pfp-grid { grid-template-columns: 1fr; max-width: 400px; margin: 0 auto 32px; }
+  .pfp-gen-status { flex-direction: column; text-align: center; padding: 16px; }
+  .download-row { flex-direction: column; align-items: center; gap: 10px; }
+  .download-row .btn { width: 100%; max-width: 300px; justify-content: center; }
+  .pfp-selected-img { width: 280px; height: 280px; }
+  .name-card { padding: 16px; }
+  .nc-name { font-size: 18px; }
+  .player-card { padding: 8px 10px; }
+  .btn { font-size: 13px; padding: 10px 18px; }
+}
+
+@media (max-width: 400px) {
+  .app { padding: 0 12px; }
+  .hero-title { font-size: 36px; }
+  .section-title { font-size: 24px; }
+  .steps-bar { gap: 0; }
+  .step-item { padding: 8px 10px; }
+  .step-connector { width: 12px; }
+  .step-num { width: 28px; height: 28px; font-size: 11px; }
+  .pfp-selected-img { width: 240px; height: 240px; }
+}
+
+/* ========== SCROLLBAR ========== */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--t5); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--t4); }
+
+/* ========== STAR PLAYER SELECTOR ========== */
+.star-selector { margin-bottom: 24px; }
+.star-label {
+  font-size: 12px; letter-spacing: 2px; text-transform: uppercase;
+  color: var(--t3); margin-bottom: 12px;
+}
+.star-grid { display: flex; gap: 10px; flex-wrap: wrap; }
+.star-option {
+  display: flex; align-items: center; gap: 8px;
+  padding: 8px 14px; background: var(--bg3);
+  border: 2px solid var(--t5); border-radius: var(--radius-sm);
+  cursor: pointer; transition: all 0.2s; font-size: 13px;
+}
+.star-option:hover { border-color: var(--t4); }
+.star-option.active { border-color: var(--red); background: var(--red-glow); }
+.star-option img { width: 28px; height: 28px; border-radius: 50%; object-fit: cover; }
+
+/* ========== TOAST ========== */
+.toast {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%) translateY(100px);
+  background: var(--bg3);
+  border: 1px solid var(--t5);
+  border-radius: var(--radius);
+  padding: 12px 24px;
+  font-size: 13px;
+  color: var(--t1);
+  z-index: 9999;
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+}
+.toast.show { transform: translateX(-50%) translateY(0); }
+</style>
+</head>
+<body>
+
+<canvas id="particleCanvas"></canvas>
+<div class="grain"></div>
+
+<div class="app">
+  <!-- HEADER -->
+  <header class="header" style="justify-content:center;border:none;padding:32px 0 16px">
+    <a href="https://www.youtube.com/@BDGEFantasyFootball" target="_blank"><img src="bdge-transparent.png" alt="BDGE" style="height:72px;opacity:0.95" onerror="this.style.display='none'"></a>
+  </header>
+
+  <!-- HERO -->
+  <section class="hero">
+    <h1 class="hero-title">
+      FANTASY TEAM<br>
+      <span class="shimmer">IDENTITY BUILDER</span>
+    </h1>
+    <p class="hero-sub">Drop your roster, get a fire team name, and generate custom player PFPs to rep your squad.</p>
+  </section>
+
+  <!-- STEP BAR -->
+  <nav class="steps-bar">
+    <div class="step-item active" onclick="goToStep(1)">
+      <div class="step-num">1</div>
+      <span class="step-label">Build Roster</span>
+    </div>
+    <div class="step-connector" id="conn1"></div>
+    <div class="step-item" onclick="goToStep(2)">
+      <div class="step-num">2</div>
+      <span class="step-label">Get Names</span>
+    </div>
+    <div class="step-connector" id="conn2"></div>
+    <div class="step-item" onclick="goToStep(3)">
+      <div class="step-num">3</div>
+      <span class="step-label">Create PFP</span>
+    </div>
+  </nav>
+
+  <!-- STEP 1: ROSTER -->
+  <section class="section active" id="step1">
+    <div class="section-header">
+      <h2 class="section-title">BUILD YOUR ROSTER</h2>
+      <p class="section-desc">Search for the players you drafted. Add your squad, then we'll cook up some team names.</p>
+    </div>
+
+    <div class="import-row">
+      <button class="btn btn-import" onclick="document.getElementById('screenshotInput').click()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
+        Import from Screenshot
+      </button>
+      <span class="import-hint">Upload a screenshot of your fantasy team from any app</span>
+      <input type="file" id="screenshotInput" accept="image/*" style="display:none" onchange="handleScreenshot(this)">
+    </div>
+
+    <div class="import-status" id="importStatus" style="display:none">
+      <div class="pfp-gen-spinner"></div>
+      <span id="importStatusText">Reading your roster from screenshot...</span>
+    </div>
+
+    <div class="divider-or"><span>or search manually</span></div>
+
+    <div class="search-wrap">
+      <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <input type="text" class="search-input" id="playerSearch" placeholder="Search players... (e.g. Patrick Mahomes)" autocomplete="off">
+      <span class="search-loading" id="searchLoading" style="display:none">Loading players...</span>
+      <div class="autocomplete" id="autocomplete"></div>
+    </div>
+
+    <div class="roster-label">
+      YOUR ROSTER <span class="roster-count" id="rosterCount">0</span>
+    </div>
+    <div class="roster-grid" id="rosterGrid">
+      <div class="roster-empty" id="rosterEmpty">
+        <div class="roster-empty-icon">&#127944;</div>
+        Search and add players to build your roster
+      </div>
+    </div>
+
+    <div class="actions-row">
+      <button class="btn btn-primary" id="toStep2Btn" disabled onclick="goToStep(2)">
+        Generate Team Names
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14m-7-7 7 7-7 7"/></svg>
+      </button>
+      <button class="btn btn-secondary" onclick="clearRoster()">Clear All</button>
+    </div>
+  </section>
+
+  <!-- STEP 2: NAMES -->
+  <section class="section" id="step2">
+    <div class="section-header">
+      <h2 class="section-title">YOUR TEAM NAMES</h2>
+      <p class="section-desc">AI-generated names based on your roster, with BDGE flavor. Pick your favorite.</p>
+    </div>
+
+    <div class="generating-wrap" id="genWrap" style="display:none">
+      <div class="gen-spinner"></div>
+      <div class="gen-text">Cooking up names for the big dogs<span class="typing-dots"></span></div>
+    </div>
+
+    <div class="names-grid" id="namesGrid"></div>
+
+    <div class="actions-row" id="nameActions" style="display:none">
+      <button class="btn btn-primary" id="toStep3Btn" disabled onclick="goToStep(3)">
+        Create PFP
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14m-7-7 7 7-7 7"/></svg>
+      </button>
+      <button class="btn btn-secondary" onclick="regenerateNames()">Regenerate</button>
+      <button class="btn btn-secondary" onclick="goToStep(1)">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5m7-7-7 7 7 7"/></svg>
+        Edit Roster
+      </button>
+    </div>
+  </section>
+
+  <!-- STEP 3: PFP -->
+  <section class="section" id="step3">
+    <div class="section-header">
+      <h2 class="section-title">GENERATE YOUR PFP</h2>
+      <p class="section-desc">AI creates unique profile pictures featuring your star player. Pick your favorite and download.</p>
+    </div>
+
+    <div class="star-selector">
+      <div class="star-label">FEATURED PLAYER</div>
+      <div class="star-grid" id="starGrid"></div>
+    </div>
+
+    <div class="pfp-gen-status" id="pfpGenStatus" style="display:none">
+      <div class="pfp-gen-spinner"></div>
+      <div>
+        <div class="pfp-gen-title">Creating your PFPs...</div>
+        <div class="pfp-gen-sub" id="pfpGenSub">Generating 4 unique designs with AI</div>
+        <div style="font-size:11px;color:var(--t4);margin-top:6px">All 4 designs generating in parallel</div>
+      </div>
+    </div>
+
+    <div class="pfp-grid" id="pfpGrid"></div>
+
+    <div class="pfp-selected-wrap" id="pfpSelectedWrap" style="display:none">
+      <div class="pfp-selected-label">SELECTED</div>
+      <img class="pfp-selected-img" id="pfpSelectedImg" alt="Selected PFP">
+    </div>
+
+    <div class="download-row" id="pfpActions" style="display:none">
+      <button class="btn btn-primary" onclick="downloadAIPFP()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4m4-5 5 5 5-5m-5 5V3"/></svg>
+        Download PFP
+      </button>
+      <button class="btn btn-share" onclick="shareToTwitter()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+        Share on X
+      </button>
+      <button class="btn btn-secondary" onclick="generatePFPs()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 4v6h6M23 20v-6h-6"/><path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4-4.64 4.36A9 9 0 0 1 3.51 15"/></svg>
+        Regenerate
+      </button>
+      <button class="btn btn-secondary" onclick="goToStep(2)">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5m7-7-7 7 7 7"/></svg>
+        Back to Names
+      </button>
+    </div>
+  </section>
+
+  <div style="height:80px"></div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ========== STATE ==========
+let allPlayers = [];
+let roster = [];
+let teamNames = [];
+let selectedName = null;
+let currentStep = 1;
+let currentFormat = 'card';
+let accentColor = '#F6587A';
+let highlightIndex = -1;
+let playerDataLoaded = false;
+const GROQ_KEY = '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';
+const GEMINI_KEY = 'AIzaSyDhGXUMS-HW_C7wl_sDqX_L8j62sC1thWc';
+
+// ========== NFL TEAM COLORS ==========
+const TEAM_COLORS = {
+  ARI:'#97233F',ATL:'#A71930',BAL:'#241773',BUF:'#00338D',CAR:'#0085CA',CHI:'#0B162A',
+  CIN:'#FB4F14',CLE:'#311D00',DAL:'#003594',DEN:'#FB4F14',DET:'#0076B6',GB:'#203731',
+  HOU:'#03202F',IND:'#002C5F',JAX:'#006778',KC:'#E31837',LAC:'#0080C6',LAR:'#003594',
+  LV:'#000000',MIA:'#008E97',MIN:'#4F2683',NE:'#002244',NO:'#D3BC8D',NYG:'#0B2265',
+  NYJ:'#125740',PHI:'#004C54',PIT:'#FFB612',SEA:'#002244',SF:'#AA0000',TB:'#D50A0A',
+  TEN:'#0C2340',WAS:'#5A1414'
+};
+
+// ========== BDGE SLANG (for AI prompt) ==========
+const BDGE_SLANG = `
+BDGE TERMINOLOGY AND CULTURE:
+- BDGE = "Big Dogs Gotta Eat" — the brand motto
+- "Stein" = BDGE member. "Become a Stein" is their CTA
+- "Knowing Ball" = understanding football deeply
+- "Fantasy Sicko" = dedicated fantasy player
+- "Legends Never Die" = secondary tagline
+- "Questionable Priorities" = self-deprecating humor about how seriously they take fantasy
+- "The Entire Thing" = their top membership tier
+- "Smoochies" = branded catchphrase used on merch
+- "Draft Rankings", "Start/Sit Decider", "Daily Grid Trivia" = their tools
+- "Big Dogs" = what they call serious fantasy players / their community
+- BDGE voice is self-deprecating, confident, sports-bro, funny
+- Fantasy jargon: waiver wire, sleeper pick, boom/bust, league winner, trade bait, bench warmer, handcuff
+`;
+
+// ========== INIT ==========
+document.addEventListener('DOMContentLoaded', () => {
+  initParticles();
+  loadPlayers();
+  checkApiKey();
+
+  // Search input handlers
+  const searchEl = document.getElementById('playerSearch');
+  searchEl.addEventListener('input', debounce(handleSearch, 150));
+  searchEl.addEventListener('keydown', handleSearchKeydown);
+  searchEl.addEventListener('focus', () => { if (searchEl.value.length >= 2) handleSearch(); });
+  document.addEventListener('click', (e) => {
+    if (!e.target.closest('.search-wrap')) closeAutocomplete();
+  });
+
+  // Card hover glow tracking
+  document.addEventListener('mousemove', (e) => {
+    const card = e.target.closest('.player-card, .name-card');
+    if (card) {
+      const rect = card.getBoundingClientRect();
+      card.style.setProperty('--mx', ((e.clientX - rect.left) / rect.width * 100) + '%');
+      card.style.setProperty('--my', ((e.clientY - rect.top) / rect.height * 100) + '%');
+    }
+  });
+});
+
+// ========== SCREENSHOT IMPORT ==========
+async function handleScreenshot(input) {
+  const file = input.files[0];
+  if (!file) return;
+
+  const status = document.getElementById('importStatus');
+  const statusText = document.getElementById('importStatusText');
+  status.style.display = 'flex';
+  statusText.textContent = 'Reading your roster from screenshot...';
+
+  try {
+    // Convert image to base64
+    const b64 = await new Promise(resolve => {
+      const reader = new FileReader();
+      reader.onloadend = () => resolve(reader.result.split(',')[1]);
+      reader.readAsDataURL(file);
+    });
+
+    const mime = file.type || 'image/png';
+
+    // Send to Gemini to extract player names
+    const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_KEY}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        contents: [{ parts: [
+          { inline_data: { mime_type: mime, data: b64 } },
+          { text: 'This is a screenshot of a fantasy football team roster. Extract ALL player names from this image. Return ONLY a JSON array of player full names, like ["Patrick Mahomes", "Travis Kelce", "Tyreek Hill"]. No other text, no markdown, just the JSON array.' }
+        ]}]
+      })
+    });
+
+    const data = await res.json();
+    if (data.error) throw new Error(data.error.message);
+
+    let content = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
+    content = content.replace(/```json?\n?/g, '').replace(/```/g, '').trim();
+    const names = JSON.parse(content);
+
+    if (!Array.isArray(names) || names.length === 0) throw new Error('No players found');
+
+    statusText.textContent = `Found ${names.length} players — matching to database...`;
+
+    // Wait for player data to load if not ready
+    let waited = 0;
+    while (!playerDataLoaded && waited < 10000) {
+      await new Promise(r => setTimeout(r, 500));
+      waited += 500;
+    }
+
+    // Match names to Sleeper player database
+    let matched = 0;
+    for (const name of names) {
+      const q = name.toLowerCase().replace(/[^a-z]/g, '');
+      const match = allPlayers.find(p =>
+        p.search_full_name && p.search_full_name.replace(/[^a-z]/g, '') === q
+      );
+      if (match && !roster.find(p => p.player_id === match.player_id)) {
+        if (roster.length >= 16) break;
+        roster.push(match);
+        matched++;
+      }
+    }
+
+    renderRoster();
+    status.style.display = 'none';
+
+    if (matched > 0) {
+      trackEvent('screenshot_import', { count: matched });
+      showToast(`Added ${matched} player${matched > 1 ? 's' : ''} from screenshot!`);
+      fireConfetti();
+    } else {
+      showToast('Could not match any players — try adding manually');
+    }
+  } catch(err) {
+    console.error('Screenshot import error:', err);
+    status.style.display = 'none';
+    showToast('Failed to read screenshot — try a clearer image or add manually');
+  }
+
+  input.value = '';
+}
+
+// ========== PLAYER DATA ==========
+async function loadPlayers() {
+  const searchLoading = document.getElementById('searchLoading');
+  searchLoading.style.display = 'block';
+  searchLoading.textContent = 'Loading NFL players...';
+
+  try {
+    // Check sessionStorage cache first
+    const cached = sessionStorage.getItem('sleeperPlayers');
+    if (cached) {
+      allPlayers = JSON.parse(cached);
+      playerDataLoaded = true;
+      searchLoading.style.display = 'none';
+      showToast(`${allPlayers.length} players loaded from cache`);
+      return;
+    }
+
+    const res = await fetch('https://api.sleeper.app/v1/players/nfl');
+    const data = await res.json();
+
+    // Filter to active rostered players in fantasy-relevant positions
+    const validPositions = new Set(['QB','RB','WR','TE','K','DEF']);
+    allPlayers = Object.values(data)
+      .filter(p => p.active && p.team && validPositions.has(p.position))
+      .sort((a, b) => (a.search_rank || 999999) - (b.search_rank || 999999));
+
+    // Cache in sessionStorage
+    try { sessionStorage.setItem('sleeperPlayers', JSON.stringify(allPlayers)); } catch(e) {}
+
+    playerDataLoaded = true;
+    searchLoading.style.display = 'none';
+    showToast(`${allPlayers.length} NFL players loaded`);
+  } catch (err) {
+    searchLoading.textContent = 'Failed to load players — check connection';
+    console.error('Player load error:', err);
+  }
+}
+
+function searchPlayers(query) {
+  if (!query || query.length < 2) return [];
+  const q = query.toLowerCase().replace(/\s/g, '');
+  return allPlayers
+    .filter(p => p.search_full_name && p.search_full_name.includes(q))
+    .slice(0, 15);
+}
+
+function getHeadshot(player) {
+  return `https://sleepercdn.com/content/nfl/players/thumb/${player.player_id}.jpg`;
+}
+
+function getEspnHeadshot(player) {
+  if (player.espn_id) {
+    return `https://a.espncdn.com/combiner/i?img=/i/headshots/nfl/players/full/${player.espn_id}.png&w=350&h=254`;
+  }
+  return getHeadshot(player);
+}
+
+// ========== SEARCH UI ==========
+function handleSearch() {
+  const query = document.getElementById('playerSearch').value;
+  const results = searchPlayers(query);
+  const ac = document.getElementById('autocomplete');
+
+  if (results.length === 0) {
+    closeAutocomplete();
+    return;
+  }
+
+  highlightIndex = -1;
+  ac.innerHTML = results.map((p, i) => `
+    <div class="ac-item" data-idx="${i}" onclick="addPlayer('${p.player_id}')">
+      <img class="ac-avatar" src="${getHeadshot(p)}" alt="" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 40 40%22><rect fill=%22%23222%22 width=%2240%22 height=%2240%22/><text x=%2220%22 y=%2225%22 text-anchor=%22middle%22 fill=%22%23666%22 font-size=%2214%22>${p.first_name?.[0] || ''}${p.last_name?.[0] || ''}</text></svg>'">
+      <div class="ac-info">
+        <div class="ac-name">${p.first_name} ${p.last_name}</div>
+        <div class="ac-meta">${p.team} &middot; #${p.number || '?'}</div>
+      </div>
+      <span class="ac-pos ${p.position}">${p.position}</span>
+    </div>
+  `).join('');
+  ac.classList.add('open');
+}
+
+function handleSearchKeydown(e) {
+  const ac = document.getElementById('autocomplete');
+  const items = ac.querySelectorAll('.ac-item');
+  if (!items.length) return;
+
+  if (e.key === 'ArrowDown') {
+    e.preventDefault();
+    highlightIndex = Math.min(highlightIndex + 1, items.length - 1);
+    updateHighlight(items);
+  } else if (e.key === 'ArrowUp') {
+    e.preventDefault();
+    highlightIndex = Math.max(highlightIndex - 1, 0);
+    updateHighlight(items);
+  } else if (e.key === 'Enter') {
+    e.preventDefault();
+    if (highlightIndex >= 0) {
+      items[highlightIndex].click();
+    } else if (items.length > 0) {
+      items[0].click();
+    }
+  } else if (e.key === 'Escape') {
+    closeAutocomplete();
+  }
+}
+
+function updateHighlight(items) {
+  items.forEach((el, i) => el.classList.toggle('highlighted', i === highlightIndex));
+  if (highlightIndex >= 0) items[highlightIndex].scrollIntoView({ block: 'nearest' });
+}
+
+function closeAutocomplete() {
+  document.getElementById('autocomplete').classList.remove('open');
+  highlightIndex = -1;
+}
+
+// ========== ROSTER MANAGEMENT ==========
+function addPlayer(playerId) {
+  if (roster.find(p => p.player_id === playerId)) {
+    showToast('Player already on roster');
+    return;
+  }
+  if (roster.length >= 16) {
+    showToast('Max 16 players');
+    return;
+  }
+
+  const player = allPlayers.find(p => p.player_id === playerId);
+  if (!player) return;
+
+  roster.push(player);
+  trackEvent('roster_add', { name: `${player.first_name} ${player.last_name}`, pos: player.position, team: player.team });
+  renderRoster();
+  closeAutocomplete();
+  document.getElementById('playerSearch').value = '';
+  document.getElementById('playerSearch').focus();
+}
+
+function removePlayer(playerId) {
+  roster = roster.filter(p => p.player_id !== playerId);
+  renderRoster();
+}
+
+function clearRoster() {
+  roster = [];
+  selectedName = null;
+  teamNames = [];
+  renderRoster();
+}
+
+function renderRoster() {
+  const grid = document.getElementById('rosterGrid');
+  const count = document.getElementById('rosterCount');
+  const btn = document.getElementById('toStep2Btn');
+  const empty = document.getElementById('rosterEmpty');
+
+  count.textContent = roster.length;
+  btn.disabled = roster.length < 1;
+
+  if (roster.length === 0) {
+    grid.innerHTML = `<div class="roster-empty" id="rosterEmpty"><div class="roster-empty-icon">&#127944;</div>Search and add players to build your roster</div>`;
+    return;
+  }
+
+  grid.innerHTML = roster.map((p, i) => `
+    <div class="player-card" style="animation-delay:${i * 0.05}s">
+      <img class="pc-avatar" src="${getHeadshot(p)}" alt="${p.first_name} ${p.last_name}" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 44 44%22><rect fill=%22%23222%22 width=%2244%22 height=%2244%22/><text x=%2222%22 y=%2228%22 text-anchor=%22middle%22 fill=%22%23666%22 font-size=%2216%22>${p.first_name?.[0] || ''}${p.last_name?.[0] || ''}</text></svg>'">
+      <div class="pc-info">
+        <div class="pc-name">${p.first_name} ${p.last_name}</div>
+        <div class="pc-detail"><span class="ac-pos ${p.position}" style="font-size:10px;padding:1px 6px">${p.position}</span> ${p.team} #${p.number || '?'}</div>
+      </div>
+      <button class="pc-remove" onclick="removePlayer('${p.player_id}')" title="Remove">&times;</button>
+    </div>
+  `).join('');
+}
+
+// ========== STEP NAVIGATION ==========
+function goToStep(step) {
+  if (step === 2 && roster.length === 0) {
+    showToast('Add at least 1 player first');
+    return;
+  }
+  if (step === 3 && selectedName === null) {
+    showToast('Pick a team name first');
+    return;
+  }
+
+  currentStep = step;
+
+  // Update step indicators
+  document.querySelectorAll('.step-item').forEach((el, i) => {
+    el.classList.remove('active', 'completed');
+    if (i + 1 === step) el.classList.add('active');
+    else if (i + 1 < step) el.classList.add('completed');
+  });
+  document.querySelectorAll('.step-connector').forEach((el, i) => {
+    el.classList.toggle('done', i + 1 < step);
+  });
+
+  // Show/hide sections
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.getElementById(`step${step}`).classList.add('active');
+
+  // Trigger step-specific actions
+  if (step === 2 && teamNames.length === 0) generateNames();
+  if (step === 3) {
+    buildStarSelector();
+    const star = roster[selectedStar];
+    const cached = star && pfpCache[star.player_id];
+    if (cached) {
+      restoreCachedPFPs(cached);
+    } else {
+      generatePFPs();
+    }
+  }
+
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ========== AI NAME GENERATION ==========
+async function generateNames() {
+  const key = GROQ_KEY;
+
+  const genWrap = document.getElementById('genWrap');
+  const namesGrid = document.getElementById('namesGrid');
+  const nameActions = document.getElementById('nameActions');
+  genWrap.style.display = 'block';
+  namesGrid.innerHTML = '';
+  nameActions.style.display = 'none';
+  teamNames = [];
+  selectedName = null;
+  document.getElementById('toStep3Btn').disabled = true;
+
+  const rosterDesc = roster.map(p => `${p.first_name} ${p.last_name} (${p.position}, ${p.team})`).join(', ');
+
+  const systemPrompt = `You are BDGE's official fantasy football team name generator. You're witty, creative, and steeped in both NFL culture and BDGE's unique brand voice.
+
+${BDGE_SLANG}
+
+Generate exactly 8 fantasy football team names based on the user's roster. Each name should:
+- Be clever, punny, or reference specific players on the roster
+- Mix in BDGE terminology and culture naturally (not forced)
+- Range from funny to intimidating to absurd
+- Be concise (2-5 words max)
+- Some should reference specific player names (puns, wordplay)
+- Some should reference BDGE terms (Stein, Big Dogs, etc.)
+- At least one should be genuinely intimidating/cool
+- At least one should be funny/self-deprecating in BDGE style
+
+RESPOND ONLY WITH A JSON ARRAY of objects like:
+[{"name":"Team Name Here","reason":"Brief explanation of the wordplay","vibe":"funny|intimidating|clever|bdge"}]
+
+No markdown, no code blocks, just the raw JSON array.`;
+
+  try {
+    const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + key
+      },
+      body: JSON.stringify({
+        model: 'llama-3.3-70b-versatile',
+        messages: [
+          { role: 'system', content: systemPrompt },
+          { role: 'user', content: `My roster: ${rosterDesc}\n\nGenerate 8 team names.` }
+        ],
+        max_tokens: 800,
+        temperature: 0.9
+      })
+    });
+
+    const data = await res.json();
+    if (data.error) throw new Error(data.error.message || 'API error');
+
+    const content = data.choices[0].message.content.trim();
+    // Parse JSON — handle potential markdown wrapping
+    const jsonStr = content.replace(/```json?\n?/g, '').replace(/```/g, '').trim();
+    teamNames = JSON.parse(jsonStr);
+
+    genWrap.style.display = 'none';
+    renderNames();
+    nameActions.style.display = 'flex';
+    fireConfetti();
+  } catch (err) {
+    genWrap.style.display = 'none';
+    namesGrid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:32px;color:var(--t3)">
+      <p style="margin-bottom:12px">Failed to generate names: ${err.message}</p>
+      <button class="btn btn-secondary" onclick="generateNames()">Try Again</button>
+    </div>`;
+    nameActions.style.display = 'flex';
+    console.error('Name gen error:', err);
+  }
+}
+
+function regenerateNames() {
+  teamNames = [];
+  selectedName = null;
+  document.getElementById('toStep3Btn').disabled = true;
+  generateNames();
+}
+
+function renderNames() {
+  const grid = document.getElementById('namesGrid');
+  grid.innerHTML = teamNames.map((n, i) => `
+    <div class="name-card ${selectedName === i ? 'selected' : ''}" onclick="selectName(${i})" style="animation-delay:${i * 0.06}s">
+      <div class="nc-name">${escHtml(n.name)}</div>
+      <div class="nc-reason">${escHtml(n.reason)}</div>
+      <span class="nc-tag">${escHtml(n.vibe || 'clever')}</span>
+    </div>
+  `).join('');
+}
+
+function selectName(idx) {
+  selectedName = idx;
+  trackEvent('team_name_selected', { name: teamNames[idx]?.name, vibe: teamNames[idx]?.vibe });
+  document.getElementById('toStep3Btn').disabled = false;
+  renderNames();
+}
+
+// ========== STEP 3: AI PFP GENERATOR ==========
+let pfpImages = [];
+let selectedPFP = null;
+let selectedStar = 0;
+const pfpCache = {}; // Cache images per player_id
+
+// ========== ANALYTICS ==========
+function trackEvent(type, data) {
+  try {
+    const analytics = JSON.parse(localStorage.getItem('bdge_analytics') || '{"events":[],"stats":{}}');
+    analytics.events.push({ type, data, ts: Date.now() });
+
+    // Update aggregate stats
+    const s = analytics.stats;
+    s.totalSessions = (s.totalSessions || 0);
+    if (type === 'session_start') s.totalSessions++;
+    if (type === 'roster_add') {
+      s.playerDrafts = s.playerDrafts || {};
+      const key = data.name;
+      s.playerDrafts[key] = (s.playerDrafts[key] || 0) + 1;
+    }
+    if (type === 'team_name_selected') {
+      s.teamNames = s.teamNames || [];
+      s.teamNames.push(data.name);
+    }
+    if (type === 'pfp_generated') {
+      s.pfpCount = (s.pfpCount || 0) + 1;
+      s.pfpPlayers = s.pfpPlayers || {};
+      s.pfpPlayers[data.player] = (s.pfpPlayers[data.player] || 0) + 1;
+    }
+    if (type === 'pfp_downloaded') {
+      s.downloads = (s.downloads || 0) + 1;
+    }
+    if (type === 'pfp_shared') {
+      s.shares = (s.shares || 0) + 1;
+    }
+    if (type === 'screenshot_import') {
+      s.imports = (s.imports || 0) + 1;
+      s.importPlayers = (s.importPlayers || 0) + (data.count || 0);
+    }
+
+    // Keep events trimmed to last 500
+    if (analytics.events.length > 500) analytics.events = analytics.events.slice(-500);
+    localStorage.setItem('bdge_analytics', JSON.stringify(analytics));
+  } catch(e) {}
+}
+trackEvent('session_start', {});
+
+// Restore cache from localStorage
+try {
+  const saved = JSON.parse(localStorage.getItem('bdge_pfp_cache') || '{}');
+  for (const [pid, val] of Object.entries(saved)) {
+    pfpCache[pid] = { images: val.images };
+  }
+} catch(e) {}
+
+const PFP_STYLES = [
+  { tag: 'Cartoon' },
+  { tag: 'Realistic' },
+  { tag: 'Fantasy' },
+  { tag: 'Badass' }
+];
+// Note: Gemini generates all 4 in a single call, labels match the prompt order
+
+// Style reference image - embedded base64
+const STYLE_REF_B64 = null; // Will be loaded from file
+async function loadStyleRef() {
+  if (STYLE_REF_B64) return STYLE_REF_B64;
+  try {
+    const res = await fetch('style-ref.jpg');
+    const blob = await res.blob();
+    return new Promise(resolve => {
+      const reader = new FileReader();
+      reader.onloadend = () => resolve(reader.result.split(',')[1]);
+      reader.readAsDataURL(blob);
+    });
+  } catch(e) { console.error('Failed to load style ref:', e); return null; }
+}
+
+function buildStarSelector() {
+  const grid = document.getElementById('starGrid');
+  grid.innerHTML = roster.map((p, i) => `
+    <div class="star-option ${selectedStar === i ? 'active' : ''}" onclick="selectStar(${i})">
+      <img src="${getHeadshot(p)}" alt="" onerror="this.style.display='none'">
+      <span>${p.first_name} ${p.last_name}</span>
+    </div>
+  `).join('');
+}
+
+function selectStar(idx) {
+  if (idx === selectedStar) return;
+  selectedStar = idx;
+  buildStarSelector();
+
+  const star = roster[idx];
+  if (!star) return;
+
+  const cached = pfpCache[star.player_id];
+  if (cached) {
+    // Restore cached images
+    restoreCachedPFPs(cached);
+  } else {
+    // Show generate button for this player
+    showGeneratePrompt(star);
+  }
+}
+
+function restoreCachedPFPs(cached) {
+  pfpImages = cached.images;
+  selectedPFP = null;
+  document.getElementById('pfpSelectedWrap').style.display = 'none';
+  document.getElementById('pfpGenStatus').style.display = 'none';
+
+  const grid = document.getElementById('pfpGrid');
+  grid.innerHTML = cached.images.map((img, i) => {
+    if (!img) return `<div class="pfp-card" id="pfpCard${i}"></div>`;
+    return `<div class="pfp-card" id="pfpCard${i}"><img src="${img.dataUrl}" alt="PFP ${i+1}"><div class="pfp-check"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><path d="M20 6 9 17l-5-5"/></svg></div></div>`;
+  }).join('');
+
+  // Re-attach click handlers
+  cached.images.forEach((img, i) => {
+    if (img) {
+      const card = document.getElementById(`pfpCard${i}`);
+      if (card) card.onclick = () => selectPFP(i);
+    }
+  });
+
+  document.getElementById('pfpActions').style.display = 'flex';
+}
+
+function showGeneratePrompt(star) {
+  pfpImages = [];
+  selectedPFP = null;
+  document.getElementById('pfpSelectedWrap').style.display = 'none';
+  document.getElementById('pfpGenStatus').style.display = 'none';
+
+  const grid = document.getElementById('pfpGrid');
+  grid.innerHTML = `
+    <div style="grid-column:1/-1;text-align:center;padding:48px 24px">
+      <div style="font-size:48px;margin-bottom:16px">🏈</div>
+      <div style="font-size:16px;color:var(--t2);margin-bottom:20px">Generate PFPs for <strong>${star.first_name} ${star.last_name}</strong></div>
+      <button class="btn btn-primary" onclick="generatePFPs()">
+        Generate PFPs
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14m-7-7 7 7-7 7"/></svg>
+      </button>
+    </div>`;
+  document.getElementById('pfpActions').style.display = 'none';
+}
+
+async function generatePFPs() {
+  const name = teamNames[selectedName]?.name || 'TEAM';
+  const star = roster[selectedStar] || roster[0];
+
+  pfpImages = [];
+  selectedPFP = null;
+  document.getElementById('pfpSelectedWrap').style.display = 'none';
+  document.getElementById('pfpActions').style.display = 'none';
+
+  // Show loading state
+  const status = document.getElementById('pfpGenStatus');
+  const grid = document.getElementById('pfpGrid');
+  status.style.display = 'flex';
+
+  // Create placeholder cards
+  grid.innerHTML = PFP_STYLES.map((s, i) => `
+    <div class="pfp-card" id="pfpCard${i}">
+      <div class="pfp-loading">
+        <div class="pfp-gen-spinner"></div>
+        <span>Generating...</span>
+      </div>
+      <div class="pfp-check">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><path d="M20 6 9 17l-5-5"/></svg>
+      </div>
+    </div>
+  `).join('');
+
+  const playerName = `${star.first_name} ${star.last_name}`;
+
+  document.getElementById('pfpGenSub').textContent = 'Gemini is researching the player and creating 4 PFPs...';
+
+  // Load style reference image
+  const refB64 = await loadStyleRef();
+  console.log('Style ref loaded:', refB64 ? 'YES (' + refB64.length + ' bytes)' : 'NO');
+
+  // Single Gemini call — generates all 4 styles at once
+  try {
+    const parts = [];
+    if (refB64) {
+      parts.push({ inline_data: { mime_type: 'image/jpeg', data: refB64 } });
+    } else {
+      console.warn('WARNING: Style reference image not loaded — results will be worse');
+    }
+    parts.push({ text: `I am creating a pfp for my fantasy football team. I want to create the pfp centered around ${playerName}. First search what he looks like, his number, and ensure current team is accurate so that you understand his character. Then look for any highlights or viral moments he had in 2025. I want you to create a cartoon, realistic, fantasy, and badass pfp (4 of them) using everything I just gave you above. Before you create the pfp understand that the goal is to have the pfp look as close as possible to the player. Add a signature effect of the players name on the pfp as well. The image I attached is an example of the style I want. All 4 images should be completely unique. Do not copy anything from one to the next as each needs to fit its own aesthetic.` });
+
+    const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-image:generateContent?key=${GEMINI_KEY}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        contents: [{ parts }],
+        generationConfig: { responseModalities: ['IMAGE', 'TEXT'] }
+      })
+    });
+
+    const data = await res.json();
+    if (data.error) throw new Error(data.error.message || JSON.stringify(data.error));
+
+    // Extract all images from response
+    let imgIndex = 0;
+    const responseParts = data.candidates?.[0]?.content?.parts || [];
+    for (const part of responseParts) {
+      if (part.inlineData && imgIndex < 4) {
+        const mime = (part.inlineData.mimeType || 'image/png').split('/').pop();
+        const dataUrl = `data:image/${mime};base64,${part.inlineData.data}`;
+
+        const idx = imgIndex;
+        const card = document.getElementById(`pfpCard${idx}`);
+        if (card) {
+          card.querySelector('.pfp-loading').style.display = 'none';
+          const imgEl = document.createElement('img');
+          imgEl.src = dataUrl;
+          imgEl.alt = PFP_STYLES[idx].tag;
+          card.insertBefore(imgEl, card.firstChild);
+          card.onclick = () => selectPFP(idx);
+          pfpImages[idx] = { dataUrl, el: imgEl };
+        }
+        imgIndex++;
+      }
+    }
+
+    // Mark remaining cards
+    if (imgIndex === 0) {
+      // No images at all — likely rate limited
+      for (let i = 0; i < 4; i++) {
+        const card = document.getElementById(`pfpCard${i}`);
+        if (card) card.querySelector('.pfp-loading').innerHTML = '<span style="color:var(--t3)">AI is busy — wait a moment and hit Regenerate</span>';
+      }
+    } else {
+      for (let i = imgIndex; i < 4; i++) {
+        const card = document.getElementById(`pfpCard${i}`);
+        if (card) card.querySelector('.pfp-loading').style.display = 'none';
+      }
+    }
+  } catch (err) {
+    console.error('PFP generation failed:', err);
+    for (let i = 0; i < 4; i++) {
+      const card = document.getElementById(`pfpCard${i}`);
+      if (card && !pfpImages[i]) card.querySelector('.pfp-loading').innerHTML = `<span style="color:var(--t3)">${err.message?.slice(0,80) || 'Failed'}</span>`;
+    }
+  }
+
+  status.style.display = 'none';
+  document.getElementById('pfpActions').style.display = 'flex';
+  fireConfetti();
+
+  trackEvent('pfp_generated', { player: playerName, count: pfpImages.filter(Boolean).length });
+
+  // Cache results for this player
+  if (pfpImages.some(Boolean)) {
+    pfpCache[star.player_id] = { images: [...pfpImages] };
+    // Save to localStorage for persistence
+    try {
+      const saveData = {};
+      for (const [pid, val] of Object.entries(pfpCache)) {
+        saveData[pid] = { images: val.images.map(img => img ? { dataUrl: img.dataUrl } : null) };
+      }
+      localStorage.setItem('bdge_pfp_cache', JSON.stringify(saveData));
+    } catch(e) { /* localStorage full — that's ok */ }
+  }
+}
+
+function selectPFP(idx) {
+  if (!pfpImages[idx]) return; // Don't select empty slots
+  selectedPFP = idx;
+  document.querySelectorAll('.pfp-card').forEach((c, i) => c.classList.toggle('selected', i === idx));
+  const wrap = document.getElementById('pfpSelectedWrap');
+  const img = document.getElementById('pfpSelectedImg');
+  wrap.style.display = 'block';
+  img.src = pfpImages[idx].dataUrl;
+}
+
+async function shareToTwitter() {
+  if (selectedPFP === null) {
+    showToast('Pick a PFP first');
+    return;
+  }
+  const tname = teamNames[selectedName]?.name || 'my squad';
+  const star = roster[selectedStar] || roster[0];
+  const playerName = star ? `${star.first_name} ${star.last_name}` : 'my team';
+  const shareText = `Just built my fantasy football identity 🏈🔥\n\nTeam: ${tname}\nStar Player: ${playerName}\n\nBuilt with @BDGE_official Team Builder\n#BDGE #FantasyFootball #BigDogsGottaEat`;
+
+  // Convert dataUrl to blob/file
+  const dataUrl = pfpImages[selectedPFP].dataUrl;
+  const res = await fetch(dataUrl);
+  const blob = await res.blob();
+  const file = new File([blob], `bdge-${tname.toLowerCase().replace(/[^a-z0-9]+/g, '-')}.png`, { type: 'image/png' });
+
+  // Try native Web Share API (works on mobile + some desktop browsers)
+  if (navigator.canShare && navigator.canShare({ files: [file] })) {
+    try {
+      await navigator.share({
+        files: [file],
+        title: 'My BDGE Team PFP',
+        text: shareText
+      });
+      trackEvent('pfp_shared', { player: roster[selectedStar]?.last_name });
+      showToast('Shared!');
+      return;
+    } catch(e) {
+      if (e.name === 'AbortError') return; // User cancelled
+    }
+  }
+
+  // Fallback: copy image to clipboard + open Twitter
+  try {
+    await navigator.clipboard.write([
+      new ClipboardItem({ 'image/png': blob })
+    ]);
+    showToast('PFP copied to clipboard! Paste it in your tweet.');
+  } catch(e) {
+    showToast('Download your PFP first, then attach it to your tweet.');
+  }
+
+  const text = encodeURIComponent(shareText);
+  window.open(`https://twitter.com/intent/tweet?text=${text}`, '_blank');
+}
+
+function downloadAIPFP() {
+  if (selectedPFP === null) {
+    showToast('Pick a PFP first');
+    return;
+  }
+  const tname = teamNames[selectedName]?.name || 'team-pfp';
+  const slug = tname.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+  const tag = PFP_STYLES[selectedPFP].tag.toLowerCase().replace(/\s+/g, '-');
+
+  const link = document.createElement('a');
+  link.download = `bdge-${slug}-${tag}.png`;
+  link.href = pfpImages[selectedPFP].dataUrl;
+  link.click();
+  trackEvent('pfp_downloaded', { player: roster[selectedStar]?.last_name });
+  showToast('Downloaded! Flex on your league.');
+}
+
+// ========== API KEY MANAGEMENT ==========
+function checkApiKey() {
+  const key = localStorage.getItem('groqApiKey');
+  const dot = document.getElementById('apiDot');
+  const text = document.getElementById('apiStatusText');
+  if (key) {
+    dot.classList.add('connected');
+    text.textContent = 'AI Connected';
+  } else {
+    dot.classList.remove('connected');
+    text.textContent = 'No API Key';
+  }
+}
+
+function openKeyModal() { document.getElementById('keyModal').classList.add('open'); }
+function closeKeyModal() { document.getElementById('keyModal').classList.remove('open'); }
+
+function saveKey() {
+  const key = document.getElementById('keyInput').value.trim();
+  if (!key) return;
+  localStorage.setItem('groqApiKey', key);
+  checkApiKey();
+  closeKeyModal();
+  showToast('API key saved');
+
+  // If we were trying to generate, do it now
+  if (currentStep === 2 && teamNames.length === 0) generateNames();
+}
+
+// ========== PARTICLES ==========
+function initParticles() {
+  const canvas = document.getElementById('particleCanvas');
+  const ctx = canvas.getContext('2d');
+  let particles = [];
+  const PARTICLE_COUNT = 35;
+
+  function resize() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  for (let i = 0; i < PARTICLE_COUNT; i++) {
+    particles.push({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      vx: (Math.random() - 0.5) * 0.3,
+      vy: (Math.random() - 0.5) * 0.3,
+      size: Math.random() * 2 + 0.5,
+      alpha: Math.random() * 0.15 + 0.03,
+      isRed: Math.random() > 0.6
+    });
+  }
+
+  function animate() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    particles.forEach(p => {
+      p.x += p.vx;
+      p.y += p.vy;
+      if (p.x < 0) p.x = canvas.width;
+      if (p.x > canvas.width) p.x = 0;
+      if (p.y < 0) p.y = canvas.height;
+      if (p.y > canvas.height) p.y = 0;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+      ctx.fillStyle = p.isRed
+        ? `rgba(246,88,122,${p.alpha})`
+        : `rgba(255,255,255,${p.alpha})`;
+      ctx.fill();
+    });
+    requestAnimationFrame(animate);
+  }
+  animate();
+}
+
+// ========== CONFETTI ==========
+function fireConfetti() {
+  const colors = [accentColor, '#FFFFFF', '#FBBF24', '#4ADE80', '#60A5FA'];
+  for (let i = 0; i < 40; i++) {
+    const el = document.createElement('div');
+    el.className = 'confetti-piece';
+    el.style.left = (Math.random() * 100) + 'vw';
+    el.style.top = '-10px';
+    el.style.background = colors[Math.floor(Math.random() * colors.length)];
+    el.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+    el.style.width = (Math.random() * 8 + 4) + 'px';
+    el.style.height = (Math.random() * 8 + 4) + 'px';
+    el.style.setProperty('--fall-duration', (Math.random() * 2 + 1.5) + 's');
+    el.style.animationDelay = (Math.random() * 0.5) + 's';
+    document.body.appendChild(el);
+    setTimeout(() => el.remove(), 4000);
+  }
+}
+
+// ========== UTILS ==========
+function debounce(fn, delay) {
+  let timer;
+  return function(...args) {
+    clearTimeout(timer);
+    timer = setTimeout(() => fn.apply(this, args), delay);
+  };
+}
+
+function escHtml(str) {
+  const div = document.createElement('div');
+  div.textContent = str;
+  return div.innerHTML;
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+// Button ripple effect
+document.addEventListener('click', (e) => {
+  const btn = e.target.closest('.btn');
+  if (!btn) return;
+  const ripple = document.createElement('span');
+  ripple.className = 'ripple';
+  const rect = btn.getBoundingClientRect();
+  const size = Math.max(rect.width, rect.height);
+  ripple.style.width = ripple.style.height = size + 'px';
+  ripple.style.left = (e.clientX - rect.left - size / 2) + 'px';
+  ripple.style.top = (e.clientY - rect.top - size / 2) + 'px';
+  btn.appendChild(ripple);
+  setTimeout(() => ripple.remove(), 500);
+});
+</script>
+</body>
+</html>

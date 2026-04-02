@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BDGE Team Builder — Admin Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg: #0A0A0A; --bg2: #111111; --bg3: #1A1A1A; --bg4: #222222;
+  --red: #F6587A; --green: #4ADE80; --blue: #60A5FA; --gold: #FBBF24;
+  --t1: rgba(255,255,255,0.92); --t2: rgba(255,255,255,0.70);
+  --t3: rgba(255,255,255,0.50); --t4: rgba(255,255,255,0.30);
+  --t5: rgba(255,255,255,0.12); --radius: 12px;
+}
+body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--t1); min-height: 100vh; padding: 32px; }
+.container { max-width: 1100px; margin: 0 auto; }
+h1 { font-family: 'Bebas Neue', sans-serif; font-size: 48px; letter-spacing: 2px; margin-bottom: 8px; }
+.subtitle { color: var(--t3); font-size: 14px; margin-bottom: 40px; }
+.back-link { color: var(--red); text-decoration: none; font-size: 13px; margin-bottom: 24px; display: inline-block; }
+.back-link:hover { text-decoration: underline; }
+
+/* Stats Grid */
+.stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 40px; }
+.stat-card {
+  background: var(--bg2); border: 1px solid var(--t5); border-radius: var(--radius);
+  padding: 24px; text-align: center;
+}
+.stat-value { font-family: 'Bebas Neue', sans-serif; font-size: 48px; letter-spacing: 1px; line-height: 1; }
+.stat-label { font-size: 12px; letter-spacing: 2px; text-transform: uppercase; color: var(--t3); margin-top: 8px; }
+.stat-card:nth-child(1) .stat-value { color: var(--red); }
+.stat-card:nth-child(2) .stat-value { color: var(--green); }
+.stat-card:nth-child(3) .stat-value { color: var(--blue); }
+.stat-card:nth-child(4) .stat-value { color: var(--gold); }
+.stat-card:nth-child(5) .stat-value { color: var(--red); }
+.stat-card:nth-child(6) .stat-value { color: var(--green); }
+
+/* Sections */
+.section { margin-bottom: 40px; }
+.section-title { font-family: 'Bebas Neue', sans-serif; font-size: 28px; letter-spacing: 1px; margin-bottom: 16px; border-bottom: 1px solid var(--t5); padding-bottom: 8px; }
+
+/* Tables */
+.rank-table { width: 100%; border-collapse: collapse; }
+.rank-table th { text-align: left; font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: var(--t4); padding: 8px 12px; border-bottom: 1px solid var(--t5); }
+.rank-table td { padding: 10px 12px; border-bottom: 1px solid var(--t5); font-size: 14px; }
+.rank-table tr:hover td { background: var(--bg3); }
+.rank-num { color: var(--t4); font-weight: 600; width: 40px; }
+.rank-bar { height: 6px; background: var(--red); border-radius: 3px; min-width: 4px; }
+.rank-count { color: var(--t3); font-size: 13px; text-align: right; width: 60px; }
+
+/* Event Log */
+.event-log { max-height: 400px; overflow-y: auto; }
+.event-item { display: flex; gap: 12px; padding: 8px 12px; border-bottom: 1px solid var(--t5); font-size: 13px; }
+.event-item:hover { background: var(--bg3); }
+.event-type { font-weight: 600; color: var(--red); min-width: 140px; font-size: 11px; letter-spacing: 0.5px; text-transform: uppercase; }
+.event-data { color: var(--t2); flex: 1; }
+.event-time { color: var(--t4); font-size: 12px; min-width: 80px; text-align: right; }
+
+/* Team Names */
+.name-tags { display: flex; flex-wrap: wrap; gap: 8px; }
+.name-tag { padding: 6px 14px; background: var(--bg3); border: 1px solid var(--t5); border-radius: 20px; font-size: 13px; color: var(--t2); }
+
+.empty-state { color: var(--t4); font-size: 14px; padding: 24px; text-align: center; }
+
+/* Clear */
+.clear-btn { background: none; border: 1px solid var(--t5); color: var(--t4); font-size: 12px; padding: 6px 14px; border-radius: 6px; cursor: pointer; font-family: inherit; float: right; }
+.clear-btn:hover { border-color: var(--red); color: var(--red); }
+
+@media (max-width: 600px) {
+  body { padding: 16px; }
+  h1 { font-size: 36px; }
+  .stats-grid { grid-template-columns: repeat(2, 1fr); }
+}
+</style>
+</head>
+<body>
+<div class="container">
+  <a href="team-builder.html" class="back-link">&larr; Back to Team Builder</a>
+  <h1>ADMIN DASHBOARD</h1>
+  <p class="subtitle">BDGE Team Builder Analytics — User engagement & content metrics</p>
+
+  <div class="stats-grid" id="statsGrid"></div>
+
+  <div class="section">
+    <h2 class="section-title">MOST DRAFTED PLAYERS</h2>
+    <table class="rank-table" id="draftTable"><tbody></tbody></table>
+  </div>
+
+  <div class="section">
+    <h2 class="section-title">MOST PFP'D PLAYERS</h2>
+    <table class="rank-table" id="pfpTable"><tbody></tbody></table>
+  </div>
+
+  <div class="section">
+    <h2 class="section-title">TEAM NAMES CREATED</h2>
+    <div class="name-tags" id="nameTags"></div>
+  </div>
+
+  <div class="section">
+    <h2 class="section-title">
+      EVENT LOG
+      <button class="clear-btn" onclick="if(confirm('Clear all analytics data?')){localStorage.removeItem('bdge_analytics');location.reload()}">Clear Data</button>
+    </h2>
+    <div class="event-log" id="eventLog"></div>
+  </div>
+</div>
+
+<script>
+const analytics = JSON.parse(localStorage.getItem('bdge_analytics') || '{"events":[],"stats":{}}');
+const s = analytics.stats;
+
+// Stats Cards
+document.getElementById('statsGrid').innerHTML = [
+  { value: s.totalSessions || 0, label: 'Total Sessions' },
+  { value: Object.keys(s.playerDrafts || {}).length, label: 'Unique Players Drafted' },
+  { value: s.pfpCount || 0, label: 'PFPs Generated' },
+  { value: s.downloads || 0, label: 'PFPs Downloaded' },
+  { value: s.shares || 0, label: 'Social Shares' },
+  { value: s.imports || 0, label: 'Screenshot Imports' },
+].map(c => `<div class="stat-card"><div class="stat-value">${c.value}</div><div class="stat-label">${c.label}</div></div>`).join('');
+
+// Most Drafted
+function renderRankTable(id, data) {
+  const sorted = Object.entries(data || {}).sort((a, b) => b[1] - a[1]).slice(0, 20);
+  const max = sorted[0]?.[1] || 1;
+  const tbody = document.querySelector(`#${id} tbody`);
+  if (!sorted.length) { tbody.innerHTML = '<tr><td colspan="4" class="empty-state">No data yet</td></tr>'; return; }
+  tbody.innerHTML = '<tr><th>#</th><th>Player</th><th>Bar</th><th>Count</th></tr>' +
+    sorted.map(([name, count], i) => `
+      <tr>
+        <td class="rank-num">${i + 1}</td>
+        <td>${name}</td>
+        <td><div class="rank-bar" style="width:${(count / max) * 100}%"></div></td>
+        <td class="rank-count">${count}</td>
+      </tr>
+    `).join('');
+}
+renderRankTable('draftTable', s.playerDrafts);
+renderRankTable('pfpTable', s.pfpPlayers);
+
+// Team Names
+const nameTags = document.getElementById('nameTags');
+const names = s.teamNames || [];
+if (names.length) {
+  nameTags.innerHTML = names.map(n => `<div class="name-tag">${n}</div>`).join('');
+} else {
+  nameTags.innerHTML = '<div class="empty-state">No team names created yet</div>';
+}
+
+// Event Log
+const log = document.getElementById('eventLog');
+const events = analytics.events.slice().reverse();
+if (events.length) {
+  log.innerHTML = events.map(e => {
+    const d = new Date(e.ts);
+    const time = d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    const date = d.toLocaleDateString([], { month: 'short', day: 'numeric' });
+    const dataStr = Object.entries(e.data || {}).map(([k, v]) => `${k}: ${v}`).join(', ');
+    return `<div class="event-item">
+      <span class="event-type">${e.type.replace(/_/g, ' ')}</span>
+      <span class="event-data">${dataStr || '—'}</span>
+      <span class="event-time">${date} ${time}</span>
+    </div>`;
+  }).join('');
+} else {
+  log.innerHTML = '<div class="empty-state">No events recorded yet — use the Team Builder to generate data</div>';
+}
+
+// Auto-refresh every 5s
+setInterval(() => location.reload(), 30000);
+</script>
+</body>
+</html>
