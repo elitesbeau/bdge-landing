@@ -1827,7 +1827,10 @@ async function generatePFPs() {
     } else {
       console.warn('WARNING: Style reference image not loaded — results will be worse');
     }
-    parts.push({ text: `I am creating a pfp for my fantasy football team. I want to create the pfp centered around ${playerName}. First search what he looks like, his number, and ensure current team is accurate so that you understand his character. Then look for any highlights or viral moments he had in 2025. I want you to create a cartoon, realistic, fantasy, and badass pfp (4 of them) using everything I just gave you above. Before you create the pfp understand that the goal is to have the pfp look as close as possible to the player. Add a signature effect of the players name on the pfp as well. The image I attached is an example of the style I want. All 4 images should be completely unique. Do not copy anything from one to the next as each needs to fit its own aesthetic.` });
+    const playerTeam = star.team || '';
+    const playerNum = star.number || '';
+    const playerPos = star.position || '';
+    parts.push({ text: `I am creating a pfp for my fantasy football team. I want to create the pfp centered around ${playerName} (${playerPos}, #${playerNum}, currently plays for the ${playerTeam}). First search what he looks like, his number, and ensure current team is accurate so that you understand his character. Then look for any highlights or viral moments he had in 2025. I want you to create a cartoon, realistic, fantasy, and badass pfp (4 of them) using everything I just gave you above. Before you create the pfp understand that the goal is to have the pfp look as close as possible to the player. Add a signature effect of the players name on the pfp as well. The image I attached is an example of the style I want. All 4 images should be completely unique. Do not copy anything from one to the next as each needs to fit its own aesthetic.` });
 
     const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-image:generateContent?key=${GEMINI_KEY}`, {
       method: 'POST',
