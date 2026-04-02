@@ -1291,6 +1291,7 @@ async function handleScreenshot(input) {
       if (match && !roster.find(p => p.player_id === match.player_id)) {
         if (roster.length >= 16) break;
         roster.push(match);
+        trackEvent('roster_add', { name: `${match.first_name} ${match.last_name}`, pos: match.position, team: match.team });
         matched++;
       }
     }
