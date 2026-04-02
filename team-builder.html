@@ -1980,31 +1980,10 @@ function downloadAIPFP() {
 }
 
 // ========== API KEY MANAGEMENT ==========
-function checkApiKey() {
-  const key = localStorage.getItem('groqApiKey');
-  const dot = document.getElementById('apiDot');
-  const text = document.getElementById('apiStatusText');
-  if (key) {
-    dot.classList.add('connected');
-    text.textContent = 'AI Connected';
-  } else {
-    dot.classList.remove('connected');
-    text.textContent = 'No API Key';
-  }
-}
-
-function openKeyModal() { document.getElementById('keyModal').classList.add('open'); }
-function closeKeyModal() { document.getElementById('keyModal').classList.remove('open'); }
+function checkApiKey() {}
 
 function saveKey() {
-  const key = document.getElementById('keyInput').value.trim();
-  if (!key) return;
-  localStorage.setItem('groqApiKey', key);
-  checkApiKey();
-  closeKeyModal();
-  showToast('API key saved');
-
-  // If we were trying to generate, do it now
+  // Legacy — no longer needed
   if (currentStep === 2 && teamNames.length === 0) generateNames();
 }
 
