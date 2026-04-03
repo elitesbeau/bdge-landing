@@ -1283,6 +1283,152 @@ body {
 ::-webkit-scrollbar-thumb { background: linear-gradient(to bottom, rgba(246,88,122,0.3), rgba(34,211,238,0.3)); }
 ::-webkit-scrollbar-thumb:hover { background: linear-gradient(to bottom, rgba(246,88,122,0.5), rgba(34,211,238,0.5)); }
 
+/* ========== HERO ACTION CARDS ========== */
+.hero-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  max-width: 700px;
+  margin: 0 auto 32px;
+}
+.hero-card {
+  position: relative;
+  padding: 32px 24px;
+  background: rgba(0,2,5,0.6);
+  border: 2px solid var(--t5);
+  cursor: pointer;
+  transition: all 0.3s ease-out;
+  text-align: center;
+}
+.hero-card:hover {
+  border-color: var(--primary);
+  background: rgba(246,88,122,0.05);
+  transform: translateY(-4px);
+  box-shadow: 0 16px 48px rgba(0,0,0,0.4), 0 0 30px rgba(246,88,122,0.08);
+}
+.hero-card .cb-tl, .hero-card .cb-tr, .hero-card .cb-bl, .hero-card .cb-br {
+  position: absolute; width: 16px; height: 16px; transition: all 0.3s;
+}
+.hero-card .cb-tl { top: -1px; left: -1px; border-left: 2px solid var(--t4); border-top: 2px solid var(--t4); }
+.hero-card .cb-tr { top: -1px; right: -1px; border-right: 2px solid var(--t4); border-top: 2px solid var(--t4); }
+.hero-card .cb-bl { bottom: -1px; left: -1px; border-left: 2px solid var(--t4); border-bottom: 2px solid var(--t4); }
+.hero-card .cb-br { bottom: -1px; right: -1px; border-right: 2px solid var(--t4); border-bottom: 2px solid var(--t4); }
+.hero-card:hover .cb-tl, .hero-card:hover .cb-tr,
+.hero-card:hover .cb-bl, .hero-card:hover .cb-br {
+  width: 24px; height: 24px; border-color: var(--primary);
+}
+.hero-card-icon {
+  font-size: 36px;
+  margin-bottom: 12px;
+  opacity: 0.8;
+}
+.hero-card-title {
+  font-size: 16px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  color: var(--primary);
+  margin-bottom: 6px;
+  text-shadow: var(--glow-red-subtle);
+}
+.hero-card-desc {
+  font-size: 11px;
+  color: var(--t3);
+  line-height: 1.5;
+}
+.hero-card.secondary { border-color: rgba(34,211,238,0.2); }
+.hero-card.secondary:hover {
+  border-color: var(--neon-cyan);
+  background: rgba(34,211,238,0.05);
+  box-shadow: 0 16px 48px rgba(0,0,0,0.4), 0 0 30px rgba(34,211,238,0.08);
+}
+.hero-card.secondary:hover .cb-tl, .hero-card.secondary:hover .cb-tr,
+.hero-card.secondary:hover .cb-bl, .hero-card.secondary:hover .cb-br {
+  border-color: var(--neon-cyan);
+}
+.hero-card.secondary .hero-card-title {
+  color: var(--neon-cyan);
+  text-shadow: var(--glow-cyan);
+}
+
+/* ========== WALKTHROUGH OVERLAY ========== */
+.walkthrough {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,2,0.85);
+  backdrop-filter: blur(6px);
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: fadeIn 0.3s;
+}
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+.wt-card {
+  background: var(--bg-card);
+  border: 1px solid var(--t5);
+  max-width: 520px;
+  width: 90%;
+  padding: 40px 32px;
+  text-align: center;
+  position: relative;
+  animation: cardEnter 0.4s ease-out;
+}
+.wt-card .cb-tl, .wt-card .cb-tr, .wt-card .cb-bl, .wt-card .cb-br {
+  position: absolute; width: 20px; height: 20px;
+}
+.wt-card .cb-tl { top: -1px; left: -1px; border-left: 2px solid var(--primary); border-top: 2px solid var(--primary); }
+.wt-card .cb-tr { top: -1px; right: -1px; border-right: 2px solid var(--primary); border-top: 2px solid var(--primary); }
+.wt-card .cb-bl { bottom: -1px; left: -1px; border-left: 2px solid var(--primary); border-bottom: 2px solid var(--primary); }
+.wt-card .cb-br { bottom: -1px; right: -1px; border-right: 2px solid var(--primary); border-bottom: 2px solid var(--primary); }
+.wt-step-dots {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  margin-bottom: 24px;
+}
+.wt-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--t5);
+  transition: all 0.3s;
+}
+.wt-dot.active { background: var(--primary); box-shadow: 0 0 8px rgba(246,88,122,0.5); }
+.wt-dot.done { background: var(--neon-green); }
+.wt-icon { font-size: 48px; margin-bottom: 16px; }
+.wt-title {
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  margin-bottom: 8px;
+  color: var(--primary);
+  text-shadow: var(--glow-red-subtle);
+}
+.wt-desc {
+  font-size: 13px;
+  color: var(--t3);
+  line-height: 1.6;
+  margin-bottom: 28px;
+}
+.wt-actions { display: flex; gap: 10px; justify-content: center; }
+.wt-skip {
+  font-family: var(--font);
+  font-size: 10px;
+  color: var(--t4);
+  background: none;
+  border: none;
+  cursor: pointer;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-top: 16px;
+  transition: color 0.2s;
+}
+.wt-skip:hover { color: var(--t2); }
+
+@media (max-width: 768px) {
+  .hero-actions { grid-template-columns: 1fr; max-width: 400px; }
+  .wt-card { padding: 32px 24px; }
+}
+
 /* Removed repeating scan — boot scan only plays once via .hud-scan-line */
 </style>
 </head>
@@ -1345,21 +1491,27 @@ body {
       <p class="module-desc">Search NFL players or import a screenshot. Add your squad, then we'll cook up some names.</p>
     </div>
 
-    <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;flex-wrap:wrap;justify-content:center">
-      <button class="btn-import" onclick="document.getElementById('screenshotInput').click()">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
-        IMPORT_SCREENSHOT
-      </button>
-      <span class="import-hint">Upload from any fantasy app</span>
-      <input type="file" id="screenshotInput" accept="image/*" style="display:none" onchange="handleScreenshot(this)">
+    <!-- HERO ACTION CARDS -->
+    <div class="hero-actions" id="heroActions">
+      <div class="hero-card" onclick="document.getElementById('screenshotInput').click()">
+        <div class="cb-tl"></div><div class="cb-tr"></div><div class="cb-bl"></div><div class="cb-br"></div>
+        <div class="hero-card-icon">📸</div>
+        <div class="hero-card-title">IMPORT_SCREENSHOT</div>
+        <div class="hero-card-desc">Upload a screenshot of your fantasy team from any app — AI reads it instantly</div>
+      </div>
+      <div class="hero-card secondary" onclick="document.getElementById('playerSearch').focus()">
+        <div class="cb-tl"></div><div class="cb-tr"></div><div class="cb-bl"></div><div class="cb-br"></div>
+        <div class="hero-card-icon">🔍</div>
+        <div class="hero-card-title">SEARCH_PLAYERS</div>
+        <div class="hero-card-desc">Search the full NFL database and build your roster one player at a time</div>
+      </div>
     </div>
+    <input type="file" id="screenshotInput" accept="image/*" style="display:none" onchange="handleScreenshot(this)">
 
     <div class="import-status" id="importStatus" style="display:none">
       <div class="gen-spinner" style="width:24px;height:24px;margin:0"></div>
       <span id="importStatusText">READING_ROSTER_FROM_SCREENSHOT...</span>
     </div>
-
-    <div class="divider-or"><span>OR_SEARCH_MANUALLY</span></div>
 
     <div class="terminal-search">
       <span class="terminal-prompt">&gt;</span>
@@ -1485,6 +1637,21 @@ body {
   </footer>
 
   <div style="height:40px"></div>
+</div>
+
+<!-- WALKTHROUGH -->
+<div class="walkthrough" id="walkthrough" style="display:none">
+  <div class="wt-card">
+    <div class="cb-tl"></div><div class="cb-tr"></div><div class="cb-bl"></div><div class="cb-br"></div>
+    <div class="wt-step-dots" id="wtDots"></div>
+    <div class="wt-icon" id="wtIcon"></div>
+    <div class="wt-title" id="wtTitle"></div>
+    <div class="wt-desc" id="wtDesc"></div>
+    <div class="wt-actions">
+      <button class="btn btn-primary" id="wtNext" onclick="nextWtStep()">NEXT</button>
+    </div>
+    <button class="wt-skip" onclick="closeWalkthrough()">SKIP_TUTORIAL</button>
+  </div>
 </div>
 
 <!-- TOAST -->
@@ -1655,11 +1822,47 @@ function initWireframe() {
   draw();
 }
 
+// ========== WALKTHROUGH ==========
+const WT_STEPS = [
+  { icon: '🏈', title: 'WELCOME_TO_BDGE', desc: 'Build your fantasy football identity in 3 steps — roster, team name, and a custom AI-generated profile picture.' },
+  { icon: '📸', title: 'STEP_1: BUILD_ROSTER', desc: 'Upload a screenshot of your fantasy team and AI will read it automatically. Or search players one by one from the full NFL database.' },
+  { icon: '🔥', title: 'STEP_2: GET_NAMES', desc: 'AI generates 8 creative team names based on your roster — with BDGE culture and player puns baked in.' },
+  { icon: '🎨', title: 'STEP_3: CREATE_PFP', desc: 'Pick your star player and AI generates 4 unique profile pictures — cartoon, realistic, fantasy, and badass styles.' },
+];
+let wtStep = 0;
+
+function showWalkthrough() {
+  if (localStorage.getItem('bdge_wt_done')) return;
+  wtStep = 0;
+  document.getElementById('walkthrough').style.display = 'flex';
+  renderWtStep();
+}
+function renderWtStep() {
+  const s = WT_STEPS[wtStep];
+  document.getElementById('wtIcon').textContent = s.icon;
+  document.getElementById('wtTitle').textContent = s.title;
+  document.getElementById('wtDesc').textContent = s.desc;
+  document.getElementById('wtNext').textContent = wtStep === WT_STEPS.length - 1 ? 'GET_STARTED' : 'NEXT';
+  document.getElementById('wtDots').innerHTML = WT_STEPS.map((_, i) =>
+    `<div class="wt-dot ${i === wtStep ? 'active' : i < wtStep ? 'done' : ''}"></div>`
+  ).join('');
+}
+function nextWtStep() {
+  wtStep++;
+  if (wtStep >= WT_STEPS.length) { closeWalkthrough(); return; }
+  renderWtStep();
+}
+function closeWalkthrough() {
+  document.getElementById('walkthrough').style.display = 'none';
+  localStorage.setItem('bdge_wt_done', '1');
+}
+
 // ========== INIT ==========
 document.addEventListener('DOMContentLoaded', () => {
   initMatrix();
   initWireframe();
   loadPlayers();
+  setTimeout(showWalkthrough, 800);
 
   const searchEl = document.getElementById('playerSearch');
   searchEl.addEventListener('input', debounce(handleSearch, 150));
