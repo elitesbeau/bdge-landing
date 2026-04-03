@@ -73,8 +73,8 @@ body {
   min-height: 100vh;
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
-  font-size: 13px;
-  line-height: 1.4;
+  font-size: 15px;
+  line-height: 1.5;
 }
 
 /* ========== BACKGROUND OVERLAYS ========== */
@@ -86,7 +86,7 @@ body {
   width: 100vw; height: 100vh;
   pointer-events: none;
   z-index: 0;
-  opacity: 0.07;
+  opacity: 0.15;
 }
 
 /* Layer 0b: Boot Scan Line (plays ONCE) */
@@ -110,7 +110,7 @@ body {
   width: 200%; height: 50vh;
   pointer-events: none;
   z-index: 0;
-  opacity: 0.04;
+  opacity: 0.08;
   background-image:
     linear-gradient(0deg, transparent 24%, rgba(34,211,238,0.12) 25%, rgba(34,211,238,0.12) 26%, transparent 27%),
     linear-gradient(90deg, transparent 24%, rgba(246,88,122,0.08) 25%, rgba(246,88,122,0.08) 26%, transparent 27%);
@@ -129,11 +129,11 @@ body {
   position: fixed;
   bottom: 40px;
   right: 40px;
-  width: 200px;
-  height: 200px;
+  width: 250px;
+  height: 250px;
   pointer-events: none;
   z-index: 0;
-  opacity: 0.12;
+  opacity: 0.2;
 }
 
 /* Layer 2: Circuit Pattern */
@@ -142,7 +142,7 @@ body {
   inset: 0;
   pointer-events: none;
   z-index: 0;
-  opacity: 0.06;
+  opacity: 0.1;
   background-image:
     linear-gradient(90deg, rgba(246,88,122,0.05) 1px, transparent 1px),
     linear-gradient(rgba(246,88,122,0.05) 1px, transparent 1px),
@@ -157,7 +157,7 @@ body {
   inset: 0;
   pointer-events: none;
   z-index: 0;
-  opacity: 0.04;
+  opacity: 0.08;
   background-image:
     linear-gradient(rgba(246,88,122,0.05) 1px, transparent 1px),
     linear-gradient(90deg, rgba(246,88,122,0.05) 1px, transparent 1px);
@@ -262,9 +262,9 @@ body {
 .app {
   position: relative;
   z-index: 1;
-  max-width: 1100px;
+  max-width: 1400px;
   margin: 0 auto;
-  padding: 0 24px;
+  padding: 0 40px;
 }
 
 /* ========== SYSTEM STATUS BAR ========== */
@@ -318,7 +318,7 @@ body {
   background: var(--t5);
 }
 .header-title {
-  font-size: 18px;
+  font-size: 22px;
   font-weight: 800;
   letter-spacing: 0.12em;
   color: var(--primary);
@@ -352,8 +352,8 @@ body {
 }
 .bracket-link {
   position: relative;
-  padding: 8px 14px;
-  font-size: 11px;
+  padding: 10px 20px;
+  font-size: 13px;
   font-weight: 600;
   letter-spacing: 0.08em;
   color: var(--t3);
@@ -388,12 +388,12 @@ body {
 
 /* ========== TERMINAL LABEL ========== */
 .terminal-label {
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.3em;
   text-transform: uppercase;
   color: rgba(246,88,122,0.6);
-  margin-bottom: 8px;
+  margin-bottom: 10px;
 }
 
 /* ========== SECTION CONTAINER ========== */
@@ -408,10 +408,10 @@ body {
   margin-bottom: 32px;
 }
 .module-title {
-  font-size: 28px;
+  font-size: clamp(32px, 5vw, 48px);
   font-weight: 800;
   letter-spacing: 0.05em;
-  margin-bottom: 8px;
+  margin-bottom: 12px;
   animation: neonPulse 4s ease-in-out infinite, chromaShift 8s ease-in-out infinite;
 }
 
@@ -428,10 +428,10 @@ body {
   pointer-events: none;
 }
 .module-desc {
-  font-size: 12px;
+  font-size: 14px;
   color: var(--t3);
   line-height: 1.6;
-  max-width: 500px;
+  max-width: 600px;
 }
 
 /* ========== CORNER BRACKET CARD ========== */
@@ -481,11 +481,11 @@ body {
 }
 .terminal-input {
   width: 100%;
-  padding: 14px 20px 14px 40px;
+  padding: 18px 24px 18px 44px;
   background: rgba(0,0,0,0.4);
   border: 1px solid var(--t5);
   color: var(--t1);
-  font-size: 13px;
+  font-size: 15px;
   font-family: var(--font);
   outline: none;
   text-transform: uppercase;
@@ -726,9 +726,9 @@ body {
   align-items: center;
   gap: 8px;
   font-family: var(--font);
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 700;
-  padding: 12px 24px;
+  padding: 14px 28px;
   border: none;
   cursor: pointer;
   transition: all 0.25s;
@@ -852,14 +852,14 @@ body {
   font-weight: 800;
 }
 .nc-name {
-  font-size: 18px;
+  font-size: 22px;
   font-weight: 800;
   letter-spacing: 0.04em;
   margin-bottom: 6px;
   text-transform: uppercase;
 }
 .nc-reason {
-  font-size: 10px;
+  font-size: 12px;
   color: var(--t3);
   line-height: 1.5;
   letter-spacing: 0.02em;
@@ -1234,19 +1234,38 @@ body {
 /* ========== RESPONSIVE ========== */
 @media (max-width: 768px) {
   .app { padding: 0 16px; }
-  .header { flex-direction: column; gap: 10px; }
+  .header { flex-direction: column; gap: 12px; text-align: center; }
+  .header-left { flex-direction: column; gap: 8px; }
+  .header-sep { display: none; }
+  .header-logo { height: 64px; }
+  .header-right { justify-content: center; }
   .bracket-nav { gap: 2px; }
-  .bracket-link { padding: 6px 10px; font-size: 9px; }
-  .bracket-conn { width: 10px; }
+  .bracket-link { padding: 8px 12px; font-size: 11px; }
+  .bracket-conn { width: 8px; }
   .roster-grid { grid-template-columns: 1fr; }
   .names-grid { grid-template-columns: 1fr; }
-  .module-title { font-size: 22px; }
+  .module-title { font-size: 28px; }
+  .module-desc { font-size: 13px; }
+  .terminal-input { font-size: 14px; padding: 16px 20px 16px 40px; }
   .pfp-grid { grid-template-columns: 1fr; max-width: 400px; margin: 0 auto 24px; }
-  .pfp-selected-img { width: 260px; height: 260px; }
+  .pfp-selected-img { width: 280px; height: 280px; }
   .analyzer-grid { grid-template-columns: 1fr; }
   .download-row { flex-direction: column; align-items: center; }
-  .download-row .btn { width: 100%; max-width: 300px; justify-content: center; }
+  .download-row .btn { width: 100%; max-width: 320px; justify-content: center; }
   .status-bar { font-size: 8px; gap: 8px; flex-wrap: wrap; }
+  .btn { font-size: 11px; padding: 12px 20px; }
+  #wireframeCanvas { width: 120px; height: 120px; bottom: 20px; right: 20px; opacity: 0.12; }
+  .neon-grid-floor { opacity: 0.04; }
+}
+
+@media (max-width: 480px) {
+  .app { padding: 0 12px; }
+  .header-logo { height: 56px; }
+  .bracket-link { padding: 6px 8px; font-size: 10px; }
+  .bracket-conn { display: none; }
+  .module-title { font-size: 24px; }
+  .pfp-selected-img { width: 240px; height: 240px; }
+  #wireframeCanvas { display: none; }
 }
 
 /* ========== SCROLLBAR ========== */
@@ -1261,7 +1280,7 @@ body {
 <body>
 
 <canvas id="matrixCanvas"></canvas>
-<canvas id="wireframeCanvas" width="200" height="200"></canvas>
+<canvas id="wireframeCanvas" width="250" height="250"></canvas>
 <div class="hud-scan-line"></div>
 <div class="neon-grid-floor"></div>
 <div class="circuit-pattern"></div>
@@ -1586,7 +1605,7 @@ function initMatrix() {
 function initWireframe() {
   const canvas = document.getElementById('wireframeCanvas');
   const ctx = canvas.getContext('2d');
-  const w = 200, h = 200, cx = 100, cy = 100, r = 70;
+  const w = 250, h = 250, cx = 125, cy = 125, r = 90;
   let angle = 0;
 
   function draw() {
