@@ -414,14 +414,16 @@ body {
   font-weight: 800;
   letter-spacing: 0.05em;
   margin-bottom: 12px;
-  animation: neonPulse 4s ease-in-out infinite, chromaShift 8s ease-in-out infinite, subtleGlitch 6s ease-in-out infinite;
+  animation: neonPulse 4s ease-in-out infinite, chromaShift 8s ease-in-out infinite, subtleGlitch 4s ease-in-out infinite;
 }
 @keyframes subtleGlitch {
-  0%, 92%, 100% { transform: translate(0); }
-  93% { transform: translate(-2px, 1px); text-shadow: -2px 0 var(--neon-cyan), 2px 0 var(--neon-red); }
-  94% { transform: translate(2px, -1px); }
-  95% { transform: translate(-1px, 0); text-shadow: -1px 0 var(--neon-cyan), 1px 0 var(--neon-red); }
-  96% { transform: translate(0); }
+  0%, 85%, 100% { transform: translate(0); clip-path: none; }
+  86% { transform: translate(-3px, 2px); text-shadow: -3px 0 var(--neon-cyan), 3px 0 var(--neon-red); }
+  87% { transform: translate(3px, -1px); text-shadow: 2px 0 var(--neon-cyan), -2px 0 var(--neon-red); clip-path: inset(20% 0 40% 0); }
+  88% { transform: translate(-2px, 0); clip-path: inset(60% 0 10% 0); }
+  89% { transform: translate(4px, 1px); text-shadow: -4px 0 var(--neon-cyan), 4px 0 var(--neon-red); clip-path: none; }
+  90% { transform: translate(-1px, -2px); }
+  91% { transform: translate(0); text-shadow: none; }
 }
 
 /* Content backdrop for readability */
@@ -1524,70 +1526,7 @@ body {
 <div class="scanlines"></div>
 
 <div class="app">
-  <!-- CYBER DECORATIVE ELEMENTS (fixed position, visible on scroll) -->
-  <!-- Crosshair top-left -->
-  <svg class="cyber-deco" style="top:140px;left:30px;width:60px;height:60px" viewBox="0 0 50 50">
-    <circle cx="25" cy="25" r="14" fill="none" stroke="rgba(34,211,238,0.5)" stroke-width="1"/>
-    <circle cx="25" cy="25" r="4" fill="none" stroke="rgba(34,211,238,0.6)" stroke-width="0.8"/>
-    <line x1="25" y1="3" x2="25" y2="16" stroke="rgba(34,211,238,0.4)" stroke-width="0.8"/>
-    <line x1="25" y1="34" x2="25" y2="47" stroke="rgba(34,211,238,0.4)" stroke-width="0.8"/>
-    <line x1="3" y1="25" x2="16" y2="25" stroke="rgba(34,211,238,0.4)" stroke-width="0.8"/>
-    <line x1="34" y1="25" x2="47" y2="25" stroke="rgba(34,211,238,0.4)" stroke-width="0.8"/>
-  </svg>
-
-  <!-- Crosshair bottom-right -->
-  <svg class="cyber-deco" style="bottom:200px;right:40px;width:50px;height:50px" viewBox="0 0 50 50">
-    <circle cx="25" cy="25" r="12" fill="none" stroke="rgba(246,88,122,0.4)" stroke-width="1"/>
-    <circle cx="25" cy="25" r="2" fill="rgba(246,88,122,0.5)"/>
-    <line x1="25" y1="6" x2="25" y2="17" stroke="rgba(246,88,122,0.35)" stroke-width="0.8"/>
-    <line x1="25" y1="33" x2="25" y2="44" stroke="rgba(246,88,122,0.35)" stroke-width="0.8"/>
-    <line x1="6" y1="25" x2="17" y2="25" stroke="rgba(246,88,122,0.35)" stroke-width="0.8"/>
-    <line x1="33" y1="25" x2="44" y2="25" stroke="rgba(246,88,122,0.35)" stroke-width="0.8"/>
-  </svg>
-
-  <!-- Wireframe window left -->
-  <div class="cyber-window" style="top:45%;left:16px;width:90px">
-    <div class="cyber-window-bar"><div class="cyber-window-dot"></div><div class="cyber-window-dot"></div><div class="cyber-window-dot"></div></div>
-    <div class="cyber-window-lines">
-      <div class="cyber-window-line" style="width:90%"></div>
-      <div class="cyber-window-line" style="width:55%"></div>
-      <div class="cyber-window-line" style="width:75%"></div>
-      <div class="cyber-window-line" style="width:40%"></div>
-      <div class="cyber-window-line" style="width:85%"></div>
-    </div>
-  </div>
-
-  <!-- Wireframe window right -->
-  <div class="cyber-window" style="top:35%;right:16px;width:80px">
-    <div class="cyber-window-bar"><div class="cyber-window-dot"></div><div class="cyber-window-dot"></div></div>
-    <div class="cyber-window-lines">
-      <div class="cyber-window-line" style="width:100%"></div>
-      <div class="cyber-window-line" style="width:45%"></div>
-      <div class="cyber-window-line" style="width:70%"></div>
-    </div>
-  </div>
-
-  <!-- Data readout left -->
-  <div class="cyber-readout" style="top:25%;left:20px">
-    SYS.INIT // 2099<br>
-    PROC: QUANTUM_AI<br>
-    MODE: ACTIVE<br>
-    SERIAL: BDGE-4072
-  </div>
-
-  <!-- Data readout right -->
-  <div class="cyber-readout" style="bottom:30%;right:20px;text-align:right">
-    FPS: 144<br>
-    NODE: FANTASY_CORE<br>
-    STATUS: ONLINE<br>
-    // FUTURE_IS_NOW
-  </div>
-
-  <!-- Arrow chevrons right side -->
-  <svg class="cyber-deco" style="top:60%;right:24px;width:20px;height:50px;opacity:0.25" viewBox="0 0 20 50">
-    <polyline points="4,4 16,12 4,20" fill="none" stroke="rgba(246,88,122,0.6)" stroke-width="1.5"/>
-    <polyline points="4,24 16,32 4,40" fill="none" stroke="rgba(34,211,238,0.5)" stroke-width="1.5"/>
-  </svg>
+  <!-- Decorations removed — clean layout -->
 
   <!-- STATUS BAR -->
   <div class="status-bar">
@@ -1643,7 +1582,7 @@ body {
         <div class="cb-tl"></div><div class="cb-tr"></div><div class="cb-bl"></div><div class="cb-br"></div>
         <div class="hero-card-icon"><svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg></div>
         <div class="hero-card-title">IMPORT_SCREENSHOT</div>
-        <div class="hero-card-desc">Upload a screenshot of your fantasy team from any app — AI reads it instantly</div>
+        <div class="hero-card-desc">Upload a screenshot of your fantasy team from any app — BDGE reads it instantly</div>
       </div>
       <div class="hero-card secondary" onclick="document.getElementById('playerSearch').focus()">
         <div class="cb-tl"></div><div class="cb-tr"></div><div class="cb-bl"></div><div class="cb-br"></div>
@@ -1689,12 +1628,12 @@ body {
     <div class="module-header">
       <div class="terminal-label">// AI_NAME_GENERATOR</div>
       <h2 class="module-title">TEAM_NAMES</h2>
-      <p class="module-desc">AI-generated names based on your roster, with BDGE flavor. Pick your favorite.</p>
+      <p class="module-desc">Custom names generated from your roster, with BDGE flavor. Pick your favorite.</p>
     </div>
 
     <div class="generating-wrap" id="genWrap" style="display:none">
       <div class="gen-spinner"></div>
-      <div class="gen-text">COOKING_UP_NAMES_FOR_THE_BIG_DOGS<span class="typing-dots"></span></div>
+      <div class="gen-text">BDGE_IS_COOKING_UP_NAMES<span class="typing-dots"></span></div>
     </div>
 
     <div class="names-grid" id="namesGrid"></div>
@@ -1717,7 +1656,7 @@ body {
     <div class="module-header">
       <div class="terminal-label">// PFP_GENERATOR</div>
       <h2 class="module-title">CREATE_YOUR_PFP</h2>
-      <p class="module-desc">AI creates unique profile pictures featuring your star player. Pick your favorite and download.</p>
+      <p class="module-desc">BDGE creates unique profile pictures featuring your star player. Pick your favorite and download.</p>
     </div>
 
     <div class="star-selector">
@@ -1729,7 +1668,7 @@ body {
       <div class="gen-spinner" style="width:28px;height:28px;margin:0"></div>
       <div>
         <div class="pfp-gen-title">CREATING_YOUR_PFPS...</div>
-        <div class="pfp-gen-sub" id="pfpGenSub">GENERATING 4 UNIQUE DESIGNS WITH AI</div>
+        <div class="pfp-gen-sub" id="pfpGenSub">BDGE IS GENERATING 4 UNIQUE DESIGNS</div>
       </div>
     </div>
 
@@ -1774,7 +1713,7 @@ body {
     <div class="module-header">
       <div class="terminal-label">// ROSTER_ANALYZER</div>
       <h2 class="module-title">TEAM_ANALYSIS</h2>
-      <p class="module-desc">AI-powered breakdown of your roster composition, strengths, and fantasy outlook.</p>
+      <p class="module-desc">BDGE-powered breakdown of your roster composition, strengths, and fantasy outlook.</p>
     </div>
 
     <div id="analyzerContent">
@@ -1787,7 +1726,7 @@ body {
     <div class="tech-footer-label">// BUILT_WITH</div>
     <div class="tech-pills">
       <span class="tech-pill">SLEEPER_API</span>
-      <span class="tech-pill">GROQ_AI_(LLAMA_3.3)</span>
+      <span class="tech-pill">BDGE_ENGINE</span>
       <span class="tech-pill">GOOGLE_GEMINI</span>
       <span class="tech-pill">VANILLA_JS</span>
     </div>
@@ -1983,7 +1922,7 @@ const WT_STEPS = [
   { target: 'heroActions', title: 'START_HERE', desc: 'Upload a screenshot of your fantasy team or search players manually to build your roster.', arrow: 'bottom' },
   { target: 'playerSearch', title: 'SEARCH_PLAYERS', desc: 'Type any NFL player name — results appear instantly. Hit Enter to add the first result.', arrow: 'bottom' },
   { target: 'rosterGrid', title: 'YOUR_ROSTER', desc: 'Your players appear here. Add your whole squad, then generate team names.', arrow: 'bottom' },
-  { target: 'toNamesBtn', title: 'GENERATE_NAMES', desc: 'Once you have players, hit this to get 8 AI-generated team names with BDGE flavor.', arrow: 'top' },
+  { target: 'toNamesBtn', title: 'GENERATE_NAMES', desc: 'Once you have players, hit this to get 8 custom team names with BDGE flavor.', arrow: 'top' },
 ];
 let wtStep = 0;
 let wtPrevHighlight = null;
@@ -2367,7 +2306,7 @@ async function generatePFPs(retryCount = 0) {
   grid.innerHTML = PFP_STYLES.map((s, i) => `<div class="pfp-card" id="pfpCard${i}"><div class="pfp-skeleton"><div class="pfp-skeleton-img"></div><span class="pfp-skeleton-label">${s.tag}</span></div><div class="pfp-check"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="3"><path d="M20 6 9 17l-5-5"/></svg></div></div>`).join('');
 
   const playerName = `${star.first_name} ${star.last_name}`;
-  document.getElementById('pfpGenSub').textContent = 'BDGE_IS_RESEARCHING_THE_PLAYER...';
+  document.getElementById('pfpGenSub').textContent = 'BDGE_IS_CREATING_YOUR_PFPS...';
   const refB64 = await loadStyleRef();
 
   try {
@@ -2641,13 +2580,13 @@ async function runAnalysis() {
       </div>
     </div>
 
-    <!-- AI SCOUTING REPORT -->
+    <!-- SCOUTING REPORT -->
     <div class="cb-card" style="padding:24px;margin-bottom:24px" id="aiScoutCard">
       <div class="cb-tl"></div><div class="cb-tr"></div><div class="cb-bl"></div><div class="cb-br"></div>
-      <div class="analyzer-section-title">// AI_SCOUTING_REPORT</div>
+      <div class="analyzer-section-title">// BDGE_SCOUTING_REPORT</div>
       <div id="aiScoutContent" style="display:flex;align-items:center;gap:12px;padding:16px 0">
         <div class="gen-spinner" style="width:24px;height:24px;margin:0;flex-shrink:0"></div>
-        <span style="font-size:11px;color:var(--t3);letter-spacing:0.05em">ANALYZING_ROSTER_COMPOSITION...</span>
+        <span style="font-size:11px;color:var(--t3);letter-spacing:0.05em">BDGE_IS_ANALYZING_YOUR_ROSTER...</span>
       </div>
     </div>
   `;
