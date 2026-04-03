@@ -86,7 +86,40 @@ body {
   width: 100vw; height: 100vh;
   pointer-events: none;
   z-index: 0;
-  opacity: 0.08;
+  opacity: 0.25;
+}
+
+/* Layer 0b: Moving HUD Scan Line */
+.hud-scan-line {
+  position: fixed;
+  left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--neon-red), transparent);
+  opacity: 0.15;
+  z-index: 1;
+  pointer-events: none;
+  animation: hudScan 4s ease-in-out infinite;
+}
+
+/* Layer 0c: Neon Grid Floor */
+.neon-grid-floor {
+  position: fixed;
+  bottom: 0; left: -50%;
+  width: 200%; height: 60vh;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.06;
+  background-image:
+    linear-gradient(0deg, transparent 24%, rgba(246,88,122,0.15) 25%, rgba(246,88,122,0.15) 26%, transparent 27%),
+    linear-gradient(90deg, transparent 24%, rgba(34,211,238,0.1) 25%, rgba(34,211,238,0.1) 26%, transparent 27%);
+  background-size: 80px 80px;
+  transform: perspective(400px) rotateX(60deg);
+  transform-origin: bottom center;
+  animation: gridFlow 3s linear infinite;
+}
+@keyframes gridFlow {
+  0% { background-position: 0 0; }
+  100% { background-position: 80px 80px; }
 }
 
 /* Layer 2: Circuit Pattern */
@@ -261,8 +294,8 @@ body {
   gap: 16px;
 }
 .header-logo {
-  height: 72px;
-  opacity: 0.95;
+  height: 96px;
+  opacity: 1;
   transition: transform 0.3s cubic-bezier(0.25,1,0.5,1);
 }
 .header-logo:hover { transform: scale(1.06) rotate(-2deg); }
@@ -1210,6 +1243,8 @@ body {
 <body>
 
 <canvas id="matrixCanvas"></canvas>
+<div class="hud-scan-line"></div>
+<div class="neon-grid-floor"></div>
 <div class="circuit-pattern"></div>
 <div class="grid-overlay"></div>
 <div class="scanlines"></div>
@@ -1489,23 +1524,29 @@ function initMatrix() {
   canvas.height = window.innerHeight;
   window.addEventListener('resize', () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; });
 
-  const chars = 'BDGE01アイウエオカキクケコ';
+  const chars = 'BDGE01FANTASY2099アイウエオカキクケコサシスセソ';
   const fontSize = 14;
   const cols = Math.floor(canvas.width / fontSize);
-  const drops = Array(cols).fill(1);
+  const drops = Array(cols).fill(0).map(() => Math.random() * -50);
 
   function draw() {
-    ctx.fillStyle = 'rgba(0,0,2,0.06)';
+    ctx.fillStyle = 'rgba(0,0,2,0.05)';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     ctx.font = fontSize + 'px JetBrains Mono';
 
     drops.forEach((y, i) => {
       const char = chars[Math.floor(Math.random() * chars.length)];
-      const isRed = Math.random() > 0.7;
-      ctx.fillStyle = isRed ? 'rgba(246,88,122,0.6)' : 'rgba(34,211,238,0.3)';
+      const rng = Math.random();
+      if (rng > 0.7) {
+        ctx.fillStyle = 'rgba(246,88,122,0.8)';
+      } else if (rng > 0.4) {
+        ctx.fillStyle = 'rgba(34,211,238,0.4)';
+      } else {
+        ctx.fillStyle = 'rgba(255,255,255,0.15)';
+      }
       ctx.fillText(char, i * fontSize, y * fontSize);
 
-      if (y * fontSize > canvas.height && Math.random() > 0.98) {
+      if (y * fontSize > canvas.height && Math.random() > 0.975) {
         drops[i] = 0;
       }
       drops[i]++;
