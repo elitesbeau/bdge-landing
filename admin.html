@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>BDGE Team Builder — Admin Dashboard</title>
+<title>BDGE Identity Builder — Admin Dashboard</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -76,9 +76,9 @@ h1 { font-family: 'Bebas Neue', sans-serif; font-size: 48px; letter-spacing: 2px
 </head>
 <body>
 <div class="container">
-  <a href="team-builder.html" class="back-link">&larr; Back to Team Builder</a>
+  <a href="team-builder.html" class="back-link">&larr; Back to Identity Builder</a>
   <h1>ADMIN DASHBOARD</h1>
-  <p class="subtitle">BDGE Team Builder Analytics — User engagement & content metrics</p>
+  <p class="subtitle">BDGE Identity Builder Analytics — User engagement & content metrics</p>
 
   <div class="stats-grid" id="statsGrid"></div>
 
@@ -164,7 +164,7 @@ if (events.length) {
     </div>`;
   }).join('');
 } else {
-  log.innerHTML = '<div class="empty-state">No events recorded yet — use the Team Builder to generate data</div>';
+  log.innerHTML = '<div class="empty-state">No events recorded yet — use the Identity Builder to generate data</div>';
 }
 
 // Auto-refresh every 5s
