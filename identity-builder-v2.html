@@ -1998,7 +1998,7 @@ async function generatePFPs() {
       }
     }
     if (imgIndex === 0) showPfpErr('AI_IS_WARMING_UP — TRY_AGAIN');
-    else { for (let i = imgIndex; i < 4; i++) { const c = document.getElementById(`pfpCard${i}`); if (c) { const sk = c.querySelector('.pfp-skeleton'); if (sk) sk.style.display = 'none'; } } }
+    else { for (let i = imgIndex; i < 4; i++) { const c = document.getElementById(`pfpCard${i}`); if (c) c.innerHTML = `<div class="pfp-error"><span>${PFP_STYLES[i].tag} — NOT_RETURNED</span><button class="pfp-retry-btn" onclick="generatePFPs()">REGENERATE_ALL</button></div>`; } }
   } catch(err) {
     const msg = err.name === 'AbortError' ? 'GENERATION_TIMED_OUT' : (err.message?.slice(0,50) || 'ERROR');
     showPfpErr(msg);
