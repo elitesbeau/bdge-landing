@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>BDGE Team Builder | Big Dogs Gotta Eat</title>
+<link rel="icon" type="image/png" href="bdge-transparent.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -966,7 +967,7 @@ body {
   font-size: 12px; letter-spacing: 2px; text-transform: uppercase;
   color: var(--t3); margin-bottom: 12px;
 }
-.star-grid { display: flex; gap: 10px; flex-wrap: wrap; }
+.star-grid { display: flex; gap: 10px; flex-wrap: wrap; overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; padding-bottom: 4px; }
 .star-option {
   display: flex; align-items: center; gap: 8px;
   padding: 8px 14px; background: var(--bg3);
@@ -994,6 +995,113 @@ body {
   box-shadow: 0 8px 32px rgba(0,0,0,0.4);
 }
 .toast.show { transform: translateX(-50%) translateY(0); }
+
+/* ========== SKELETON LOADING ========== */
+.pfp-skeleton {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  background: var(--bg2);
+}
+.pfp-skeleton-img {
+  width: 100%;
+  height: 0;
+  padding-bottom: 100%;
+  background: linear-gradient(90deg, var(--bg3) 25%, var(--bg4) 50%, var(--bg3) 75%);
+  background-size: 200% 100%;
+  animation: skeletonPulse 1.5s ease-in-out infinite;
+  border-radius: 4px;
+}
+.pfp-skeleton-label {
+  position: absolute;
+  bottom: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 11px;
+  color: var(--t4);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+@keyframes skeletonPulse {
+  0% { background-position: 200% 0 }
+  100% { background-position: -200% 0 }
+}
+
+/* ========== RETRY BUTTON IN CARD ========== */
+.pfp-error {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  background: var(--bg2);
+  padding: 16px;
+  text-align: center;
+}
+.pfp-error span { font-size: 12px; color: var(--t3); line-height: 1.4; }
+.pfp-retry-btn {
+  font-family: var(--fb);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 8px 16px;
+  border-radius: 6px;
+  border: 1px solid var(--t5);
+  background: var(--bg3);
+  color: var(--t1);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.pfp-retry-btn:hover { border-color: var(--red); color: var(--red); }
+
+/* ========== TECH FOOTER ========== */
+.tech-footer {
+  text-align: center;
+  padding: 32px 0 16px;
+  border-top: 1px solid var(--t6);
+  margin-top: 16px;
+}
+.tech-footer-label {
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--t4);
+  margin-bottom: 10px;
+}
+.tech-footer-pills {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.tech-pill {
+  font-size: 11px;
+  padding: 4px 12px;
+  border-radius: 20px;
+  background: var(--bg3);
+  border: 1px solid var(--t5);
+  color: var(--t3);
+  letter-spacing: 0.3px;
+}
+.tech-footer-back {
+  font-size: 12px;
+  color: var(--t4);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.tech-footer-back:hover { color: var(--red); }
+
+@media (max-width: 768px) {
+  .star-grid { flex-wrap: nowrap; }
+  .star-grid::-webkit-scrollbar { display: none; }
+}
 </style>
 </head>
 <body>
@@ -1145,7 +1253,7 @@ body {
       </button>
       <button class="btn btn-share" onclick="shareToTwitter()">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
-        Share on X
+        Share PFP on X
       </button>
       <button class="btn btn-secondary" onclick="generatePFPs()">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 4v6h6M23 20v-6h-6"/><path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4-4.64 4.36A9 9 0 0 1 3.51 15"/></svg>
@@ -1158,7 +1266,19 @@ body {
     </div>
   </section>
 
-  <div style="height:80px"></div>
+  <!-- TECH FOOTER -->
+  <footer class="tech-footer">
+    <div class="tech-footer-label">Built with</div>
+    <div class="tech-footer-pills">
+      <span class="tech-pill">Sleeper API</span>
+      <span class="tech-pill">Groq AI (Llama 3.3)</span>
+      <span class="tech-pill">Google Gemini</span>
+      <span class="tech-pill">Vanilla JS</span>
+    </div>
+    <a href="index.html" class="tech-footer-back">&larr; Back to BDGE Home</a>
+  </footer>
+
+  <div style="height:40px"></div>
 </div>
 
 <!-- TOAST -->
@@ -1786,7 +1906,7 @@ function restoreCachedPFPs(cached) {
   const grid = document.getElementById('pfpGrid');
   grid.innerHTML = cached.images.map((img, i) => {
     if (!img) return `<div class="pfp-card" id="pfpCard${i}"></div>`;
-    return `<div class="pfp-card" id="pfpCard${i}"><img src="${img.dataUrl}" alt="PFP ${i+1}"><div class="pfp-check"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><path d="M20 6 9 17l-5-5"/></svg></div></div>`;
+    return `<div class="pfp-card" id="pfpCard${i}"><img src="${img.dataUrl}" alt="PFP ${i+1}"><div class="pfp-style-tag">${PFP_STYLES[i]?.tag || ''}</div><div class="pfp-check"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><path d="M20 6 9 17l-5-5"/></svg></div></div>`;
   }).join('');
 
   // Re-attach click handlers
@@ -1833,12 +1953,12 @@ async function generatePFPs() {
   const grid = document.getElementById('pfpGrid');
   status.style.display = 'flex';
 
-  // Create placeholder cards
+  // Create skeleton placeholder cards
   grid.innerHTML = PFP_STYLES.map((s, i) => `
     <div class="pfp-card" id="pfpCard${i}">
-      <div class="pfp-loading">
-        <div class="pfp-gen-spinner"></div>
-        <span>Generating...</span>
+      <div class="pfp-skeleton">
+        <div class="pfp-skeleton-img"></div>
+        <span class="pfp-skeleton-label">${s.tag}</span>
       </div>
       <div class="pfp-check">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><path d="M20 6 9 17l-5-5"/></svg>
@@ -1854,7 +1974,7 @@ async function generatePFPs() {
   const refB64 = await loadStyleRef();
   console.log('Style ref loaded:', refB64 ? 'YES (' + refB64.length + ' bytes)' : 'NO');
 
-  // Single Gemini call — generates all 4 styles at once
+  // Single Gemini call — generates all 4 styles at once (90s timeout)
   try {
     const parts = [];
     if (refB64) {
@@ -1864,14 +1984,19 @@ async function generatePFPs() {
     }
     parts.push({ text: `I am creating a pfp for my fantasy football team. I want to create the pfp centered around ${playerName}. First search what he looks like, his number, and ensure current team is accurate so that you understand his character. Then look for any highlights or viral moments he had in 2025. I want you to create a cartoon, realistic, fantasy, and badass pfp (4 of them) using everything I just gave you above. Before you create the pfp understand that the goal is to have the pfp look as close as possible to the player. Add a signature effect of the players name on the pfp as well. The image I attached is an example of the style I want. All 4 images should be completely unique. Do not copy anything from one to the next as each needs to fit its own aesthetic. Ensure you are using the players most current team.` });
 
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 90000);
+
     const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-image:generateContent?key=${GEMINI_KEY}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
+      signal: controller.signal,
       body: JSON.stringify({
         contents: [{ parts }],
         generationConfig: { responseModalities: ['IMAGE', 'TEXT'] }
       })
     });
+    clearTimeout(timeout);
 
     const data = await res.json();
     if (data.error) throw new Error(data.error.message || JSON.stringify(data.error));
@@ -1887,11 +2012,17 @@ async function generatePFPs() {
         const idx = imgIndex;
         const card = document.getElementById(`pfpCard${idx}`);
         if (card) {
-          card.querySelector('.pfp-loading').style.display = 'none';
+          const skeleton = card.querySelector('.pfp-skeleton');
+          if (skeleton) skeleton.style.display = 'none';
           const imgEl = document.createElement('img');
           imgEl.src = dataUrl;
           imgEl.alt = PFP_STYLES[idx].tag;
           card.insertBefore(imgEl, card.firstChild);
+          // Add style tag label
+          const tagEl = document.createElement('div');
+          tagEl.className = 'pfp-style-tag';
+          tagEl.textContent = PFP_STYLES[idx].tag;
+          card.appendChild(tagEl);
           card.onclick = () => selectPFP(idx);
           pfpImages[idx] = { dataUrl, el: imgEl };
         }
@@ -1901,22 +2032,25 @@ async function generatePFPs() {
 
     // Mark remaining cards
     if (imgIndex === 0) {
-      // No images at all — likely rate limited
-      for (let i = 0; i < 4; i++) {
-        const card = document.getElementById(`pfpCard${i}`);
-        if (card) card.querySelector('.pfp-loading').innerHTML = '<span style="color:var(--t3)">AI is busy — wait a moment and hit Regenerate</span>';
-      }
+      showPfpError('AI is warming up — try again in a moment');
     } else {
       for (let i = imgIndex; i < 4; i++) {
         const card = document.getElementById(`pfpCard${i}`);
-        if (card) card.querySelector('.pfp-loading').style.display = 'none';
+        if (card) { const sk = card.querySelector('.pfp-skeleton'); if (sk) sk.style.display = 'none'; }
       }
     }
   } catch (err) {
     console.error('PFP generation failed:', err);
+    const msg = err.name === 'AbortError' ? 'Generation timed out — try again' : (err.message?.slice(0,60) || 'Something went wrong');
+    showPfpError(msg);
+  }
+
+  function showPfpError(msg) {
     for (let i = 0; i < 4; i++) {
       const card = document.getElementById(`pfpCard${i}`);
-      if (card && !pfpImages[i]) card.querySelector('.pfp-loading').innerHTML = `<span style="color:var(--t3)">${err.message?.slice(0,80) || 'Failed'}</span>`;
+      if (card && !pfpImages[i]) {
+        card.innerHTML = `<div class="pfp-error"><span>${msg}</span><button class="pfp-retry-btn" onclick="generatePFPs()">Retry</button></div><div class="pfp-check"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><path d="M20 6 9 17l-5-5"/></svg></div>`;
+      }
     }
   }
 
