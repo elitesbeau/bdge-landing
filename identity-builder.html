@@ -1318,10 +1318,14 @@ body {
   width: 24px; height: 24px; border-color: var(--primary);
 }
 .hero-card-icon {
-  font-size: 36px;
-  margin-bottom: 12px;
-  opacity: 0.8;
+  margin-bottom: 14px;
+  opacity: 0.6;
+  display: flex;
+  justify-content: center;
 }
+.hero-card:hover .hero-card-icon { opacity: 1; }
+.hero-card-icon svg { stroke: var(--primary); }
+.hero-card.secondary .hero-card-icon svg { stroke: var(--neon-cyan); }
 .hero-card-title {
   font-size: 16px;
   font-weight: 800;
@@ -1350,79 +1354,92 @@ body {
   text-shadow: var(--glow-cyan);
 }
 
-/* ========== WALKTHROUGH OVERLAY ========== */
-.walkthrough {
+/* ========== WALKTHROUGH TOOLTIP ========== */
+.wt-backdrop {
   position: fixed;
   inset: 0;
-  background: rgba(0,0,2,0.85);
-  backdrop-filter: blur(6px);
+  background: rgba(0,0,2,0.5);
+  z-index: 1999;
+  pointer-events: all;
+}
+.wt-tooltip {
+  position: absolute;
   z-index: 2000;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  animation: fadeIn 0.3s;
-}
-@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-.wt-card {
   background: var(--bg-card);
-  border: 1px solid var(--t5);
-  max-width: 520px;
-  width: 90%;
-  padding: 40px 32px;
-  text-align: center;
-  position: relative;
-  animation: cardEnter 0.4s ease-out;
+  border: 1px solid var(--primary);
+  padding: 20px 24px;
+  max-width: 340px;
+  width: max-content;
+  animation: cardEnter 0.3s ease-out;
+  box-shadow: 0 12px 40px rgba(0,0,0,0.6), 0 0 20px rgba(246,88,122,0.1);
 }
-.wt-card .cb-tl, .wt-card .cb-tr, .wt-card .cb-bl, .wt-card .cb-br {
-  position: absolute; width: 20px; height: 20px;
+.wt-tooltip::before {
+  content: '';
+  position: absolute;
+  top: -6px; left: 24px;
+  width: 10px; height: 10px;
+  background: var(--bg-card);
+  border-left: 1px solid var(--primary);
+  border-top: 1px solid var(--primary);
+  transform: rotate(45deg);
 }
-.wt-card .cb-tl { top: -1px; left: -1px; border-left: 2px solid var(--primary); border-top: 2px solid var(--primary); }
-.wt-card .cb-tr { top: -1px; right: -1px; border-right: 2px solid var(--primary); border-top: 2px solid var(--primary); }
-.wt-card .cb-bl { bottom: -1px; left: -1px; border-left: 2px solid var(--primary); border-bottom: 2px solid var(--primary); }
-.wt-card .cb-br { bottom: -1px; right: -1px; border-right: 2px solid var(--primary); border-bottom: 2px solid var(--primary); }
-.wt-step-dots {
-  display: flex;
-  gap: 8px;
-  justify-content: center;
-  margin-bottom: 24px;
+.wt-tooltip.arrow-bottom::before {
+  top: auto; bottom: -6px;
+  transform: rotate(225deg);
 }
-.wt-dot {
-  width: 8px; height: 8px;
-  border-radius: 50%;
-  background: var(--t5);
-  transition: all 0.3s;
+.wt-tooltip .cb-tl, .wt-tooltip .cb-tr, .wt-tooltip .cb-bl, .wt-tooltip .cb-br {
+  position: absolute; width: 12px; height: 12px;
 }
-.wt-dot.active { background: var(--primary); box-shadow: 0 0 8px rgba(246,88,122,0.5); }
-.wt-dot.done { background: var(--neon-green); }
-.wt-icon { font-size: 48px; margin-bottom: 16px; }
-.wt-title {
-  font-size: 22px;
-  font-weight: 800;
-  letter-spacing: 0.05em;
-  margin-bottom: 8px;
+.wt-tooltip .cb-tl { top: -1px; left: -1px; border-left: 2px solid var(--primary); border-top: 2px solid var(--primary); }
+.wt-tooltip .cb-tr { top: -1px; right: -1px; border-right: 2px solid var(--primary); border-top: 2px solid var(--primary); }
+.wt-tooltip .cb-bl { bottom: -1px; left: -1px; border-left: 2px solid var(--primary); border-bottom: 2px solid var(--primary); }
+.wt-tooltip .cb-br { bottom: -1px; right: -1px; border-right: 2px solid var(--primary); border-bottom: 2px solid var(--primary); }
+.wt-step-count {
+  font-size: 9px;
+  letter-spacing: 0.15em;
   color: var(--primary);
-  text-shadow: var(--glow-red-subtle);
+  text-transform: uppercase;
+  margin-bottom: 8px;
+  opacity: 0.7;
+}
+.wt-title {
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  margin-bottom: 6px;
+  color: var(--t1);
 }
 .wt-desc {
-  font-size: 13px;
+  font-size: 12px;
   color: var(--t3);
-  line-height: 1.6;
-  margin-bottom: 28px;
+  line-height: 1.5;
+  margin-bottom: 16px;
 }
-.wt-actions { display: flex; gap: 10px; justify-content: center; }
+.wt-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: space-between;
+}
 .wt-skip {
   font-family: var(--font);
-  font-size: 10px;
+  font-size: 9px;
   color: var(--t4);
   background: none;
   border: none;
   cursor: pointer;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
-  margin-top: 16px;
   transition: color 0.2s;
+  padding: 0;
 }
 .wt-skip:hover { color: var(--t2); }
+.wt-highlight {
+  position: relative;
+  z-index: 2000;
+  box-shadow: 0 0 0 4px rgba(246,88,122,0.3), 0 0 20px rgba(246,88,122,0.15);
+  border-radius: 2px;
+}
 
 @media (max-width: 768px) {
   .hero-actions { grid-template-columns: 1fr; max-width: 400px; }
@@ -1495,13 +1512,13 @@ body {
     <div class="hero-actions" id="heroActions">
       <div class="hero-card" onclick="document.getElementById('screenshotInput').click()">
         <div class="cb-tl"></div><div class="cb-tr"></div><div class="cb-bl"></div><div class="cb-br"></div>
-        <div class="hero-card-icon">📸</div>
+        <div class="hero-card-icon"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg></div>
         <div class="hero-card-title">IMPORT_SCREENSHOT</div>
         <div class="hero-card-desc">Upload a screenshot of your fantasy team from any app — AI reads it instantly</div>
       </div>
       <div class="hero-card secondary" onclick="document.getElementById('playerSearch').focus()">
         <div class="cb-tl"></div><div class="cb-tr"></div><div class="cb-bl"></div><div class="cb-br"></div>
-        <div class="hero-card-icon">🔍</div>
+        <div class="hero-card-icon"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg></div>
         <div class="hero-card-title">SEARCH_PLAYERS</div>
         <div class="hero-card-desc">Search the full NFL database and build your roster one player at a time</div>
       </div>
@@ -1639,18 +1656,16 @@ body {
   <div style="height:40px"></div>
 </div>
 
-<!-- WALKTHROUGH -->
-<div class="walkthrough" id="walkthrough" style="display:none">
-  <div class="wt-card">
-    <div class="cb-tl"></div><div class="cb-tr"></div><div class="cb-bl"></div><div class="cb-br"></div>
-    <div class="wt-step-dots" id="wtDots"></div>
-    <div class="wt-icon" id="wtIcon"></div>
-    <div class="wt-title" id="wtTitle"></div>
-    <div class="wt-desc" id="wtDesc"></div>
-    <div class="wt-actions">
-      <button class="btn btn-primary" id="wtNext" onclick="nextWtStep()">NEXT</button>
-    </div>
-    <button class="wt-skip" onclick="closeWalkthrough()">SKIP_TUTORIAL</button>
+<!-- WALKTHROUGH (tooltip-based) -->
+<div class="wt-backdrop" id="wtBackdrop" style="display:none"></div>
+<div class="wt-tooltip" id="wtTooltip" style="display:none">
+  <div class="cb-tl"></div><div class="cb-tr"></div><div class="cb-bl"></div><div class="cb-br"></div>
+  <div class="wt-step-count" id="wtCount"></div>
+  <div class="wt-title" id="wtTitle"></div>
+  <div class="wt-desc" id="wtDesc"></div>
+  <div class="wt-actions">
+    <button class="wt-skip" onclick="closeWalkthrough()">SKIP</button>
+    <button class="btn btn-primary" style="padding:8px 18px;font-size:10px" id="wtNext" onclick="nextWtStep()">NEXT</button>
   </div>
 </div>
 
@@ -1822,38 +1837,67 @@ function initWireframe() {
   draw();
 }
 
-// ========== WALKTHROUGH ==========
+// ========== WALKTHROUGH (tooltip-based) ==========
 const WT_STEPS = [
-  { icon: '🏈', title: 'WELCOME_TO_BDGE', desc: 'Build your fantasy football identity in 3 steps — roster, team name, and a custom AI-generated profile picture.' },
-  { icon: '📸', title: 'STEP_1: BUILD_ROSTER', desc: 'Upload a screenshot of your fantasy team and AI will read it automatically. Or search players one by one from the full NFL database.' },
-  { icon: '🔥', title: 'STEP_2: GET_NAMES', desc: 'AI generates 8 creative team names based on your roster — with BDGE culture and player puns baked in.' },
-  { icon: '🎨', title: 'STEP_3: CREATE_PFP', desc: 'Pick your star player and AI generates 4 unique profile pictures — cartoon, realistic, fantasy, and badass styles.' },
+  { target: 'heroActions', title: 'START_HERE', desc: 'Upload a screenshot of your fantasy team or search players manually to build your roster.', arrow: 'bottom' },
+  { target: 'playerSearch', title: 'SEARCH_PLAYERS', desc: 'Type any NFL player name — results appear instantly. Hit Enter to add the first result.', arrow: 'bottom' },
+  { target: 'rosterGrid', title: 'YOUR_ROSTER', desc: 'Your players appear here. Add your whole squad, then generate team names.', arrow: 'bottom' },
+  { target: 'toNamesBtn', title: 'GENERATE_NAMES', desc: 'Once you have players, hit this to get 8 AI-generated team names with BDGE flavor.', arrow: 'top' },
 ];
 let wtStep = 0;
+let wtPrevHighlight = null;
 
 function showWalkthrough() {
   if (localStorage.getItem('bdge_wt_done')) return;
   wtStep = 0;
-  document.getElementById('walkthrough').style.display = 'flex';
+  document.getElementById('wtBackdrop').style.display = 'block';
+  document.getElementById('wtTooltip').style.display = 'block';
   renderWtStep();
 }
+
 function renderWtStep() {
   const s = WT_STEPS[wtStep];
-  document.getElementById('wtIcon').textContent = s.icon;
+  const tt = document.getElementById('wtTooltip');
+  const target = document.getElementById(s.target);
+
+  // Remove previous highlight
+  if (wtPrevHighlight) wtPrevHighlight.classList.remove('wt-highlight');
+  if (target) { target.classList.add('wt-highlight'); wtPrevHighlight = target; }
+
+  document.getElementById('wtCount').textContent = `STEP ${wtStep + 1} OF ${WT_STEPS.length}`;
   document.getElementById('wtTitle').textContent = s.title;
   document.getElementById('wtDesc').textContent = s.desc;
-  document.getElementById('wtNext').textContent = wtStep === WT_STEPS.length - 1 ? 'GET_STARTED' : 'NEXT';
-  document.getElementById('wtDots').innerHTML = WT_STEPS.map((_, i) =>
-    `<div class="wt-dot ${i === wtStep ? 'active' : i < wtStep ? 'done' : ''}"></div>`
-  ).join('');
+  document.getElementById('wtNext').textContent = wtStep === WT_STEPS.length - 1 ? 'GOT_IT' : 'NEXT';
+
+  // Arrow direction
+  tt.classList.remove('arrow-bottom');
+  if (s.arrow === 'top') tt.classList.add('arrow-bottom');
+
+  // Position tooltip near target
+  if (target) {
+    const rect = target.getBoundingClientRect();
+    const scrollY = window.scrollY;
+    if (s.arrow === 'top') {
+      tt.style.top = (rect.top + scrollY - tt.offsetHeight - 12) + 'px';
+    } else {
+      tt.style.top = (rect.bottom + scrollY + 12) + 'px';
+    }
+    tt.style.left = Math.max(16, Math.min(rect.left, window.innerWidth - 360)) + 'px';
+
+    target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
 }
+
 function nextWtStep() {
   wtStep++;
   if (wtStep >= WT_STEPS.length) { closeWalkthrough(); return; }
   renderWtStep();
 }
+
 function closeWalkthrough() {
-  document.getElementById('walkthrough').style.display = 'none';
+  document.getElementById('wtBackdrop').style.display = 'none';
+  document.getElementById('wtTooltip').style.display = 'none';
+  if (wtPrevHighlight) wtPrevHighlight.classList.remove('wt-highlight');
   localStorage.setItem('bdge_wt_done', '1');
 }
 
