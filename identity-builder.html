@@ -2502,83 +2502,234 @@ function downloadAIPFP() {
   showToast('DOWNLOADED! FLEX_ON_YOUR_LEAGUE.');
 }
 
-// ========== ANALYZER ==========
-function runAnalysis() {
+// ========== ANALYZER (DraftBallr-style) ==========
+async function runAnalysis() {
   if (!roster.length) return;
   const el = document.getElementById('analyzerContent');
+  const posColors = { QB: 'var(--pos-qb)', RB: 'var(--pos-rb)', WR: 'var(--pos-wr)', TE: 'var(--pos-te)', K: 'var(--pos-k)', DEF: 'var(--pos-def)' };
+  const posHex = { QB: '#F6587A', RB: '#22d3ee', WR: '#fab800', TE: '#4ADE80', K: '#a78bfa', DEF: '#64748b' };
 
-  // Position breakdown
+  // === COMPUTE METRICS ===
   const posCount = {};
   roster.forEach(p => { posCount[p.position] = (posCount[p.position] || 0) + 1; });
-  const posColors = { QB: 'var(--pos-qb)', RB: 'var(--pos-rb)', WR: 'var(--pos-wr)', TE: 'var(--pos-te)', K: 'var(--pos-k)', DEF: 'var(--pos-def)' };
+  const qbs = posCount.QB||0, rbs = posCount.RB||0, wrs = posCount.WR||0, tes = posCount.TE||0;
 
-  // Team diversity
+  // Team stacking
+  const teamCount = {};
+  roster.forEach(p => { teamCount[p.team] = (teamCount[p.team]||0) + 1; });
+  const teamsSorted = Object.entries(teamCount).sort((a,b) => b[1]-a[1]);
   const teams = new Set(roster.map(p => p.team));
-  const diversityPct = Math.round((teams.size / roster.length) * 100);
 
-  // Star power (lower search_rank = better)
-  const avgRank = Math.round(roster.reduce((s, p) => s + (p.search_rank || 500), 0) / roster.length);
-  const starPower = avgRank < 50 ? 'ELITE' : avgRank < 100 ? 'STRONG' : avgRank < 200 ? 'SOLID' : 'DEVELOPING';
+  // Player tiers by search_rank
+  const tiered = roster.map(p => ({
+    name: `${p.first_name} ${p.last_name}`, pos: p.position, team: p.team,
+    rank: p.search_rank || 999, tier: (p.search_rank||999) < 20 ? 'ELITE' : (p.search_rank||999) < 50 ? 'STAR' : (p.search_rank||999) < 100 ? 'STARTER' : (p.search_rank||999) < 200 ? 'BENCH' : 'DEEP'
+  })).sort((a,b) => a.rank - b.rank);
 
-  // Archetype classification
-  const qbs = posCount.QB || 0; const rbs = posCount.RB || 0; const wrs = posCount.WR || 0; const tes = posCount.TE || 0;
+  const tierColors = { ELITE: '#fab800', STAR: '#22d3ee', STARTER: '#4ADE80', BENCH: '#a78bfa', DEEP: '#64748b' };
+  const avgRank = Math.round(roster.reduce((s,p) => s+(p.search_rank||500),0)/roster.length);
+  const grade = avgRank < 40 ? 'A+' : avgRank < 60 ? 'A' : avgRank < 80 ? 'B+' : avgRank < 120 ? 'B' : avgRank < 200 ? 'C' : 'D';
+  const gradeClass = grade.startsWith('A') ? 'A' : grade.startsWith('B') ? 'B' : grade.startsWith('C') ? 'C' : 'D';
+
+  // Archetype
   let archetype, archSub;
-  if (wrs >= 4 && rbs <= 2) { archetype = 'AIR_RAID'; archSub = 'Pass-heavy with deep WR core'; }
-  else if (rbs >= 3 && wrs <= 2) { archetype = 'GROUND_AND_POUND'; archSub = 'Run-first with RB committee'; }
-  else if (rbs >= 2 && wrs >= 3) { archetype = 'BALANCED_ATTACK'; archSub = 'Versatile roster, multiple weapons'; }
-  else if (tes >= 2) { archetype = 'TE_PREMIUM'; archSub = 'Red zone focused with TE assets'; }
-  else if (qbs >= 2) { archetype = 'QB_FACTORY'; archSub = 'Streaming QBs for matchup edge'; }
-  else { archetype = 'HYBRID_SCHEME'; archSub = 'Flexible roster construction'; }
+  if (wrs >= 4 && rbs <= 2) { archetype = 'AIR_RAID'; archSub = 'WR-heavy build, high ceiling through volume passing targets'; }
+  else if (rbs >= 3) { archetype = 'GROUND_AND_POUND'; archSub = 'RB committee approach, stable floor with rushing upside'; }
+  else if (rbs >= 2 && wrs >= 3) { archetype = 'BALANCED_ATTACK'; archSub = 'Diversified weapons across positions, matchup flexibility'; }
+  else if (tes >= 2) { archetype = 'TE_PREMIUM'; archSub = 'Investing in red zone equity through tight end targets'; }
+  else if (qbs >= 2) { archetype = 'QB_STACK'; archSub = 'Dual QB approach for streaming and bye week coverage'; }
+  else { archetype = 'HYBRID_SCHEME'; archSub = 'Flexible roster construction with positional versatility'; }
 
-  // Grade
-  const grade = avgRank < 60 ? 'A' : avgRank < 120 ? 'B' : avgRank < 200 ? 'C' : 'D';
+  // Metrics for radar-style display
+  const starPwr = Math.min(100, Math.max(5, 100 - avgRank/3));
+  const diversityPct = Math.round((teams.size / Math.max(roster.length,1)) * 100);
+  const depthPct = Math.round((roster.length/16)*100);
+  const eliteCount = tiered.filter(p => p.tier === 'ELITE' || p.tier === 'STAR').length;
+  const elitePct = Math.round((eliteCount / Math.max(roster.length,1)) * 100);
+  const stackRisk = teamsSorted[0] ? Math.round((teamsSorted[0][1] / roster.length) * 100) : 0;
 
-  const posBars = Object.entries(posCount).sort((a,b) => b[1]-a[1]).map(([pos, cnt]) =>
-    `<div class="stat-row"><div class="stat-label">${pos}</div><div class="stat-track"><div class="stat-fill" style="--fill:${(cnt/roster.length)*100}%;background:${posColors[pos]||'var(--t3)'}"></div></div><div class="stat-value">${cnt}</div></div>`
-  ).join('');
+  // === RENDER DASHBOARD ===
+  const playerRows = tiered.map((p,i) => `
+    <div style="display:flex;align-items:center;gap:10px;padding:8px 12px;border-bottom:1px solid var(--t6);animation:cardEnter 0.3s ease-out ${i*0.04}s both">
+      <div style="font-size:16px;font-weight:800;width:28px;color:${tierColors[p.tier]};text-align:center">${String(i+1).padStart(2,'0')}</div>
+      <div style="flex:1;min-width:0">
+        <div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.03em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${p.name}</div>
+        <div style="font-size:9px;color:var(--t4)">${p.team}</div>
+      </div>
+      <span class="ac-pos ${p.pos}" style="font-size:9px;padding:2px 6px">${p.pos}</span>
+      <div style="font-size:8px;padding:2px 8px;border:1px solid ${tierColors[p.tier]};color:${tierColors[p.tier]};letter-spacing:0.1em;font-weight:700">${p.tier}</div>
+    </div>
+  `).join('');
+
+  const posBars = Object.entries(posCount).sort((a,b) => b[1]-a[1]).map(([pos, cnt]) => `
+    <div class="stat-row">
+      <div class="stat-label" style="color:${posHex[pos]||'#fff'}">${pos}</div>
+      <div class="stat-track"><div class="stat-fill" style="--fill:${(cnt/roster.length)*100}%;background:${posColors[pos]||'var(--t3)'}"></div></div>
+      <div class="stat-value" style="color:${posHex[pos]||'#fff'}">${cnt}</div>
+    </div>
+  `).join('');
+
+  const teamBars = teamsSorted.slice(0,6).map(([team, cnt]) => `
+    <div class="stat-row">
+      <div class="stat-label" style="width:36px">${team}</div>
+      <div class="stat-track"><div class="stat-fill" style="--fill:${(cnt/roster.length)*100}%;background:${cnt >= 3 ? 'var(--neon-gold)' : cnt >= 2 ? 'var(--neon-cyan)' : 'var(--t3)'}"></div></div>
+      <div class="stat-value">${cnt}</div>
+    </div>
+  `).join('');
+
+  const metricRows = [
+    { label: 'STAR_POWER', val: starPwr, color: 'var(--neon-gold)', text: avgRank < 50 ? 'ELITE' : avgRank < 100 ? 'STRONG' : avgRank < 200 ? 'SOLID' : 'LOW' },
+    { label: 'ELITE_DENSITY', val: elitePct, color: 'var(--neon-red)', text: `${eliteCount}/${roster.length}` },
+    { label: 'DIVERSITY', val: diversityPct, color: 'var(--neon-cyan)', text: `${teams.size} TEAMS` },
+    { label: 'DEPTH', val: depthPct, color: 'var(--neon-green)', text: `${roster.length}/16` },
+    { label: 'STACK_RISK', val: stackRisk, color: stackRisk > 30 ? 'var(--neon-gold)' : 'var(--neon-green)', text: stackRisk > 30 ? 'HIGH' : 'LOW' },
+  ].map(m => `
+    <div class="stat-row" style="margin-bottom:10px">
+      <div class="stat-label" style="width:90px;font-size:9px">${m.label}</div>
+      <div class="stat-track" style="height:8px"><div class="stat-fill" style="--fill:${m.val}%;background:${m.color}"></div></div>
+      <div class="stat-value" style="width:auto;min-width:50px;font-size:9px;color:${m.color}">${m.text}</div>
+    </div>
+  `).join('');
 
   el.innerHTML = `
-    <div class="archetype-box cb-card">
+    <!-- SYSTEM CLASSIFICATION -->
+    <div class="archetype-box cb-card" style="margin-bottom:24px">
       <div class="cb-tl"></div><div class="cb-tr"></div><div class="cb-bl"></div><div class="cb-br"></div>
       <div class="archetype-label">SYSTEM_CLASSIFICATION</div>
       <div class="archetype-value">${archetype}</div>
       <div class="archetype-sub">${archSub}</div>
     </div>
 
-    <div class="analyzer-grid">
-      <div class="cb-card" style="padding:20px">
+    <!-- GRADE + METRICS -->
+    <div class="analyzer-grid" style="margin-bottom:24px">
+      <div class="cb-card" style="padding:24px;text-align:center">
+        <div class="cb-tl"></div><div class="cb-tr"></div><div class="cb-bl"></div><div class="cb-br"></div>
+        <div class="analyzer-section-title">// OVERALL_GRADE</div>
+        <div class="grade-badge grade-${gradeClass}" style="width:64px;height:64px;font-size:28px;margin:12px auto">${grade}</div>
+        <div style="font-size:10px;color:var(--t3);letter-spacing:0.08em;margin-top:8px">AVG_ADP_RANK: ${avgRank}</div>
+      </div>
+      <div class="cb-card" style="padding:24px">
+        <div class="cb-tl"></div><div class="cb-tr"></div><div class="cb-bl"></div><div class="cb-br"></div>
+        <div class="analyzer-section-title">// ROSTER_METRICS</div>
+        ${metricRows}
+      </div>
+    </div>
+
+    <!-- POSITION MATRIX + TEAM STACKING -->
+    <div class="analyzer-grid" style="margin-bottom:24px">
+      <div class="cb-card" style="padding:24px">
         <div class="cb-tl"></div><div class="cb-tr"></div><div class="cb-bl"></div><div class="cb-br"></div>
         <div class="analyzer-section-title">// POSITION_MATRIX</div>
         ${posBars}
       </div>
-
-      <div class="cb-card" style="padding:20px">
+      <div class="cb-card" style="padding:24px">
         <div class="cb-tl"></div><div class="cb-tr"></div><div class="cb-bl"></div><div class="cb-br"></div>
-        <div class="analyzer-section-title">// ROSTER_METRICS</div>
+        <div class="analyzer-section-title">// TEAM_EXPOSURE</div>
+        ${teamBars}
+        ${stackRisk > 25 ? `<div style="margin-top:12px;padding:8px 12px;border:1px solid var(--neon-gold);background:rgba(250,184,0,0.05);font-size:10px;color:var(--neon-gold);letter-spacing:0.05em">WARNING: ${teamsSorted[0][1]} players from ${teamsSorted[0][0]} — high correlation risk on bye week</div>` : ''}
+      </div>
+    </div>
 
-        <div style="text-align:center;margin-bottom:16px">
-          <div class="grade-badge grade-${grade}">${grade}</div>
-          <div style="font-size:9px;color:var(--t4);letter-spacing:0.1em;text-transform:uppercase">OVERALL_GRADE</div>
-        </div>
+    <!-- PLAYER RANKINGS TABLE -->
+    <div class="cb-card" style="padding:0;margin-bottom:24px;overflow:hidden">
+      <div class="cb-tl"></div><div class="cb-tr"></div><div class="cb-bl"></div><div class="cb-br"></div>
+      <div style="padding:16px 20px;border-bottom:1px solid var(--t5)">
+        <div class="analyzer-section-title" style="margin-bottom:0">// PLAYER_RANKINGS</div>
+      </div>
+      <div style="max-height:400px;overflow-y:auto">
+        ${playerRows}
+      </div>
+    </div>
 
-        <div class="stat-row">
-          <div class="stat-label" style="width:80px">STAR_PWR</div>
-          <div class="stat-track"><div class="stat-fill" style="--fill:${Math.max(5,100-avgRank/3)}%;background:var(--neon-gold)"></div></div>
-          <div class="stat-value" style="width:auto;min-width:60px;font-size:9px;color:var(--neon-gold)">${starPower}</div>
-        </div>
-        <div class="stat-row">
-          <div class="stat-label" style="width:80px">DIVERSITY</div>
-          <div class="stat-track"><div class="stat-fill" style="--fill:${diversityPct}%;background:var(--neon-cyan)"></div></div>
-          <div class="stat-value" style="width:auto;min-width:60px;font-size:9px;color:var(--neon-cyan)">${teams.size} TEAMS</div>
-        </div>
-        <div class="stat-row">
-          <div class="stat-label" style="width:80px">DEPTH</div>
-          <div class="stat-track"><div class="stat-fill" style="--fill:${(roster.length/16)*100}%;background:var(--neon-green)"></div></div>
-          <div class="stat-value" style="width:auto;min-width:60px;font-size:9px;color:var(--neon-green)">${roster.length}/16</div>
-        </div>
+    <!-- AI SCOUTING REPORT -->
+    <div class="cb-card" style="padding:24px;margin-bottom:24px" id="aiScoutCard">
+      <div class="cb-tl"></div><div class="cb-tr"></div><div class="cb-bl"></div><div class="cb-br"></div>
+      <div class="analyzer-section-title">// AI_SCOUTING_REPORT</div>
+      <div id="aiScoutContent" style="display:flex;align-items:center;gap:12px;padding:16px 0">
+        <div class="gen-spinner" style="width:24px;height:24px;margin:0;flex-shrink:0"></div>
+        <span style="font-size:11px;color:var(--t3);letter-spacing:0.05em">ANALYZING_ROSTER_COMPOSITION...</span>
       </div>
     </div>
   `;
+
+  // Fire AI scouting report
+  generateScoutReport();
+}
+
+async function generateScoutReport() {
+  const rosterDesc = roster.map(p => `${p.first_name} ${p.last_name} (${p.position}, ${p.team}, ADP ~${p.search_rank||'unknown'})`).join(', ');
+  const el = document.getElementById('aiScoutContent');
+
+  try {
+    const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + GROQ_KEY },
+      body: JSON.stringify({
+        model: 'llama-3.3-70b-versatile',
+        messages: [{
+          role: 'system',
+          content: `You are an elite fantasy football analyst writing a scouting report on a user's roster. Be specific about the actual players. Use a confident, analytical voice. Respond ONLY with a JSON object (no markdown, no code blocks):
+{"strengths":["strength 1","strength 2","strength 3"],"weaknesses":["weakness 1","weakness 2"],"ceiling":"description of best case scenario","floor":"description of worst case scenario","verdict":"2-3 sentence overall assessment","riskLevel":"LOW|MEDIUM|HIGH","projectedFinish":"top 3|top 5|top half|bottom half"}`
+        }, {
+          role: 'user',
+          content: `Analyze this fantasy football roster for the 2025 NFL season: ${rosterDesc}`
+        }],
+        max_tokens: 600,
+        temperature: 0.7
+      })
+    });
+    const data = await res.json();
+    if (data.error) throw new Error(data.error.message);
+    const content = data.choices[0].message.content.trim();
+    const report = JSON.parse(content.replace(/```json?\n?/g,'').replace(/```/g,'').trim());
+
+    const riskColor = report.riskLevel === 'LOW' ? 'var(--neon-green)' : report.riskLevel === 'HIGH' ? 'var(--neon-red)' : 'var(--neon-gold)';
+
+    el.innerHTML = `
+      <div style="width:100%">
+        <!-- Verdict -->
+        <div style="font-size:13px;color:var(--t1);line-height:1.6;margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid var(--t6)">${escHtml(report.verdict)}</div>
+
+        <!-- Risk + Projected Finish -->
+        <div style="display:flex;gap:16px;margin-bottom:20px;flex-wrap:wrap">
+          <div style="padding:8px 16px;border:1px solid ${riskColor};background:rgba(0,0,0,0.3)">
+            <div style="font-size:8px;color:var(--t4);letter-spacing:0.15em;margin-bottom:3px">RISK_LEVEL</div>
+            <div style="font-size:14px;font-weight:800;color:${riskColor};letter-spacing:0.05em">${report.riskLevel}</div>
+          </div>
+          <div style="padding:8px 16px;border:1px solid var(--neon-cyan);background:rgba(0,0,0,0.3)">
+            <div style="font-size:8px;color:var(--t4);letter-spacing:0.15em;margin-bottom:3px">PROJECTED_FINISH</div>
+            <div style="font-size:14px;font-weight:800;color:var(--neon-cyan);letter-spacing:0.05em">${(report.projectedFinish||'TBD').toUpperCase()}</div>
+          </div>
+        </div>
+
+        <!-- Strengths + Weaknesses -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px">
+          <div>
+            <div style="font-size:9px;color:var(--neon-green);letter-spacing:0.15em;margin-bottom:8px;font-weight:700">STRENGTHS</div>
+            ${(report.strengths||[]).map(s => `<div style="font-size:11px;color:var(--t2);margin-bottom:6px;padding-left:10px;border-left:2px solid var(--neon-green);line-height:1.4">${escHtml(s)}</div>`).join('')}
+          </div>
+          <div>
+            <div style="font-size:9px;color:var(--neon-red);letter-spacing:0.15em;margin-bottom:8px;font-weight:700">WEAKNESSES</div>
+            ${(report.weaknesses||[]).map(w => `<div style="font-size:11px;color:var(--t2);margin-bottom:6px;padding-left:10px;border-left:2px solid var(--neon-red);line-height:1.4">${escHtml(w)}</div>`).join('')}
+          </div>
+        </div>
+
+        <!-- Ceiling / Floor -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+          <div style="padding:12px;border:1px solid var(--t5);background:rgba(0,0,0,0.2)">
+            <div style="font-size:8px;color:var(--neon-gold);letter-spacing:0.15em;margin-bottom:4px;font-weight:700">CEILING</div>
+            <div style="font-size:11px;color:var(--t2);line-height:1.5">${escHtml(report.ceiling||'')}</div>
+          </div>
+          <div style="padding:12px;border:1px solid var(--t5);background:rgba(0,0,0,0.2)">
+            <div style="font-size:8px;color:var(--t4);letter-spacing:0.15em;margin-bottom:4px;font-weight:700">FLOOR</div>
+            <div style="font-size:11px;color:var(--t2);line-height:1.5">${escHtml(report.floor||'')}</div>
+          </div>
+        </div>
+      </div>
+    `;
+  } catch(err) {
+    el.innerHTML = `<div style="font-size:11px;color:var(--t3)">SCOUTING_REPORT_FAILED: ${err.message}<br><button class="btn btn-secondary" style="margin-top:8px" onclick="generateScoutReport()">RETRY</button></div>`;
+  }
 }
 
 // ========== ANALYTICS ==========
