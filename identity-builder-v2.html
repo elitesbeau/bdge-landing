@@ -1,0 +1,2056 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BDGE Identity Builder // TERMINAL</title>
+<link rel="icon" type="image/png" href="bdge-transparent.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* ================================================================
+   BDGE IDENTITY BUILDER v2 — TERMINAL EDITION
+   Inspired by draftballr.com cyberpunk aesthetic
+   ================================================================ */
+
+/* ========== RESET & VARIABLES ========== */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  /* ═══ BACKGROUNDS ═══ */
+  --bg: #000002;
+  --bg-card: #000205;
+  --bg-muted: #070b14;
+  --bg-elevated: #0a0e18;
+
+  /* ═══ NEON PALETTE (BDGE-adapted) ═══ */
+  --neon-red: #F6587A;
+  --neon-red-bright: #FF6B8A;
+  --neon-cyan: #22d3ee;
+  --neon-gold: #fab800;
+  --neon-green: #4ADE80;
+  --neon-purple: #a78bfa;
+
+  /* ═══ SEMANTIC ═══ */
+  --primary: var(--neon-red);
+  --secondary: var(--neon-cyan);
+  --accent: var(--neon-gold);
+
+  /* ═══ TEXT ═══ */
+  --t1: #e0f3f4;
+  --t2: #98c8ca;
+  --t3: rgba(255,255,255,0.50);
+  --t4: rgba(255,255,255,0.30);
+  --t5: rgba(255,255,255,0.12);
+  --t6: rgba(255,255,255,0.06);
+
+  /* ═══ POSITION COLORS (Football) ═══ */
+  --pos-qb: var(--neon-red);
+  --pos-rb: var(--neon-cyan);
+  --pos-wr: var(--neon-gold);
+  --pos-te: var(--neon-green);
+  --pos-k: var(--neon-purple);
+  --pos-def: #64748b;
+
+  /* ═══ GLOW ═══ */
+  --glow-red: 0 0 4px rgba(246,88,122,0.6), 0 0 12px rgba(246,88,122,0.2);
+  --glow-red-subtle: 0 0 2px rgba(246,88,122,0.4);
+  --glow-cyan: 0 0 4px rgba(34,211,238,0.6), 0 0 12px rgba(34,211,238,0.2);
+
+  /* ═══ RADIUS ═══ */
+  --radius: 4px;
+
+  /* ═══ FONT ═══ */
+  --font: 'JetBrains Mono', 'Courier New', monospace;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--t1);
+  min-height: 100vh;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+/* ========== BACKGROUND OVERLAYS ========== */
+
+/* Layer 1: Matrix Rain Canvas */
+#matrixCanvas {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw; height: 100vh;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.08;
+}
+
+/* Layer 2: Circuit Pattern */
+.circuit-pattern {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.06;
+  background-image:
+    linear-gradient(90deg, rgba(246,88,122,0.05) 1px, transparent 1px),
+    linear-gradient(rgba(246,88,122,0.05) 1px, transparent 1px),
+    radial-gradient(circle at 25% 25%, rgba(246,88,122,0.08) 1px, transparent 1px),
+    radial-gradient(circle at 75% 75%, rgba(34,211,238,0.06) 1px, transparent 1px);
+  background-size: 50px 50px, 50px 50px, 100px 100px, 100px 100px;
+}
+
+/* Layer 3: Grid Overlay */
+.grid-overlay {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.04;
+  background-image:
+    linear-gradient(rgba(246,88,122,0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(246,88,122,0.05) 1px, transparent 1px);
+  background-size: 20px 20px;
+}
+
+/* Layer 4: Scanlines */
+.scanlines {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 40;
+  opacity: 0.03;
+  background-image: repeating-linear-gradient(
+    0deg, transparent, transparent 2px,
+    rgba(255,255,255,0.03) 2px, rgba(255,255,255,0.03) 4px
+  );
+}
+
+/* ========== KEYFRAME ANIMATIONS ========== */
+@keyframes glitch {
+  0% { transform: translate(0) }
+  20% { transform: translate(-2px, 2px) }
+  40% { transform: translate(-2px, -2px) }
+  60% { transform: translate(2px, 2px) }
+  80% { transform: translate(2px, -2px) }
+  100% { transform: translate(0) }
+}
+
+@keyframes neonPulse {
+  0%, 100% { text-shadow: 0 0 5px rgba(246,88,122,0.4), 0 0 10px rgba(246,88,122,0.2); filter: brightness(1); }
+  50% { text-shadow: 0 0 10px rgba(246,88,122,0.6), 0 0 20px rgba(246,88,122,0.3), 0 0 40px rgba(246,88,122,0.1); filter: brightness(1.1); }
+}
+
+@keyframes bracketDeployTL {
+  0% { width: 0; height: 0; }
+  50% { width: 16px; height: 0; }
+  100% { width: 16px; height: 16px; }
+}
+@keyframes bracketDeployTR {
+  0% { width: 0; height: 0; }
+  50% { width: 16px; height: 0; }
+  100% { width: 16px; height: 16px; }
+}
+@keyframes bracketDeployBL {
+  0% { width: 0; height: 0; }
+  50% { width: 16px; height: 0; }
+  100% { width: 16px; height: 16px; }
+}
+@keyframes bracketDeployBR {
+  0% { width: 0; height: 0; }
+  50% { width: 16px; height: 0; }
+  100% { width: 16px; height: 16px; }
+}
+
+@keyframes cardEnter {
+  from { opacity: 0; transform: translateY(16px) scale(0.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes barFill {
+  from { width: 0; }
+  to { width: var(--fill); }
+}
+
+@keyframes statusBlink {
+  0%, 100% { opacity: 1; box-shadow: 0 0 4px currentColor; }
+  50% { opacity: 0.4; box-shadow: none; }
+}
+
+@keyframes flicker {
+  0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% { opacity: 1; }
+  20%, 24%, 55% { opacity: 0.4; }
+}
+
+@keyframes hudScan {
+  0% { top: -5%; opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { top: 105%; opacity: 0; }
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+@keyframes confettiFall {
+  0% { transform: translateY(0) rotate(0deg) scale(1); opacity: 1; }
+  100% { transform: translateY(100vh) rotate(720deg) scale(0); opacity: 0; }
+}
+
+@keyframes chromaShift {
+  0%, 100% { text-shadow: -1px 0 var(--neon-cyan), 1px 0 var(--neon-red); }
+  33% { text-shadow: -2px 0 var(--neon-cyan), 2px 0 var(--neon-red); }
+  66% { text-shadow: 0 0 var(--neon-cyan), 0 0 var(--neon-red); }
+}
+
+/* ========== LAYOUT ========== */
+.app {
+  position: relative;
+  z-index: 1;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+/* ========== SYSTEM STATUS BAR ========== */
+.status-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 8px 16px;
+  font-size: 9px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--t4);
+  border-bottom: 1px solid var(--t6);
+  position: relative;
+  z-index: 2;
+}
+.status-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--neon-green);
+  animation: statusBlink 2s ease-in-out infinite;
+}
+.status-dot.warn { background: var(--neon-gold); }
+.status-sep {
+  width: 1px; height: 10px;
+  background: var(--t5);
+}
+
+/* ========== HEADER ========== */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 0 16px;
+  border-bottom: 1px solid var(--t6);
+}
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.header-logo {
+  height: 40px;
+  opacity: 0.9;
+  transition: transform 0.3s cubic-bezier(0.25,1,0.5,1);
+}
+.header-logo:hover { transform: scale(1.06) rotate(-2deg); }
+.header-sep {
+  width: 1px; height: 28px;
+  background: var(--t5);
+}
+.header-title {
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--primary);
+  text-shadow: var(--glow-red-subtle);
+}
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.api-indicator {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  color: var(--t4);
+  text-transform: uppercase;
+}
+
+/* ========== BRACKET NAVIGATION ========== */
+.bracket-nav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--t6);
+  flex-wrap: wrap;
+}
+.bracket-link {
+  position: relative;
+  padding: 8px 14px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: var(--t3);
+  cursor: pointer;
+  transition: all 0.2s;
+  border: none;
+  background: none;
+  font-family: var(--font);
+  text-transform: uppercase;
+}
+.bracket-link::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 1px;
+  background: var(--primary);
+  transform: scaleX(0);
+  transition: transform 0.2s;
+}
+.bracket-link:hover { color: var(--t1); }
+.bracket-link:hover::after { transform: scaleX(1); }
+.bracket-link.active {
+  color: var(--t1);
+  text-shadow: var(--glow-red-subtle);
+}
+.bracket-link.active::after { transform: scaleX(1); }
+.bracket-conn {
+  width: 20px; height: 1px;
+  background: var(--t5);
+  flex-shrink: 0;
+}
+
+/* ========== TERMINAL LABEL ========== */
+.terminal-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: rgba(246,88,122,0.6);
+  margin-bottom: 8px;
+}
+
+/* ========== SECTION CONTAINER ========== */
+.module {
+  display: none;
+  padding: 32px 0;
+  animation: fadeUp 0.4s cubic-bezier(0.16,1,0.3,1);
+}
+.module.active { display: block; }
+
+.module-header {
+  margin-bottom: 32px;
+}
+.module-title {
+  font-size: 28px;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  margin-bottom: 8px;
+  animation: neonPulse 4s ease-in-out infinite;
+}
+.module-desc {
+  font-size: 12px;
+  color: var(--t3);
+  line-height: 1.6;
+  max-width: 500px;
+}
+
+/* ========== CORNER BRACKET CARD ========== */
+.cb-card {
+  position: relative;
+  background: rgba(0,2,5,0.6);
+  border: 1px solid var(--t5);
+  padding: 16px;
+  transition: all 0.3s ease-out;
+}
+.cb-card:hover {
+  border-color: rgba(246,88,122,0.3);
+  background: rgba(246,88,122,0.03);
+}
+
+/* Corner brackets */
+.cb-card .cb-tl, .cb-card .cb-tr, .cb-card .cb-bl, .cb-card .cb-br {
+  position: absolute;
+  width: 12px; height: 12px;
+  transition: all 0.3s ease-out;
+}
+.cb-card .cb-tl { top: -1px; left: -1px; border-left: 2px solid var(--t4); border-top: 2px solid var(--t4); }
+.cb-card .cb-tr { top: -1px; right: -1px; border-right: 2px solid var(--t4); border-top: 2px solid var(--t4); }
+.cb-card .cb-bl { bottom: -1px; left: -1px; border-left: 2px solid var(--t4); border-bottom: 2px solid var(--t4); }
+.cb-card .cb-br { bottom: -1px; right: -1px; border-right: 2px solid var(--t4); border-bottom: 2px solid var(--t4); }
+
+.cb-card:hover .cb-tl, .cb-card:hover .cb-tr,
+.cb-card:hover .cb-bl, .cb-card:hover .cb-br {
+  width: 16px; height: 16px;
+  border-color: var(--primary);
+}
+
+/* ========== SEARCH INPUT (Terminal style) ========== */
+.terminal-search {
+  position: relative;
+  margin-bottom: 24px;
+}
+.terminal-prompt {
+  position: absolute;
+  left: 16px; top: 50%;
+  transform: translateY(-50%);
+  color: var(--primary);
+  font-weight: 700;
+  font-size: 14px;
+  text-shadow: var(--glow-red-subtle);
+  pointer-events: none;
+}
+.terminal-input {
+  width: 100%;
+  padding: 14px 20px 14px 40px;
+  background: rgba(0,0,0,0.4);
+  border: 1px solid var(--t5);
+  color: var(--t1);
+  font-size: 13px;
+  font-family: var(--font);
+  outline: none;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  transition: all 0.25s;
+}
+.terminal-input:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 2px rgba(246,88,122,0.1), var(--glow-red);
+  text-shadow: var(--glow-red-subtle);
+}
+.terminal-input::placeholder {
+  color: var(--t4);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* ========== AUTOCOMPLETE ========== */
+.autocomplete {
+  position: absolute;
+  top: 100%; left: 0; right: 0;
+  background: var(--bg-card);
+  border: 1px solid var(--t5);
+  border-top: none;
+  max-height: 300px;
+  overflow-y: auto;
+  z-index: 100;
+  display: none;
+  box-shadow: 0 16px 48px rgba(0,0,0,0.6);
+}
+.autocomplete.open { display: block; }
+.ac-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 16px;
+  cursor: pointer;
+  transition: background 0.15s;
+  border-bottom: 1px solid var(--t6);
+  font-size: 12px;
+}
+.ac-item:hover, .ac-item.highlighted { background: var(--bg-muted); }
+.ac-avatar {
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+  background: var(--bg-muted);
+  border: 1px solid var(--t5);
+}
+.ac-name { font-weight: 600; color: var(--t1); }
+.ac-meta { font-size: 10px; color: var(--t3); margin-top: 1px; }
+.ac-pos {
+  font-size: 9px; font-weight: 700;
+  padding: 2px 6px;
+  letter-spacing: 0.08em;
+}
+.ac-pos.QB { background: rgba(246,88,122,0.15); color: var(--pos-qb); }
+.ac-pos.RB { background: rgba(34,211,238,0.15); color: var(--pos-rb); }
+.ac-pos.WR { background: rgba(250,184,0,0.15); color: var(--pos-wr); }
+.ac-pos.TE { background: rgba(74,222,128,0.15); color: var(--pos-te); }
+.ac-pos.K  { background: rgba(167,139,250,0.15); color: var(--pos-k); }
+.ac-pos.DEF { background: rgba(255,255,255,0.06); color: var(--pos-def); }
+
+/* ========== IMPORT BUTTON ========== */
+.btn-import {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 18px;
+  background: rgba(246,88,122,0.05);
+  border: 1px dashed rgba(246,88,122,0.3);
+  color: var(--primary);
+  font-family: var(--font);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.btn-import:hover {
+  background: rgba(246,88,122,0.1);
+  border-color: var(--primary);
+  box-shadow: var(--glow-red);
+}
+
+.import-hint {
+  font-size: 10px;
+  color: var(--t4);
+  letter-spacing: 0.03em;
+}
+
+.import-status {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 18px;
+  background: var(--bg-card);
+  border: 1px solid var(--t5);
+  margin-bottom: 16px;
+  font-size: 11px;
+  color: var(--t2);
+}
+
+.divider-or {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin: 16px 0;
+  color: var(--t4);
+  font-size: 9px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+.divider-or::before, .divider-or::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--t5);
+}
+
+/* ========== ROSTER GRID ========== */
+.roster-label {
+  font-size: 10px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--t3);
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.roster-count {
+  background: var(--primary);
+  color: #000;
+  font-size: 10px;
+  font-weight: 800;
+  padding: 1px 7px;
+  letter-spacing: 0;
+}
+.roster-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 10px;
+  margin-bottom: 24px;
+  min-height: 80px;
+}
+.roster-empty {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 48px 24px;
+  border: 1px dashed var(--t5);
+  color: var(--t4);
+  font-size: 11px;
+  letter-spacing: 0.05em;
+}
+
+/* ========== PLAYER CARDS ========== */
+.player-card {
+  position: relative;
+  background: var(--bg-card);
+  border: 1px solid var(--t5);
+  padding: 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: default;
+  transition: all 0.3s ease-out;
+  animation: cardEnter 0.4s ease-out both;
+}
+.player-card .cb-tl, .player-card .cb-tr, .player-card .cb-bl, .player-card .cb-br {
+  position: absolute;
+  width: 8px; height: 8px;
+  transition: all 0.3s ease-out;
+}
+.player-card .cb-tl { top: -1px; left: -1px; border-left: 2px solid var(--t5); border-top: 2px solid var(--t5); }
+.player-card .cb-tr { top: -1px; right: -1px; border-right: 2px solid var(--t5); border-top: 2px solid var(--t5); }
+.player-card .cb-bl { bottom: -1px; left: -1px; border-left: 2px solid var(--t5); border-bottom: 2px solid var(--t5); }
+.player-card .cb-br { bottom: -1px; right: -1px; border-right: 2px solid var(--t5); border-bottom: 2px solid var(--t5); }
+
+.player-card:hover {
+  border-color: rgba(246,88,122,0.3);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+}
+.player-card:hover .cb-tl, .player-card:hover .cb-tr,
+.player-card:hover .cb-bl, .player-card:hover .cb-br {
+  width: 12px; height: 12px;
+  border-color: var(--primary);
+}
+
+.pc-avatar {
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  background: var(--bg-muted);
+  border: 1px solid var(--t5);
+  flex-shrink: 0;
+}
+.pc-info { flex: 1; min-width: 0; }
+.pc-name {
+  font-size: 11px;
+  font-weight: 700;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+.pc-detail {
+  font-size: 9px;
+  color: var(--t3);
+  margin-top: 2px;
+  letter-spacing: 0.03em;
+}
+.pc-remove {
+  position: absolute;
+  top: 6px; right: 6px;
+  width: 18px; height: 18px;
+  background: none;
+  border: 1px solid var(--t5);
+  color: var(--t4);
+  font-size: 11px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  opacity: 0;
+  font-family: var(--font);
+}
+.player-card:hover .pc-remove { opacity: 1; }
+.pc-remove:hover { background: var(--neon-red); color: #000; border-color: var(--neon-red); }
+
+/* ========== BUTTONS ========== */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font);
+  font-size: 10px;
+  font-weight: 700;
+  padding: 12px 24px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.25s;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  position: relative;
+}
+.btn-primary {
+  background: rgba(246,88,122,0.1);
+  border: 1px solid var(--primary);
+  color: var(--primary);
+  text-shadow: var(--glow-red-subtle);
+}
+.btn-primary:hover {
+  background: var(--primary);
+  color: #000;
+  box-shadow: 0 0 20px rgba(246,88,122,0.3);
+  text-shadow: none;
+}
+.btn-primary:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+.btn-primary:disabled:hover {
+  background: rgba(246,88,122,0.1);
+  color: var(--primary);
+}
+.btn-secondary {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid var(--t5);
+  color: var(--t3);
+}
+.btn-secondary:hover {
+  background: rgba(255,255,255,0.06);
+  border-color: var(--t4);
+  color: var(--t1);
+}
+
+.actions-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+/* ========== STEP 2: NAME CARDS ========== */
+.generating-wrap {
+  text-align: center;
+  padding: 48px 0;
+}
+.gen-spinner {
+  width: 40px; height: 40px;
+  border: 2px solid var(--t5);
+  border-top-color: var(--primary);
+  border-right-color: var(--neon-gold);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  margin: 0 auto 16px;
+}
+.gen-text {
+  font-size: 11px;
+  color: var(--t3);
+  letter-spacing: 0.05em;
+}
+
+.names-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 12px;
+  margin-bottom: 24px;
+}
+.name-card {
+  position: relative;
+  background: var(--bg-card);
+  border: 1px solid var(--t5);
+  padding: 20px;
+  cursor: pointer;
+  transition: all 0.3s ease-out;
+  animation: cardEnter 0.4s ease-out both;
+}
+.name-card .cb-tl, .name-card .cb-tr, .name-card .cb-bl, .name-card .cb-br {
+  position: absolute; width: 10px; height: 10px; transition: all 0.3s;
+}
+.name-card .cb-tl { top: -1px; left: -1px; border-left: 2px solid var(--t5); border-top: 2px solid var(--t5); }
+.name-card .cb-tr { top: -1px; right: -1px; border-right: 2px solid var(--t5); border-top: 2px solid var(--t5); }
+.name-card .cb-bl { bottom: -1px; left: -1px; border-left: 2px solid var(--t5); border-bottom: 2px solid var(--t5); }
+.name-card .cb-br { bottom: -1px; right: -1px; border-right: 2px solid var(--t5); border-bottom: 2px solid var(--t5); }
+
+.name-card:hover {
+  border-color: rgba(246,88,122,0.4);
+  transform: translateY(-3px);
+  box-shadow: 0 12px 40px rgba(0,0,0,0.4), 0 0 20px rgba(246,88,122,0.05);
+}
+.name-card:hover .cb-tl, .name-card:hover .cb-tr,
+.name-card:hover .cb-bl, .name-card:hover .cb-br {
+  width: 14px; height: 14px;
+  border-color: var(--primary);
+}
+.name-card.selected {
+  border-color: var(--primary);
+  background: rgba(246,88,122,0.05);
+  box-shadow: 0 0 20px rgba(246,88,122,0.1), inset 0 0 30px rgba(246,88,122,0.02);
+}
+.name-card.selected .cb-tl, .name-card.selected .cb-tr,
+.name-card.selected .cb-bl, .name-card.selected .cb-br {
+  border-color: var(--primary);
+  width: 14px; height: 14px;
+}
+.name-card.selected::after {
+  content: '\2713';
+  position: absolute;
+  top: 10px; right: 10px;
+  width: 22px; height: 22px;
+  background: var(--primary);
+  color: #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 800;
+}
+.nc-name {
+  font-size: 18px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  margin-bottom: 6px;
+  text-transform: uppercase;
+}
+.nc-reason {
+  font-size: 10px;
+  color: var(--t3);
+  line-height: 1.5;
+  letter-spacing: 0.02em;
+}
+.nc-tag {
+  display: inline-block;
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 2px 8px;
+  margin-top: 10px;
+  background: rgba(246,88,122,0.1);
+  color: var(--primary);
+  border: 1px solid rgba(246,88,122,0.2);
+}
+
+/* ========== STEP 3: PFP GENERATOR ========== */
+.star-selector { margin-bottom: 20px; }
+.star-label {
+  font-size: 9px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--t3);
+  margin-bottom: 10px;
+}
+.star-grid {
+  display: flex;
+  gap: 8px;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  scrollbar-width: none;
+  padding-bottom: 4px;
+}
+.star-grid::-webkit-scrollbar { display: none; }
+.star-option {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  background: var(--bg-card);
+  border: 1px solid var(--t5);
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 11px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.star-option:hover { border-color: var(--t4); }
+.star-option.active {
+  border-color: var(--primary);
+  background: rgba(246,88,122,0.05);
+  color: var(--primary);
+  text-shadow: var(--glow-red-subtle);
+}
+.star-option img { width: 24px; height: 24px; border-radius: 50%; object-fit: cover; }
+
+.pfp-gen-status {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 18px 20px;
+  background: var(--bg-card);
+  border: 1px solid var(--t5);
+  margin-bottom: 24px;
+}
+.pfp-gen-title { font-weight: 700; font-size: 12px; color: var(--t1); letter-spacing: 0.03em; }
+.pfp-gen-sub { font-size: 10px; color: var(--t3); margin-top: 2px; }
+
+.pfp-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin-bottom: 24px;
+}
+.pfp-card {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--t5);
+  cursor: pointer;
+  transition: all 0.3s;
+  background: var(--bg-card);
+  min-height: 200px;
+}
+.pfp-card img { width: 100%; height: auto; display: block; }
+.pfp-card:hover {
+  border-color: var(--t4);
+  transform: translateY(-3px);
+  box-shadow: 0 12px 40px rgba(0,0,0,0.5);
+}
+.pfp-card.selected {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 2px rgba(246,88,122,0.2), 0 12px 40px rgba(0,0,0,0.5);
+}
+.pfp-card .pfp-check {
+  position: absolute;
+  top: 8px; right: 8px;
+  width: 24px; height: 24px;
+  background: var(--primary);
+  display: none;
+  align-items: center;
+  justify-content: center;
+}
+.pfp-card.selected .pfp-check { display: flex; }
+.pfp-card .pfp-style-tag {
+  position: absolute;
+  bottom: 6px; left: 6px;
+  padding: 3px 8px;
+  background: rgba(0,0,0,0.7);
+  backdrop-filter: blur(8px);
+  font-size: 8px;
+  color: var(--t2);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+/* Skeleton loading for PFP cards */
+.pfp-skeleton {
+  position: absolute; inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-card);
+}
+.pfp-skeleton-img {
+  width: 100%; height: 0;
+  padding-bottom: 100%;
+  background: linear-gradient(90deg, var(--bg-muted) 25%, var(--bg-elevated) 50%, var(--bg-muted) 75%);
+  background-size: 200% 100%;
+  animation: skeletonPulse 1.5s ease-in-out infinite;
+}
+.pfp-skeleton-label {
+  position: absolute; bottom: 14px; left: 50%;
+  transform: translateX(-50%);
+  font-size: 9px;
+  color: var(--t4);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+@keyframes skeletonPulse {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+.pfp-error {
+  position: absolute; inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background: var(--bg-card);
+  padding: 16px;
+  text-align: center;
+}
+.pfp-error span { font-size: 10px; color: var(--t3); }
+.pfp-retry-btn {
+  font-family: var(--font);
+  font-size: 9px;
+  font-weight: 700;
+  padding: 6px 14px;
+  border: 1px solid var(--t5);
+  background: none;
+  color: var(--t1);
+  cursor: pointer;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  transition: all 0.2s;
+}
+.pfp-retry-btn:hover { border-color: var(--primary); color: var(--primary); }
+
+.pfp-selected-wrap { text-align: center; margin-bottom: 24px; }
+.pfp-selected-label {
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  color: var(--t4);
+  text-transform: uppercase;
+  margin-bottom: 12px;
+  font-weight: 700;
+}
+.pfp-selected-img {
+  width: 300px; height: 300px;
+  object-fit: cover;
+  border: 2px solid var(--primary);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.5), var(--glow-red);
+}
+
+.download-row {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.btn-share {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid var(--t4);
+  color: var(--t1);
+}
+.btn-share:hover { background: rgba(255,255,255,0.06); border-color: var(--t2); }
+
+/* ========== STEP 4: ANALYZER ========== */
+.analyzer-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+.analyzer-section-title {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  color: var(--primary);
+  text-transform: uppercase;
+  margin-bottom: 12px;
+  text-shadow: var(--glow-red-subtle);
+}
+.stat-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+.stat-label {
+  font-size: 10px;
+  color: var(--t3);
+  width: 50px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  flex-shrink: 0;
+}
+.stat-track {
+  flex: 1;
+  height: 6px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--t6);
+  overflow: hidden;
+}
+.stat-fill {
+  height: 100%;
+  animation: barFill 0.8s ease-out forwards;
+  width: var(--fill);
+}
+.stat-value {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--t1);
+  width: 24px;
+  text-align: right;
+}
+.archetype-box {
+  text-align: center;
+  padding: 24px;
+  border: 1px solid var(--t5);
+  background: var(--bg-card);
+  margin-bottom: 16px;
+}
+.archetype-label {
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  color: var(--t4);
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+.archetype-value {
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--primary);
+  letter-spacing: 0.05em;
+  text-shadow: var(--glow-red);
+  animation: neonPulse 3s ease-in-out infinite;
+}
+.archetype-sub {
+  font-size: 10px;
+  color: var(--t3);
+  margin-top: 6px;
+  letter-spacing: 0.03em;
+}
+
+.grade-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px; height: 48px;
+  font-size: 24px;
+  font-weight: 800;
+  border: 2px solid;
+  margin-bottom: 8px;
+}
+.grade-A { color: var(--neon-green); border-color: var(--neon-green); text-shadow: 0 0 8px rgba(74,222,128,0.5); }
+.grade-B { color: var(--neon-cyan); border-color: var(--neon-cyan); text-shadow: 0 0 8px rgba(34,211,238,0.5); }
+.grade-C { color: var(--neon-gold); border-color: var(--neon-gold); text-shadow: 0 0 8px rgba(250,184,0,0.5); }
+.grade-D { color: var(--neon-red); border-color: var(--neon-red); text-shadow: 0 0 8px rgba(246,88,122,0.5); }
+
+/* ========== TECH FOOTER ========== */
+.tech-footer {
+  text-align: center;
+  padding: 24px 0 16px;
+  border-top: 1px solid var(--t6);
+  margin-top: 16px;
+}
+.tech-footer-label {
+  font-size: 9px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--t4);
+  margin-bottom: 8px;
+}
+.tech-pills {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 10px;
+}
+.tech-pill {
+  font-size: 9px;
+  padding: 3px 10px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid var(--t5);
+  color: var(--t3);
+  letter-spacing: 0.05em;
+}
+.footer-back {
+  font-size: 10px;
+  color: var(--t4);
+  text-decoration: none;
+  letter-spacing: 0.05em;
+  transition: color 0.2s;
+}
+.footer-back:hover { color: var(--primary); text-shadow: var(--glow-red-subtle); }
+
+/* ========== TOAST ========== */
+.toast {
+  position: fixed;
+  bottom: 24px; left: 50%;
+  transform: translateX(-50%) translateY(80px);
+  background: var(--bg-card);
+  border: 1px solid var(--t5);
+  padding: 10px 20px;
+  font-size: 11px;
+  color: var(--t1);
+  z-index: 9999;
+  transition: transform 0.3s cubic-bezier(0.16,1,0.3,1);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+  letter-spacing: 0.03em;
+}
+.toast.show { transform: translateX(-50%) translateY(0); }
+
+/* ========== CONFETTI ========== */
+.confetti-piece {
+  position: fixed;
+  width: 6px; height: 6px;
+  z-index: 9998;
+  pointer-events: none;
+  animation: confettiFall var(--fall-duration, 2s) ease-out forwards;
+}
+
+/* ========== MODAL ========== */
+.modal-overlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.7);
+  backdrop-filter: blur(8px);
+  z-index: 1000;
+  display: none;
+  align-items: center;
+  justify-content: center;
+}
+.modal-overlay.open { display: flex; }
+
+/* ========== RESPONSIVE ========== */
+@media (max-width: 768px) {
+  .app { padding: 0 16px; }
+  .header { flex-direction: column; gap: 10px; }
+  .bracket-nav { gap: 2px; }
+  .bracket-link { padding: 6px 10px; font-size: 9px; }
+  .bracket-conn { width: 10px; }
+  .roster-grid { grid-template-columns: 1fr; }
+  .names-grid { grid-template-columns: 1fr; }
+  .module-title { font-size: 22px; }
+  .pfp-grid { grid-template-columns: 1fr; max-width: 400px; margin: 0 auto 24px; }
+  .pfp-selected-img { width: 260px; height: 260px; }
+  .analyzer-grid { grid-template-columns: 1fr; }
+  .download-row { flex-direction: column; align-items: center; }
+  .download-row .btn { width: 100%; max-width: 300px; justify-content: center; }
+  .status-bar { font-size: 8px; gap: 8px; flex-wrap: wrap; }
+}
+
+/* ========== SCROLLBAR ========== */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: linear-gradient(to bottom, rgba(246,88,122,0.3), rgba(34,211,238,0.3)); }
+::-webkit-scrollbar-thumb:hover { background: linear-gradient(to bottom, rgba(246,88,122,0.5), rgba(34,211,238,0.5)); }
+
+/* HUD scan effect on module transitions */
+.module.active::before {
+  content: '';
+  position: absolute;
+  left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--primary), transparent);
+  opacity: 0.3;
+  animation: hudScan 2s ease-in-out;
+  pointer-events: none;
+}
+</style>
+</head>
+<body>
+
+<canvas id="matrixCanvas"></canvas>
+<div class="circuit-pattern"></div>
+<div class="grid-overlay"></div>
+<div class="scanlines"></div>
+
+<div class="app">
+  <!-- STATUS BAR -->
+  <div class="status-bar">
+    <div class="status-dot"></div>
+    <span>[ENCRYPTED_CONNECTION]</span>
+    <div class="status-sep"></div>
+    <span>BDGE_IDENTITY_BUILDER // v2.0</span>
+    <div class="status-sep"></div>
+    <span>4 MODULES_ACTIVE</span>
+    <div class="status-sep"></div>
+    <span id="statusApi">API_STATUS: LOADING</span>
+  </div>
+
+  <!-- HEADER -->
+  <header class="header">
+    <div class="header-left">
+      <a href="https://www.youtube.com/@BDGEFantasyFootball" target="_blank">
+        <img src="bdge-transparent.png" alt="BDGE" class="header-logo" onerror="this.style.display='none'">
+      </a>
+      <div class="header-sep"></div>
+      <span class="header-title">IDENTITY_BUILDER</span>
+    </div>
+    <div class="header-right">
+      <div class="api-indicator">
+        <div class="status-dot" id="apiDot"></div>
+        <span id="apiLabel">SYSTEMS_INIT</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- BRACKET NAVIGATION -->
+  <nav class="bracket-nav">
+    <button class="bracket-link active" onclick="switchModule('build')">[BUILD]</button>
+    <div class="bracket-conn"></div>
+    <button class="bracket-link" onclick="switchModule('names')">[NAMES]</button>
+    <div class="bracket-conn"></div>
+    <button class="bracket-link" onclick="switchModule('pfp')">[PFP]</button>
+    <div class="bracket-conn"></div>
+    <button class="bracket-link" onclick="switchModule('analyze')">[ANALYZE]</button>
+  </nav>
+
+  <!-- MODULE 1: BUILD ROSTER -->
+  <section class="module active" id="mod-build">
+    <div class="module-header">
+      <div class="terminal-label">// ROSTER_BUILDER</div>
+      <h2 class="module-title">BUILD_YOUR_ROSTER</h2>
+      <p class="module-desc">Search NFL players or import a screenshot. Add your squad, then we'll cook up some names.</p>
+    </div>
+
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;flex-wrap:wrap">
+      <button class="btn-import" onclick="document.getElementById('screenshotInput').click()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
+        IMPORT_SCREENSHOT
+      </button>
+      <span class="import-hint">Upload from any fantasy app</span>
+      <input type="file" id="screenshotInput" accept="image/*" style="display:none" onchange="handleScreenshot(this)">
+    </div>
+
+    <div class="import-status" id="importStatus" style="display:none">
+      <div class="gen-spinner" style="width:24px;height:24px;margin:0"></div>
+      <span id="importStatusText">READING_ROSTER_FROM_SCREENSHOT...</span>
+    </div>
+
+    <div class="divider-or"><span>OR_SEARCH_MANUALLY</span></div>
+
+    <div class="terminal-search">
+      <span class="terminal-prompt">&gt;</span>
+      <input type="text" class="terminal-input" id="playerSearch" placeholder="SEARCH_PLAYERS... (E.G. PATRICK MAHOMES)" autocomplete="off">
+      <span id="searchLoading" style="display:none;position:absolute;right:16px;top:50%;transform:translateY(-50%);font-size:10px;color:var(--t3);letter-spacing:0.05em">LOADING_PLAYERS...</span>
+      <div class="autocomplete" id="autocomplete"></div>
+    </div>
+
+    <div class="roster-label">
+      YOUR_ROSTER <span class="roster-count" id="rosterCount">0</span>
+    </div>
+    <div class="roster-grid" id="rosterGrid">
+      <div class="roster-empty" id="rosterEmpty">
+        SEARCH_AND_ADD_PLAYERS_TO_BUILD_YOUR_ROSTER
+      </div>
+    </div>
+
+    <div class="actions-row">
+      <button class="btn btn-primary" id="toNamesBtn" disabled onclick="switchModule('names')">
+        GENERATE_NAMES
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14m-7-7 7 7-7 7"/></svg>
+      </button>
+      <button class="btn btn-secondary" onclick="clearRoster()">CLEAR_ALL</button>
+    </div>
+  </section>
+
+  <!-- MODULE 2: NAMES -->
+  <section class="module" id="mod-names">
+    <div class="module-header">
+      <div class="terminal-label">// AI_NAME_GENERATOR</div>
+      <h2 class="module-title">TEAM_NAMES</h2>
+      <p class="module-desc">AI-generated names based on your roster, with BDGE flavor. Pick your favorite.</p>
+    </div>
+
+    <div class="generating-wrap" id="genWrap" style="display:none">
+      <div class="gen-spinner"></div>
+      <div class="gen-text">COOKING_UP_NAMES_FOR_THE_BIG_DOGS<span class="typing-dots"></span></div>
+    </div>
+
+    <div class="names-grid" id="namesGrid"></div>
+
+    <div class="actions-row" id="nameActions" style="display:none">
+      <button class="btn btn-primary" id="toPfpBtn" disabled onclick="switchModule('pfp')">
+        CREATE_PFP
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14m-7-7 7 7-7 7"/></svg>
+      </button>
+      <button class="btn btn-secondary" onclick="regenerateNames()">REGENERATE</button>
+      <button class="btn btn-secondary" onclick="switchModule('build')">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5m7-7-7 7 7 7"/></svg>
+        EDIT_ROSTER
+      </button>
+    </div>
+  </section>
+
+  <!-- MODULE 3: PFP -->
+  <section class="module" id="mod-pfp">
+    <div class="module-header">
+      <div class="terminal-label">// PFP_GENERATOR</div>
+      <h2 class="module-title">CREATE_YOUR_PFP</h2>
+      <p class="module-desc">AI creates unique profile pictures featuring your star player. Pick your favorite and download.</p>
+    </div>
+
+    <div class="star-selector">
+      <div class="star-label">FEATURED_PLAYER</div>
+      <div class="star-grid" id="starGrid"></div>
+    </div>
+
+    <div class="pfp-gen-status" id="pfpGenStatus" style="display:none">
+      <div class="gen-spinner" style="width:28px;height:28px;margin:0"></div>
+      <div>
+        <div class="pfp-gen-title">CREATING_YOUR_PFPS...</div>
+        <div class="pfp-gen-sub" id="pfpGenSub">GENERATING 4 UNIQUE DESIGNS WITH AI</div>
+      </div>
+    </div>
+
+    <div class="pfp-grid" id="pfpGrid"></div>
+
+    <div class="pfp-selected-wrap" id="pfpSelectedWrap" style="display:none">
+      <div class="pfp-selected-label">SELECTED</div>
+      <img class="pfp-selected-img" id="pfpSelectedImg" alt="Selected PFP">
+    </div>
+
+    <div class="download-row" id="pfpActions" style="display:none">
+      <button class="btn btn-primary" onclick="downloadAIPFP()">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4m4-5 5 5 5-5m-5 5V3"/></svg>
+        DOWNLOAD_PFP
+      </button>
+      <button class="btn btn-share" onclick="shareToTwitter()">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+        SHARE_PFP_ON_X
+      </button>
+      <button class="btn btn-secondary" onclick="generatePFPs()">REGENERATE</button>
+      <button class="btn btn-secondary" onclick="switchModule('names')">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5m7-7-7 7 7 7"/></svg>
+        BACK_TO_NAMES
+      </button>
+    </div>
+  </section>
+
+  <!-- MODULE 4: ANALYZE -->
+  <section class="module" id="mod-analyze">
+    <div class="module-header">
+      <div class="terminal-label">// ROSTER_ANALYZER</div>
+      <h2 class="module-title">TEAM_ANALYSIS</h2>
+      <p class="module-desc">AI-powered breakdown of your roster composition, strengths, and fantasy outlook.</p>
+    </div>
+
+    <div id="analyzerContent">
+      <div class="roster-empty">ADD_PLAYERS_TO_YOUR_ROSTER_FIRST</div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="tech-footer">
+    <div class="tech-footer-label">// BUILT_WITH</div>
+    <div class="tech-pills">
+      <span class="tech-pill">SLEEPER_API</span>
+      <span class="tech-pill">GROQ_AI_(LLAMA_3.3)</span>
+      <span class="tech-pill">GOOGLE_GEMINI</span>
+      <span class="tech-pill">VANILLA_JS</span>
+    </div>
+    <a href="index.html" class="footer-back">&larr; BACK_TO_BDGE_HOME</a>
+  </footer>
+
+  <div style="height:40px"></div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ========== STATE ==========
+let allPlayers = [];
+let roster = [];
+let teamNames = [];
+let selectedName = null;
+let currentModule = 'build';
+let highlightIndex = -1;
+let playerDataLoaded = false;
+const GROQ_KEY = atob('Z3NrX1lhc21zZGtFdVlGdlBzQ3o1NHVMV0dkeWIzRllZNGtRRU1DcnB3dUxxbU16V0RYYVVZVVU=');
+const GEMINI_KEY = atob('QUl6YVN5RDI5VWFrUnRaN2ZCNUxEeUwxWUZoN0VrWFdlRXBuMGR3');
+
+// NFL TEAM COLORS
+const TEAM_COLORS = {
+  ARI:'#97233F',ATL:'#A71930',BAL:'#241773',BUF:'#00338D',CAR:'#0085CA',CHI:'#0B162A',
+  CIN:'#FB4F14',CLE:'#311D00',DAL:'#003594',DEN:'#FB4F14',DET:'#0076B6',GB:'#203731',
+  HOU:'#03202F',IND:'#002C5F',JAX:'#006778',KC:'#E31837',LAC:'#0080C6',LAR:'#003594',
+  LV:'#000000',MIA:'#008E97',MIN:'#4F2683',NE:'#002244',NO:'#D3BC8D',NYG:'#0B2265',
+  NYJ:'#125740',PHI:'#004C54',PIT:'#FFB612',SEA:'#002244',SF:'#AA0000',TB:'#D50A0A',
+  TEN:'#0C2340',WAS:'#5A1414'
+};
+
+// BDGE SLANG
+const BDGE_SLANG = `
+BDGE TERMINOLOGY AND CULTURE:
+- BDGE = "Big Dogs Gotta Eat" — the brand motto
+- "Stein" = BDGE member. "Become a Stein" is their CTA
+- "Knowing Ball" = understanding football deeply
+- "Fantasy Sicko" = dedicated fantasy player
+- "Legends Never Die" = secondary tagline
+- "Questionable Priorities" = self-deprecating humor about how seriously they take fantasy
+- "The Entire Thing" = their top membership tier
+- "Smoochies" = branded catchphrase used on merch
+- "Big Dogs" = what they call serious fantasy players / their community
+- BDGE voice is self-deprecating, confident, sports-bro, funny
+
+EXAMPLES OF ELITE FANTASY TEAM NAMES (study these patterns and create names at this level):
+
+PLAYER PUNS — the gold standard:
+Mahomes: Sherlock Mahomes, Country Roads Take Mahomes, Game of Mahomes, Mahomes Alone, No Place Like Mahomes, Mahomelander, Post Mahomes, Sweet Child O' Mahomes
+Hurts: Hurts So Good, The Hurts Locker, Hurts Don't It?, Hurtsbreakers
+Allen: Allen Or Nothing, Allen vs Predator, Josh.0, It's Allen The Hips
+Lamar: Dude Where's Lamar?, Lamarvelous, Action Jackson, I'm Sorry Miss Jackson
+CeeDee Lamb: Silence of the Lambs, CeeDee Had A Little Lamb, Easy As A-B-CeeDee, That's What CeeDee Said, Worthy Is The Lamb
+Bijan: To Infinity And Bijan, Bijan Mustard, Bijan Claude Van Damn, Bijanosaurus Rex, Pirates of the CaribBijan, OBijan Kenobi
+Ja'Marr Chase: Ja'Marr You Not Entertained?, Ja'Marrvelous Mrs. Maisel, Ja'Marrs Attacks!, Chase Ventura Pet Detective
+Breece Hall: Breece's Pieces, Better Call Hall, Breeced Lightning, I Came In Like A Wrecking Hall, Breece Hall & Oates
+Nabers: Like A Good Nabers, Mr. Rogers' Nabershood, Nabers With Attitude, Darth Nabers
+Burrow: Beg Burrow Steal, Super Smash Burrows, Living on Burrowed Time
+Gibbs: Never Gonna Gibbs You Up, Baby Back Gibbs, Jahmyr I Go Again
+Puka: Nacua Matata, Pukachu, Apukalypse Now
+Saquon: Je Ne Saquon, SaQuontum Leap, Saquonda Forever, Jurassic Barkley
+Amon-Ra: Amon Joy, Amon Fire!, Amon A Roll, No Amon No Cry
+Brock Bowers: Bower Rangers, Austin Bowers, Smell What the Brock is Cooking, Brock & Roll, Another Brock In The Wall
+Kelce: Keeping Up With The Kelces, Kelce & The Sunshine Band, Kelce Grammer
+Achane: Achane In The Membrane, D'Jango Achained, Crazy Rich Achanes
+Stroud: Loud & Stroud, Stroudy With A Chance of Meatballs, Stroud and Clear
+CMC: Run CMC, Christian Mingle, I Think I Pulled McCaff
+Others: Dak To The Future, Dakstreet Boys, Baby Got Dak, Olave Garden, Red Solo Kupp, Kupp Fiction, Say Hello To My Kittle Friend, Etienne Phone Home, WaddleVision, Tua Legit To Quit, Scary Terry's Haunted House, Kenneth Walker Texas Ranger, Pitts & Giggles, Purdy Fly For A White Guy, Mayfield of Dreams, Love Shack, LaPorta Potty, Diggs In A Blanket, Jonathan Taylor's Version, Slim Pickens, Drake London Calling
+
+FOOD PUNS: Bijan Mustard, Olave Garden, Breece's Pieces, Chubb E. Cheese, Baby Back Gibbs, Amon Joy, Baskin Dobbins, Vintage Charbonnet, Kittles & Pitts, Dan Campbell's Soup, Taco Dell, Nico De Gallo
+
+MUSIC/SONG REFS: Country Roads Take Mahomes, Kupp My Life Into Pieces, Achane In The Membrane, We Built This Griddy, Naber Gonna Gibbs You Up, Raheemian Rhapsody, Sweet Child O' Mahomes, Breece Hall & Oates, Drake London Calling, Another Brock In The Wall, In My Fantasy Era, Jonathan Taylor's Version
+
+POP CULTURE: Game of Mahomes, Silence of the Lambs, Saquonda Forever, WaddleVision, Mahomelander, Dak To The Future, Full Metcalf Jacket, Teenage Mutant Njigba Turtles, Bower Rangers, McConkey Kong, Hot Chubb Time Machine, Apukalypse Now, Brockback Mountain
+
+FUNNY/SELF-DEPRECATING: AutoDrafted But Dangerous, Fourth & DRUNK!, Waiver Wire Jesus, Multiple Scoregasms, Victorious Secret, Scared Hitless, Fumbledore's Army, Show Me Your TDs, 60% of The Time I Win Every Time, Bench Don't Kill My Vibe, The Goodell The Bad and The Ugly, In My Fantasy Era, Assistant to the Fantasy Manager, Password Is Taco
+
+INTIMIDATING: Gridiron Gangsters, Touchdown Tyrants, Blitz Brigade, The Inevitable Empire, Prestige Worldwide, Extinction Level Event, The Algorithm
+
+YOUR job is to create names at THIS level of quality using the user's ACTUAL roster players. Every name should make someone laugh, think, or screenshot to send to their group chat. Focus heavily on player name puns — those are what people love most.
+`;
+
+// ========== MATRIX RAIN ==========
+function initMatrix() {
+  const canvas = document.getElementById('matrixCanvas');
+  const ctx = canvas.getContext('2d');
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  window.addEventListener('resize', () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; });
+
+  const chars = 'BDGE01アイウエオカキクケコ';
+  const fontSize = 14;
+  const cols = Math.floor(canvas.width / fontSize);
+  const drops = Array(cols).fill(1);
+
+  function draw() {
+    ctx.fillStyle = 'rgba(0,0,2,0.06)';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.font = fontSize + 'px JetBrains Mono';
+
+    drops.forEach((y, i) => {
+      const char = chars[Math.floor(Math.random() * chars.length)];
+      const isRed = Math.random() > 0.7;
+      ctx.fillStyle = isRed ? 'rgba(246,88,122,0.6)' : 'rgba(34,211,238,0.3)';
+      ctx.fillText(char, i * fontSize, y * fontSize);
+
+      if (y * fontSize > canvas.height && Math.random() > 0.98) {
+        drops[i] = 0;
+      }
+      drops[i]++;
+    });
+    requestAnimationFrame(draw);
+  }
+  draw();
+}
+
+// ========== INIT ==========
+document.addEventListener('DOMContentLoaded', () => {
+  initMatrix();
+  loadPlayers();
+
+  const searchEl = document.getElementById('playerSearch');
+  searchEl.addEventListener('input', debounce(handleSearch, 150));
+  searchEl.addEventListener('keydown', handleSearchKeydown);
+  searchEl.addEventListener('focus', () => { if (searchEl.value.length >= 2) handleSearch(); });
+  document.addEventListener('click', (e) => {
+    if (!e.target.closest('.terminal-search')) closeAutocomplete();
+  });
+});
+
+// ========== MODULE NAVIGATION ==========
+function switchModule(mod) {
+  if (mod === 'names' && roster.length === 0) { showToast('ADD_PLAYERS_FIRST'); return; }
+  if (mod === 'pfp' && selectedName === null) { showToast('PICK_A_NAME_FIRST'); return; }
+  if (mod === 'analyze' && roster.length === 0) { showToast('ADD_PLAYERS_FIRST'); return; }
+
+  currentModule = mod;
+
+  document.querySelectorAll('.bracket-link').forEach(el => el.classList.remove('active'));
+  document.querySelector(`[onclick="switchModule('${mod}')"]`).classList.add('active');
+
+  document.querySelectorAll('.module').forEach(m => m.classList.remove('active'));
+  document.getElementById(`mod-${mod}`).classList.add('active');
+
+  if (mod === 'names' && teamNames.length === 0) generateNames();
+  if (mod === 'pfp') {
+    buildStarSelector();
+    const star = roster[selectedStar];
+    const cached = star && pfpCache[star.player_id];
+    if (cached) restoreCachedPFPs(cached);
+    else generatePFPs();
+  }
+  if (mod === 'analyze') runAnalysis();
+
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ========== SCREENSHOT IMPORT ==========
+async function handleScreenshot(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const status = document.getElementById('importStatus');
+  const statusText = document.getElementById('importStatusText');
+  status.style.display = 'flex';
+  statusText.textContent = 'READING_ROSTER_FROM_SCREENSHOT...';
+
+  try {
+    const b64 = await new Promise(resolve => {
+      const reader = new FileReader();
+      reader.onloadend = () => resolve(reader.result.split(',')[1]);
+      reader.readAsDataURL(file);
+    });
+    const mime = file.type || 'image/png';
+    const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_KEY}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ contents: [{ parts: [
+        { inline_data: { mime_type: mime, data: b64 } },
+        { text: 'This is a screenshot of a fantasy football team roster. Extract ALL player names from this image. Return ONLY a JSON array of player full names, like ["Patrick Mahomes", "Travis Kelce"]. No other text, no markdown, just the JSON array.' }
+      ]}] })
+    });
+    const data = await res.json();
+    if (data.error) throw new Error(data.error.message);
+    let content = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
+    content = content.replace(/```json?\n?/g, '').replace(/```/g, '').trim();
+    const names = JSON.parse(content);
+    if (!Array.isArray(names) || names.length === 0) throw new Error('No players found');
+    statusText.textContent = `FOUND_${names.length}_PLAYERS — MATCHING...`;
+    let waited = 0;
+    while (!playerDataLoaded && waited < 10000) { await new Promise(r => setTimeout(r, 500)); waited += 500; }
+    let matched = 0;
+    for (const name of names) {
+      const q = name.toLowerCase().replace(/[^a-z]/g, '');
+      const match = allPlayers.find(p => p.search_full_name && p.search_full_name.replace(/[^a-z]/g, '') === q);
+      if (match && !roster.find(p => p.player_id === match.player_id)) {
+        if (roster.length >= 16) break;
+        roster.push(match);
+        trackEvent('roster_add', { name: `${match.first_name} ${match.last_name}`, pos: match.position, team: match.team });
+        matched++;
+      }
+    }
+    renderRoster();
+    status.style.display = 'none';
+    if (matched > 0) { trackEvent('screenshot_import', { count: matched }); showToast(`ADDED_${matched}_PLAYERS`); fireConfetti(); }
+    else showToast('NO_MATCHES — ADD_MANUALLY');
+  } catch(err) {
+    console.error('Screenshot import error:', err);
+    status.style.display = 'none';
+    showToast('IMPORT_FAILED — TRY_CLEARER_IMAGE');
+  }
+  input.value = '';
+}
+
+// ========== PLAYER DATA ==========
+async function loadPlayers() {
+  const sl = document.getElementById('searchLoading');
+  sl.style.display = 'block';
+  try {
+    const cached = sessionStorage.getItem('sleeperPlayers');
+    if (cached) {
+      allPlayers = JSON.parse(cached);
+      playerDataLoaded = true;
+      sl.style.display = 'none';
+      updateApiStatus(true);
+      return;
+    }
+    const res = await fetch('https://api.sleeper.app/v1/players/nfl');
+    const data = await res.json();
+    const validPositions = new Set(['QB','RB','WR','TE','K','DEF']);
+    allPlayers = Object.values(data).filter(p => p.active && p.team && validPositions.has(p.position)).sort((a,b) => (a.search_rank||999999) - (b.search_rank||999999));
+    try { sessionStorage.setItem('sleeperPlayers', JSON.stringify(allPlayers)); } catch(e) {}
+    playerDataLoaded = true;
+    sl.style.display = 'none';
+    updateApiStatus(true);
+  } catch(err) {
+    sl.textContent = 'FAILED_TO_LOAD — CHECK_CONNECTION';
+    updateApiStatus(false);
+  }
+}
+
+function updateApiStatus(ok) {
+  document.getElementById('statusApi').textContent = ok ? 'API_STATUS: CONNECTED' : 'API_STATUS: ERROR';
+  document.getElementById('apiDot').className = ok ? 'status-dot' : 'status-dot warn';
+  document.getElementById('apiLabel').textContent = ok ? 'ALL_SYSTEMS_OPERATIONAL' : 'CONNECTION_ERROR';
+}
+
+function searchPlayers(q) {
+  if (!q || q.length < 2) return [];
+  const s = q.toLowerCase().replace(/\s/g, '');
+  return allPlayers.filter(p => p.search_full_name && p.search_full_name.includes(s)).slice(0, 12);
+}
+function getHeadshot(p) { return `https://sleepercdn.com/content/nfl/players/thumb/${p.player_id}.jpg`; }
+
+// ========== SEARCH UI ==========
+function handleSearch() {
+  const query = document.getElementById('playerSearch').value;
+  const results = searchPlayers(query);
+  const ac = document.getElementById('autocomplete');
+  if (!results.length) { closeAutocomplete(); return; }
+  highlightIndex = -1;
+  ac.innerHTML = results.map((p, i) => `
+    <div class="ac-item" data-idx="${i}" onclick="addPlayer('${p.player_id}')">
+      <img class="ac-avatar" src="${getHeadshot(p)}" alt="" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 36 36%22><rect fill=%22%23070b14%22 width=%2236%22 height=%2236%22/><text x=%2218%22 y=%2222%22 text-anchor=%22middle%22 fill=%22%23555%22 font-size=%2212%22>${p.first_name?.[0]||''}${p.last_name?.[0]||''}</text></svg>'">
+      <div>
+        <div class="ac-name">${p.first_name} ${p.last_name}</div>
+        <div class="ac-meta">${p.team} · #${p.number||'?'}</div>
+      </div>
+      <span class="ac-pos ${p.position}">${p.position}</span>
+    </div>
+  `).join('');
+  ac.classList.add('open');
+}
+
+function handleSearchKeydown(e) {
+  const ac = document.getElementById('autocomplete');
+  const items = ac.querySelectorAll('.ac-item');
+  if (!items.length) return;
+  if (e.key === 'ArrowDown') { e.preventDefault(); highlightIndex = Math.min(highlightIndex + 1, items.length - 1); updateHL(items); }
+  else if (e.key === 'ArrowUp') { e.preventDefault(); highlightIndex = Math.max(highlightIndex - 1, 0); updateHL(items); }
+  else if (e.key === 'Enter') { e.preventDefault(); if (highlightIndex >= 0) items[highlightIndex].click(); else if (items.length) items[0].click(); }
+  else if (e.key === 'Escape') closeAutocomplete();
+}
+function updateHL(items) { items.forEach((el, i) => el.classList.toggle('highlighted', i === highlightIndex)); if (highlightIndex >= 0) items[highlightIndex].scrollIntoView({ block: 'nearest' }); }
+function closeAutocomplete() { document.getElementById('autocomplete').classList.remove('open'); highlightIndex = -1; }
+
+// ========== ROSTER ==========
+function addPlayer(pid) {
+  if (roster.find(p => p.player_id === pid)) { showToast('ALREADY_ON_ROSTER'); return; }
+  if (roster.length >= 16) { showToast('MAX_16_PLAYERS'); return; }
+  const player = allPlayers.find(p => p.player_id === pid);
+  if (!player) return;
+  roster.push(player);
+  trackEvent('roster_add', { name: `${player.first_name} ${player.last_name}`, pos: player.position, team: player.team });
+  renderRoster();
+  closeAutocomplete();
+  document.getElementById('playerSearch').value = '';
+  document.getElementById('playerSearch').focus();
+}
+function removePlayer(pid) { roster = roster.filter(p => p.player_id !== pid); renderRoster(); }
+function clearRoster() { roster = []; selectedName = null; teamNames = []; renderRoster(); }
+
+function renderRoster() {
+  const grid = document.getElementById('rosterGrid');
+  const count = document.getElementById('rosterCount');
+  const btn = document.getElementById('toNamesBtn');
+  count.textContent = roster.length;
+  btn.disabled = roster.length < 1;
+  if (!roster.length) { grid.innerHTML = '<div class="roster-empty">SEARCH_AND_ADD_PLAYERS_TO_BUILD_YOUR_ROSTER</div>'; return; }
+  grid.innerHTML = roster.map((p, i) => `
+    <div class="player-card" style="animation-delay:${i*0.04}s">
+      <div class="cb-tl"></div><div class="cb-tr"></div><div class="cb-bl"></div><div class="cb-br"></div>
+      <img class="pc-avatar" src="${getHeadshot(p)}" alt="${p.first_name} ${p.last_name}" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 40 40%22><rect fill=%22%23070b14%22 width=%2240%22 height=%2240%22/><text x=%2220%22 y=%2226%22 text-anchor=%22middle%22 fill=%22%23555%22 font-size=%2214%22>${p.first_name?.[0]||''}${p.last_name?.[0]||''}</text></svg>'">
+      <div class="pc-info">
+        <div class="pc-name">${p.first_name} ${p.last_name}</div>
+        <div class="pc-detail"><span class="ac-pos ${p.position}" style="font-size:8px;padding:1px 4px">${p.position}</span> ${p.team} #${p.number||'?'}</div>
+      </div>
+      <button class="pc-remove" onclick="removePlayer('${p.player_id}')">&times;</button>
+    </div>
+  `).join('');
+}
+
+// ========== AI NAMES ==========
+async function generateNames() {
+  const genWrap = document.getElementById('genWrap');
+  const namesGrid = document.getElementById('namesGrid');
+  const nameActions = document.getElementById('nameActions');
+  genWrap.style.display = 'block';
+  namesGrid.innerHTML = '';
+  nameActions.style.display = 'none';
+  teamNames = []; selectedName = null;
+  document.getElementById('toPfpBtn').disabled = true;
+
+  const rosterDesc = roster.map(p => `${p.first_name} ${p.last_name} (${p.position}, ${p.team})`).join(', ');
+  const systemPrompt = `You are BDGE's official fantasy football team name generator. You're witty, creative, and steeped in both NFL culture and BDGE's unique brand voice.\n\n${BDGE_SLANG}\n\nGenerate exactly 8 fantasy football team names based on the user's roster. Each name should:\n- Be clever, punny, or reference specific players on the roster\n- Mix in BDGE terminology and culture naturally (not forced)\n- Range from funny to intimidating to absurd\n- Be concise (2-5 words max)\n- Some should reference specific player names (puns, wordplay)\n- Some should reference BDGE terms (Stein, Big Dogs, etc.)\n- At least one should be genuinely intimidating/cool\n- At least one should be funny/self-deprecating in BDGE style\n\nRESPOND ONLY WITH A JSON ARRAY of objects like:\n[{"name":"Team Name Here","reason":"Brief explanation of the wordplay","vibe":"funny|intimidating|clever|bdge"}]\n\nNo markdown, no code blocks, just the raw JSON array.`;
+
+  try {
+    const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + GROQ_KEY },
+      body: JSON.stringify({ model: 'llama-3.3-70b-versatile', messages: [{ role: 'system', content: systemPrompt }, { role: 'user', content: `My roster: ${rosterDesc}\n\nGenerate 8 team names.` }], max_tokens: 800, temperature: 0.9 })
+    });
+    const data = await res.json();
+    if (data.error) throw new Error(data.error.message || 'API error');
+    const content = data.choices[0].message.content.trim();
+    teamNames = JSON.parse(content.replace(/```json?\n?/g, '').replace(/```/g, '').trim());
+    genWrap.style.display = 'none';
+    renderNames();
+    nameActions.style.display = 'flex';
+    fireConfetti();
+  } catch(err) {
+    genWrap.style.display = 'none';
+    namesGrid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:32px;color:var(--t3);font-size:11px"><p style="margin-bottom:12px">GENERATION_FAILED: ${err.message}</p><button class="btn btn-secondary" onclick="generateNames()">RETRY</button></div>`;
+    nameActions.style.display = 'flex';
+  }
+}
+function regenerateNames() { teamNames = []; selectedName = null; document.getElementById('toPfpBtn').disabled = true; generateNames(); }
+
+function renderNames() {
+  document.getElementById('namesGrid').innerHTML = teamNames.map((n, i) => `
+    <div class="name-card ${selectedName === i ? 'selected' : ''}" onclick="selectName(${i})" style="animation-delay:${i*0.05}s">
+      <div class="cb-tl"></div><div class="cb-tr"></div><div class="cb-bl"></div><div class="cb-br"></div>
+      <div class="nc-name">${escHtml(n.name)}</div>
+      <div class="nc-reason">${escHtml(n.reason)}</div>
+      <span class="nc-tag">${escHtml(n.vibe || 'clever')}</span>
+    </div>
+  `).join('');
+}
+function selectName(idx) {
+  selectedName = idx;
+  trackEvent('team_name_selected', { name: teamNames[idx]?.name, vibe: teamNames[idx]?.vibe });
+  document.getElementById('toPfpBtn').disabled = false;
+  renderNames();
+}
+
+// ========== PFP GENERATOR ==========
+let pfpImages = [];
+let selectedPFP = null;
+let selectedStar = 0;
+const pfpCache = {};
+const PFP_STYLES = [{ tag: 'Cartoon' }, { tag: 'Realistic' }, { tag: 'Fantasy' }, { tag: 'Badass' }];
+
+let STYLE_REF_B64 = null;
+async function loadStyleRef() {
+  if (STYLE_REF_B64) return STYLE_REF_B64;
+  try { const r = await fetch('style-ref.jpg'); const b = await r.blob(); return new Promise(res => { const rd = new FileReader(); rd.onloadend = () => res(rd.result.split(',')[1]); rd.readAsDataURL(b); }); } catch(e) { return null; }
+}
+
+function buildStarSelector() {
+  document.getElementById('starGrid').innerHTML = roster.map((p, i) => `
+    <div class="star-option ${selectedStar === i ? 'active' : ''}" onclick="selectStar(${i})">
+      <img src="${getHeadshot(p)}" alt="" onerror="this.style.display='none'">
+      <span>${p.first_name} ${p.last_name}</span>
+    </div>
+  `).join('');
+}
+function selectStar(idx) {
+  if (idx === selectedStar) return;
+  selectedStar = idx;
+  buildStarSelector();
+  const star = roster[idx];
+  if (!star) return;
+  const cached = pfpCache[star.player_id];
+  if (cached) restoreCachedPFPs(cached);
+  else showGeneratePrompt(star);
+}
+
+function restoreCachedPFPs(cached) {
+  pfpImages = cached.images; selectedPFP = null;
+  document.getElementById('pfpSelectedWrap').style.display = 'none';
+  document.getElementById('pfpGenStatus').style.display = 'none';
+  const grid = document.getElementById('pfpGrid');
+  grid.innerHTML = cached.images.map((img, i) => {
+    if (!img) return `<div class="pfp-card" id="pfpCard${i}"></div>`;
+    return `<div class="pfp-card" id="pfpCard${i}"><img src="${img.dataUrl}" alt="PFP ${i+1}"><div class="pfp-style-tag">${PFP_STYLES[i]?.tag||''}</div><div class="pfp-check"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="3"><path d="M20 6 9 17l-5-5"/></svg></div></div>`;
+  }).join('');
+  cached.images.forEach((img, i) => { if (img) { const c = document.getElementById(`pfpCard${i}`); if (c) c.onclick = () => selectPFP(i); } });
+  document.getElementById('pfpActions').style.display = 'flex';
+}
+
+function showGeneratePrompt(star) {
+  pfpImages = []; selectedPFP = null;
+  document.getElementById('pfpSelectedWrap').style.display = 'none';
+  document.getElementById('pfpGenStatus').style.display = 'none';
+  document.getElementById('pfpGrid').innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:40px"><div style="font-size:12px;color:var(--t2);margin-bottom:16px">GENERATE_PFPS_FOR <strong style="color:var(--primary)">${star.first_name} ${star.last_name}</strong></div><button class="btn btn-primary" onclick="generatePFPs()">GENERATE_PFPS <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14m-7-7 7 7-7 7"/></svg></button></div>`;
+  document.getElementById('pfpActions').style.display = 'none';
+}
+
+async function generatePFPs() {
+  const star = roster[selectedStar] || roster[0];
+  pfpImages = []; selectedPFP = null;
+  document.getElementById('pfpSelectedWrap').style.display = 'none';
+  document.getElementById('pfpActions').style.display = 'none';
+  const status = document.getElementById('pfpGenStatus');
+  const grid = document.getElementById('pfpGrid');
+  status.style.display = 'flex';
+
+  grid.innerHTML = PFP_STYLES.map((s, i) => `<div class="pfp-card" id="pfpCard${i}"><div class="pfp-skeleton"><div class="pfp-skeleton-img"></div><span class="pfp-skeleton-label">${s.tag}</span></div><div class="pfp-check"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="3"><path d="M20 6 9 17l-5-5"/></svg></div></div>`).join('');
+
+  const playerName = `${star.first_name} ${star.last_name}`;
+  document.getElementById('pfpGenSub').textContent = 'BDGE_IS_RESEARCHING_THE_PLAYER...';
+  const refB64 = await loadStyleRef();
+
+  try {
+    const parts = [];
+    if (refB64) parts.push({ inline_data: { mime_type: 'image/jpeg', data: refB64 } });
+    parts.push({ text: `I am creating a pfp for my fantasy football team. I want to create the pfp centered around ${playerName}. First search what he looks like, his number, and ensure current team is accurate so that you understand his character. Then look for any highlights or viral moments he had in 2025. I want you to create a cartoon, realistic, fantasy, and badass pfp (4 of them) using everything I just gave you above. Before you create the pfp understand that the goal is to have the pfp look as close as possible to the player. Add a signature effect of the players name on the pfp as well. The image I attached is an example of the style I want. All 4 images should be completely unique. Do not copy anything from one to the next as each needs to fit its own aesthetic. Ensure you are using the players most current team.` });
+
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 90000);
+    const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-image:generateContent?key=${GEMINI_KEY}`, {
+      method: 'POST', headers: { 'Content-Type': 'application/json' }, signal: controller.signal,
+      body: JSON.stringify({ contents: [{ parts }], generationConfig: { responseModalities: ['IMAGE', 'TEXT'] } })
+    });
+    clearTimeout(timeout);
+    const data = await res.json();
+    if (data.error) throw new Error(data.error.message || JSON.stringify(data.error));
+
+    let imgIndex = 0;
+    const responseParts = data.candidates?.[0]?.content?.parts || [];
+    for (const part of responseParts) {
+      if (part.inlineData && imgIndex < 4) {
+        const mime = (part.inlineData.mimeType || 'image/png').split('/').pop();
+        const dataUrl = `data:image/${mime};base64,${part.inlineData.data}`;
+        const idx = imgIndex;
+        const card = document.getElementById(`pfpCard${idx}`);
+        if (card) {
+          const sk = card.querySelector('.pfp-skeleton'); if (sk) sk.style.display = 'none';
+          const imgEl = document.createElement('img'); imgEl.src = dataUrl; imgEl.alt = PFP_STYLES[idx].tag;
+          card.insertBefore(imgEl, card.firstChild);
+          const tagEl = document.createElement('div'); tagEl.className = 'pfp-style-tag'; tagEl.textContent = PFP_STYLES[idx].tag; card.appendChild(tagEl);
+          card.onclick = () => selectPFP(idx);
+          pfpImages[idx] = { dataUrl };
+        }
+        imgIndex++;
+      }
+    }
+    if (imgIndex === 0) showPfpErr('AI_IS_WARMING_UP — TRY_AGAIN');
+    else { for (let i = imgIndex; i < 4; i++) { const c = document.getElementById(`pfpCard${i}`); if (c) { const sk = c.querySelector('.pfp-skeleton'); if (sk) sk.style.display = 'none'; } } }
+  } catch(err) {
+    const msg = err.name === 'AbortError' ? 'GENERATION_TIMED_OUT' : (err.message?.slice(0,50) || 'ERROR');
+    showPfpErr(msg);
+  }
+
+  function showPfpErr(msg) { for (let i = 0; i < 4; i++) { const c = document.getElementById(`pfpCard${i}`); if (c && !pfpImages[i]) c.innerHTML = `<div class="pfp-error"><span>${msg}</span><button class="pfp-retry-btn" onclick="generatePFPs()">RETRY</button></div><div class="pfp-check"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="3"><path d="M20 6 9 17l-5-5"/></svg></div>`; } }
+
+  status.style.display = 'none';
+  document.getElementById('pfpActions').style.display = 'flex';
+  if (pfpImages.some(Boolean)) fireConfetti();
+  trackEvent('pfp_generated', { player: playerName, count: pfpImages.filter(Boolean).length });
+  if (pfpImages.some(Boolean)) {
+    pfpCache[star.player_id] = { images: [...pfpImages] };
+    try { const sd = {}; for (const [pid, val] of Object.entries(pfpCache)) sd[pid] = { images: val.images.map(img => img ? { dataUrl: img.dataUrl } : null) }; localStorage.setItem('bdge_pfp_cache', JSON.stringify(sd)); } catch(e) {}
+  }
+}
+
+function selectPFP(idx) {
+  if (!pfpImages[idx]) return;
+  selectedPFP = idx;
+  document.querySelectorAll('.pfp-card').forEach((c, i) => c.classList.toggle('selected', i === idx));
+  document.getElementById('pfpSelectedWrap').style.display = 'block';
+  document.getElementById('pfpSelectedImg').src = pfpImages[idx].dataUrl;
+}
+
+async function shareToTwitter() {
+  if (selectedPFP === null) { showToast('PICK_A_PFP_FIRST'); return; }
+  const tname = teamNames[selectedName]?.name || 'my squad';
+  const star = roster[selectedStar] || roster[0];
+  const playerName = star ? `${star.first_name} ${star.last_name}` : 'my team';
+  const shareText = `Just built my fantasy football identity 🏈🔥\n\nTeam: ${tname}\nStar Player: ${playerName}\n\nBuilt with @BDGE_official Identity Builder\n#BDGE #FantasyFootball #BigDogsGottaEat`;
+  const dataUrl = pfpImages[selectedPFP].dataUrl;
+  const r = await fetch(dataUrl); const blob = await r.blob();
+  const file = new File([blob], `bdge-${tname.toLowerCase().replace(/[^a-z0-9]+/g,'-')}.png`, { type: 'image/png' });
+  if (navigator.canShare && navigator.canShare({ files: [file] })) {
+    try { await navigator.share({ files: [file], title: 'My BDGE Team PFP', text: shareText }); trackEvent('pfp_shared', { player: roster[selectedStar]?.last_name }); showToast('SHARED!'); return; } catch(e) { if (e.name === 'AbortError') return; }
+  }
+  try { await navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]); showToast('PFP_COPIED — PASTE_IN_TWEET'); } catch(e) { showToast('DOWNLOAD_PFP_THEN_ATTACH'); }
+  window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}`, '_blank');
+}
+
+function downloadAIPFP() {
+  if (selectedPFP === null) { showToast('PICK_A_PFP_FIRST'); return; }
+  const tname = teamNames[selectedName]?.name || 'team-pfp';
+  const slug = tname.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+  const tag = PFP_STYLES[selectedPFP].tag.toLowerCase();
+  const link = document.createElement('a');
+  link.download = `bdge-${slug}-${tag}.png`;
+  link.href = pfpImages[selectedPFP].dataUrl;
+  link.click();
+  trackEvent('pfp_downloaded', { player: roster[selectedStar]?.last_name });
+  showToast('DOWNLOADED! FLEX_ON_YOUR_LEAGUE.');
+}
+
+// ========== ANALYZER ==========
+function runAnalysis() {
+  if (!roster.length) return;
+  const el = document.getElementById('analyzerContent');
+
+  // Position breakdown
+  const posCount = {};
+  roster.forEach(p => { posCount[p.position] = (posCount[p.position] || 0) + 1; });
+  const posColors = { QB: 'var(--pos-qb)', RB: 'var(--pos-rb)', WR: 'var(--pos-wr)', TE: 'var(--pos-te)', K: 'var(--pos-k)', DEF: 'var(--pos-def)' };
+
+  // Team diversity
+  const teams = new Set(roster.map(p => p.team));
+  const diversityPct = Math.round((teams.size / roster.length) * 100);
+
+  // Star power (lower search_rank = better)
+  const avgRank = Math.round(roster.reduce((s, p) => s + (p.search_rank || 500), 0) / roster.length);
+  const starPower = avgRank < 50 ? 'ELITE' : avgRank < 100 ? 'STRONG' : avgRank < 200 ? 'SOLID' : 'DEVELOPING';
+
+  // Archetype classification
+  const qbs = posCount.QB || 0; const rbs = posCount.RB || 0; const wrs = posCount.WR || 0; const tes = posCount.TE || 0;
+  let archetype, archSub;
+  if (wrs >= 4 && rbs <= 2) { archetype = 'AIR_RAID'; archSub = 'Pass-heavy with deep WR core'; }
+  else if (rbs >= 3 && wrs <= 2) { archetype = 'GROUND_AND_POUND'; archSub = 'Run-first with RB committee'; }
+  else if (rbs >= 2 && wrs >= 3) { archetype = 'BALANCED_ATTACK'; archSub = 'Versatile roster, multiple weapons'; }
+  else if (tes >= 2) { archetype = 'TE_PREMIUM'; archSub = 'Red zone focused with TE assets'; }
+  else if (qbs >= 2) { archetype = 'QB_FACTORY'; archSub = 'Streaming QBs for matchup edge'; }
+  else { archetype = 'HYBRID_SCHEME'; archSub = 'Flexible roster construction'; }
+
+  // Grade
+  const grade = avgRank < 60 ? 'A' : avgRank < 120 ? 'B' : avgRank < 200 ? 'C' : 'D';
+
+  const posBars = Object.entries(posCount).sort((a,b) => b[1]-a[1]).map(([pos, cnt]) =>
+    `<div class="stat-row"><div class="stat-label">${pos}</div><div class="stat-track"><div class="stat-fill" style="--fill:${(cnt/roster.length)*100}%;background:${posColors[pos]||'var(--t3)'}"></div></div><div class="stat-value">${cnt}</div></div>`
+  ).join('');
+
+  el.innerHTML = `
+    <div class="archetype-box cb-card">
+      <div class="cb-tl"></div><div class="cb-tr"></div><div class="cb-bl"></div><div class="cb-br"></div>
+      <div class="archetype-label">SYSTEM_CLASSIFICATION</div>
+      <div class="archetype-value">${archetype}</div>
+      <div class="archetype-sub">${archSub}</div>
+    </div>
+
+    <div class="analyzer-grid">
+      <div class="cb-card" style="padding:20px">
+        <div class="cb-tl"></div><div class="cb-tr"></div><div class="cb-bl"></div><div class="cb-br"></div>
+        <div class="analyzer-section-title">// POSITION_MATRIX</div>
+        ${posBars}
+      </div>
+
+      <div class="cb-card" style="padding:20px">
+        <div class="cb-tl"></div><div class="cb-tr"></div><div class="cb-bl"></div><div class="cb-br"></div>
+        <div class="analyzer-section-title">// ROSTER_METRICS</div>
+
+        <div style="text-align:center;margin-bottom:16px">
+          <div class="grade-badge grade-${grade}">${grade}</div>
+          <div style="font-size:9px;color:var(--t4);letter-spacing:0.1em;text-transform:uppercase">OVERALL_GRADE</div>
+        </div>
+
+        <div class="stat-row">
+          <div class="stat-label" style="width:80px">STAR_PWR</div>
+          <div class="stat-track"><div class="stat-fill" style="--fill:${Math.max(5,100-avgRank/3)}%;background:var(--neon-gold)"></div></div>
+          <div class="stat-value" style="width:auto;min-width:60px;font-size:9px;color:var(--neon-gold)">${starPower}</div>
+        </div>
+        <div class="stat-row">
+          <div class="stat-label" style="width:80px">DIVERSITY</div>
+          <div class="stat-track"><div class="stat-fill" style="--fill:${diversityPct}%;background:var(--neon-cyan)"></div></div>
+          <div class="stat-value" style="width:auto;min-width:60px;font-size:9px;color:var(--neon-cyan)">${teams.size} TEAMS</div>
+        </div>
+        <div class="stat-row">
+          <div class="stat-label" style="width:80px">DEPTH</div>
+          <div class="stat-track"><div class="stat-fill" style="--fill:${(roster.length/16)*100}%;background:var(--neon-green)"></div></div>
+          <div class="stat-value" style="width:auto;min-width:60px;font-size:9px;color:var(--neon-green)">${roster.length}/16</div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+// ========== ANALYTICS ==========
+function trackEvent(type, data) {
+  try {
+    const a = JSON.parse(localStorage.getItem('bdge_analytics') || '{"events":[],"stats":{}}');
+    a.events.push({ type, data, ts: Date.now() });
+    const s = a.stats;
+    if (type === 'session_start') s.totalSessions = (s.totalSessions || 0) + 1;
+    if (type === 'roster_add') { s.playerDrafts = s.playerDrafts || {}; s.playerDrafts[data.name] = (s.playerDrafts[data.name] || 0) + 1; }
+    if (type === 'team_name_selected') { s.teamNames = s.teamNames || []; s.teamNames.push(data.name); }
+    if (type === 'pfp_generated') { s.pfpCount = (s.pfpCount || 0) + 1; s.pfpPlayers = s.pfpPlayers || {}; s.pfpPlayers[data.player] = (s.pfpPlayers[data.player] || 0) + 1; }
+    if (type === 'pfp_downloaded') s.downloads = (s.downloads || 0) + 1;
+    if (type === 'pfp_shared') s.shares = (s.shares || 0) + 1;
+    if (type === 'screenshot_import') { s.imports = (s.imports || 0) + 1; }
+    if (a.events.length > 500) a.events = a.events.slice(-500);
+    localStorage.setItem('bdge_analytics', JSON.stringify(a));
+  } catch(e) {}
+}
+trackEvent('session_start', {});
+
+// Restore PFP cache
+try { const saved = JSON.parse(localStorage.getItem('bdge_pfp_cache') || '{}'); for (const [pid, val] of Object.entries(saved)) pfpCache[pid] = { images: val.images }; } catch(e) {}
+
+// ========== UTILS ==========
+function debounce(fn, d) { let t; return function(...a) { clearTimeout(t); t = setTimeout(() => fn.apply(this, a), d); }; }
+function escHtml(s) { const d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
+function showToast(msg) { const t = document.getElementById('toast'); t.textContent = msg; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 2500); }
+function fireConfetti() {
+  const colors = ['#F6587A', '#22d3ee', '#fab800', '#4ADE80', '#a78bfa'];
+  for (let i = 0; i < 35; i++) {
+    const el = document.createElement('div');
+    el.className = 'confetti-piece';
+    el.style.left = (Math.random()*100)+'vw'; el.style.top = '-8px';
+    el.style.background = colors[Math.floor(Math.random()*colors.length)];
+    el.style.borderRadius = Math.random() > 0.5 ? '50%' : '1px';
+    el.style.width = (Math.random()*6+3)+'px'; el.style.height = (Math.random()*6+3)+'px';
+    el.style.setProperty('--fall-duration', (Math.random()*2+1.5)+'s');
+    el.style.animationDelay = (Math.random()*0.5)+'s';
+    document.body.appendChild(el);
+    setTimeout(() => el.remove(), 4000);
+  }
+}
+</script>
+</body>
+</html>
