@@ -812,6 +812,13 @@ body {
   color: var(--t3);
   letter-spacing: 0.05em;
 }
+.typing-dots::after {
+  content: '';
+  animation: typingDots 1.5s steps(4) infinite;
+}
+@keyframes typingDots {
+  0% { content: '' } 25% { content: '.' } 50% { content: '..' } 75% { content: '...' }
+}
 
 .names-grid {
   display: grid;
@@ -2227,7 +2234,7 @@ async function generateNames() {
     });
     const data = await res.json();
     if (data.error) throw new Error(data.error.message || 'API error');
-    const content = data.choices[0].message.content.trim();
+    const content = data.choices?.[0]?.message?.content?.trim(); if (!content) throw new Error('Empty response');
     teamNames = JSON.parse(content.replace(/```json?\n?/g, '').replace(/```/g, '').trim());
     genWrap.style.display = 'none';
     renderNames();
@@ -2235,7 +2242,7 @@ async function generateNames() {
     fireConfetti();
   } catch(err) {
     genWrap.style.display = 'none';
-    namesGrid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:32px;color:var(--t3);font-size:11px"><p style="margin-bottom:12px">GENERATION_FAILED: ${err.message}</p><button class="btn btn-secondary" onclick="generateNames()">RETRY</button></div>`;
+    namesGrid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:32px;color:var(--t3);font-size:11px"><p style="margin-bottom:12px">GENERATION_FAILED: ${escHtml(err.message||'UNKNOWN')}</p><button class="btn btn-secondary" onclick="generateNames()">RETRY</button></div>`;
     nameActions.style.display = 'flex';
   }
 }
@@ -2388,8 +2395,8 @@ async function generatePFPs(retryCount = 0) {
                   card2.innerHTML = `<div class="pfp-check"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="3"><path d="M20 6 9 17l-5-5"/></svg></div>`;
                   const img2 = document.createElement('img'); img2.src = du2; img2.alt = PFP_STYLES[idx2].tag;
                   card2.insertBefore(img2, card2.firstChild);
-                  const tag2 = document.createElement('div'); tag2.className = 'pfp-style-tag'; tag2.textContent = PFP_STYLES[idx2].tag; card2.appendChild(tag2);
-                  card2.onclick = () => selectPFP(idx2);
+                  const localIdx2 = idx2;
+                  card2.onclick = () => selectPFP(localIdx2);
                   pfpImages[idx2] = { dataUrl: du2 };
                 }
                 idx2++;
@@ -2417,7 +2424,7 @@ async function generatePFPs(retryCount = 0) {
   trackEvent('pfp_generated', { player: playerName, count: pfpImages.filter(Boolean).length });
   if (pfpImages.some(Boolean)) {
     pfpCache[star.player_id] = { images: [...pfpImages] };
-    try { const sd = {}; for (const [pid, val] of Object.entries(pfpCache)) sd[pid] = { images: val.images.map(img => img ? { dataUrl: img.dataUrl } : null) }; localStorage.setItem('bdge_pfp_cache', JSON.stringify(sd)); } catch(e) {}
+    // Cache in memory only (cleared on reload)
   }
 }
 
@@ -2661,7 +2668,7 @@ async function generateScoutReport() {
     });
     const data = await res.json();
     if (data.error) throw new Error(data.error.message);
-    const content = data.choices[0].message.content.trim();
+    const content = data.choices?.[0]?.message?.content?.trim(); if (!content) throw new Error('Empty response');
     const report = JSON.parse(content.replace(/```json?\n?/g,'').replace(/```/g,'').trim());
 
     const riskColor = report.riskLevel === 'LOW' ? 'var(--neon-green)' : report.riskLevel === 'HIGH' ? 'var(--neon-red)' : 'var(--neon-gold)';
@@ -2709,7 +2716,7 @@ async function generateScoutReport() {
       </div>
     `;
   } catch(err) {
-    el.innerHTML = `<div style="font-size:11px;color:var(--t3)">SCOUTING_REPORT_FAILED: ${err.message}<br><button class="btn btn-secondary" style="margin-top:8px" onclick="generateScoutReport()">RETRY</button></div>`;
+    el.innerHTML = `<div style="font-size:11px;color:var(--t3)">SCOUTING_REPORT_FAILED: ${escHtml(err.message||'UNKNOWN')}<br><button class="btn btn-secondary" style="margin-top:8px" onclick="generateScoutReport()">RETRY</button></div>`;
   }
 }
 
