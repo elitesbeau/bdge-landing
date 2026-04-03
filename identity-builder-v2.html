@@ -86,40 +86,54 @@ body {
   width: 100vw; height: 100vh;
   pointer-events: none;
   z-index: 0;
-  opacity: 0.25;
+  opacity: 0.07;
 }
 
-/* Layer 0b: Moving HUD Scan Line */
+/* Layer 0b: Boot Scan Line (plays ONCE) */
 .hud-scan-line {
   position: fixed;
   left: 0; right: 0;
-  height: 2px;
-  background: linear-gradient(90deg, transparent, var(--neon-red), transparent);
-  opacity: 0.15;
-  z-index: 1;
+  height: 3px;
+  background: linear-gradient(90deg, transparent 10%, var(--neon-cyan), rgba(246,88,122,0.6), var(--neon-cyan), transparent 90%);
+  opacity: 0.4;
+  z-index: 50;
   pointer-events: none;
-  animation: hudScan 4s ease-in-out infinite;
+  animation: hudScan 2s ease-in-out 0.5s forwards;
+  animation-iteration-count: 1;
+  box-shadow: 0 0 20px rgba(34,211,238,0.4), 0 0 60px rgba(34,211,238,0.15);
 }
 
 /* Layer 0c: Neon Grid Floor */
 .neon-grid-floor {
   position: fixed;
   bottom: 0; left: -50%;
-  width: 200%; height: 60vh;
+  width: 200%; height: 50vh;
   pointer-events: none;
   z-index: 0;
-  opacity: 0.06;
+  opacity: 0.04;
   background-image:
-    linear-gradient(0deg, transparent 24%, rgba(246,88,122,0.15) 25%, rgba(246,88,122,0.15) 26%, transparent 27%),
-    linear-gradient(90deg, transparent 24%, rgba(34,211,238,0.1) 25%, rgba(34,211,238,0.1) 26%, transparent 27%);
+    linear-gradient(0deg, transparent 24%, rgba(34,211,238,0.12) 25%, rgba(34,211,238,0.12) 26%, transparent 27%),
+    linear-gradient(90deg, transparent 24%, rgba(246,88,122,0.08) 25%, rgba(246,88,122,0.08) 26%, transparent 27%);
   background-size: 80px 80px;
   transform: perspective(400px) rotateX(60deg);
   transform-origin: bottom center;
-  animation: gridFlow 3s linear infinite;
+  animation: gridFlow 4s linear infinite;
 }
 @keyframes gridFlow {
   0% { background-position: 0 0; }
   100% { background-position: 80px 80px; }
+}
+
+/* Layer 0d: Wireframe Sphere */
+#wireframeCanvas {
+  position: fixed;
+  bottom: 40px;
+  right: 40px;
+  width: 200px;
+  height: 200px;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.12;
 }
 
 /* Layer 2: Circuit Pattern */
@@ -304,11 +318,12 @@ body {
   background: var(--t5);
 }
 .header-title {
-  font-size: 16px;
-  font-weight: 700;
-  letter-spacing: 0.1em;
+  font-size: 18px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
   color: var(--primary);
-  text-shadow: var(--glow-red-subtle);
+  text-shadow: var(--glow-red);
+  animation: chromaShift 6s ease-in-out infinite, neonPulse 3s ease-in-out infinite;
 }
 .header-right {
   display: flex;
@@ -397,7 +412,20 @@ body {
   font-weight: 800;
   letter-spacing: 0.05em;
   margin-bottom: 8px;
-  animation: neonPulse 4s ease-in-out infinite;
+  animation: neonPulse 4s ease-in-out infinite, chromaShift 8s ease-in-out infinite;
+}
+
+/* Content backdrop for readability */
+.module {
+  position: relative;
+}
+.module.active::after {
+  content: '';
+  position: absolute;
+  inset: -20px -40px;
+  background: radial-gradient(ellipse at 50% 0%, rgba(0,0,2,0.85) 0%, rgba(0,0,2,0.6) 50%, transparent 80%);
+  z-index: -1;
+  pointer-events: none;
 }
 .module-desc {
   font-size: 12px;
@@ -1227,22 +1255,13 @@ body {
 ::-webkit-scrollbar-thumb { background: linear-gradient(to bottom, rgba(246,88,122,0.3), rgba(34,211,238,0.3)); }
 ::-webkit-scrollbar-thumb:hover { background: linear-gradient(to bottom, rgba(246,88,122,0.5), rgba(34,211,238,0.5)); }
 
-/* HUD scan effect on module transitions */
-.module.active::before {
-  content: '';
-  position: absolute;
-  left: 0; right: 0;
-  height: 2px;
-  background: linear-gradient(90deg, transparent, var(--primary), transparent);
-  opacity: 0.3;
-  animation: hudScan 2s ease-in-out;
-  pointer-events: none;
-}
+/* Removed repeating scan — boot scan only plays once via .hud-scan-line */
 </style>
 </head>
 <body>
 
 <canvas id="matrixCanvas"></canvas>
+<canvas id="wireframeCanvas" width="200" height="200"></canvas>
 <div class="hud-scan-line"></div>
 <div class="neon-grid-floor"></div>
 <div class="circuit-pattern"></div>
@@ -1524,33 +1543,94 @@ function initMatrix() {
   canvas.height = window.innerHeight;
   window.addEventListener('resize', () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; });
 
-  const chars = 'BDGE01FANTASY2099アイウエオカキクケコサシスセソ';
+  const chars = 'BDGE01アイウエオカキクケコ';
   const fontSize = 14;
   const cols = Math.floor(canvas.width / fontSize);
-  const drops = Array(cols).fill(0).map(() => Math.random() * -50);
+  const drops = Array(cols).fill(0).map(() => Math.random() * -100);
+  let frame = 0;
 
   function draw() {
-    ctx.fillStyle = 'rgba(0,0,2,0.05)';
+    frame++;
+    // Slow down: only update every 3rd frame
+    if (frame % 3 !== 0) { requestAnimationFrame(draw); return; }
+
+    ctx.fillStyle = 'rgba(0,0,2,0.08)';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     ctx.font = fontSize + 'px JetBrains Mono';
 
     drops.forEach((y, i) => {
+      // Only render ~40% of columns each frame for sparse look
+      if (Math.random() > 0.4) { drops[i] += 0.5; return; }
+
       const char = chars[Math.floor(Math.random() * chars.length)];
+      // Subtle cyan like DraftBallr, occasional dim red
       const rng = Math.random();
-      if (rng > 0.7) {
-        ctx.fillStyle = 'rgba(246,88,122,0.8)';
-      } else if (rng > 0.4) {
-        ctx.fillStyle = 'rgba(34,211,238,0.4)';
+      if (rng > 0.95) {
+        ctx.fillStyle = 'rgba(246,88,122,0.35)';
       } else {
-        ctx.fillStyle = 'rgba(255,255,255,0.15)';
+        ctx.fillStyle = 'rgba(34,211,238,0.25)';
       }
       ctx.fillText(char, i * fontSize, y * fontSize);
 
-      if (y * fontSize > canvas.height && Math.random() > 0.975) {
-        drops[i] = 0;
+      if (y * fontSize > canvas.height && Math.random() > 0.98) {
+        drops[i] = Math.random() * -40;
       }
-      drops[i]++;
+      drops[i] += 0.5;
     });
+    requestAnimationFrame(draw);
+  }
+  draw();
+}
+
+// ========== WIREFRAME SPHERE ==========
+function initWireframe() {
+  const canvas = document.getElementById('wireframeCanvas');
+  const ctx = canvas.getContext('2d');
+  const w = 200, h = 200, cx = 100, cy = 100, r = 70;
+  let angle = 0;
+
+  function draw() {
+    ctx.clearRect(0, 0, w, h);
+    angle += 0.008;
+
+    // Meridian lines (vertical arcs)
+    for (let i = 0; i < 12; i++) {
+      const a = (i / 12) * Math.PI + angle;
+      ctx.beginPath();
+      for (let j = 0; j <= 40; j++) {
+        const lat = (j / 40) * Math.PI - Math.PI / 2;
+        const x = cx + r * Math.cos(lat) * Math.sin(a);
+        const y = cy - r * Math.sin(lat);
+        const z = Math.cos(lat) * Math.cos(a);
+        if (z < -0.1) continue;
+        const op = 0.15 + z * 0.35;
+        if (j === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+      }
+      ctx.strokeStyle = i % 2 === 0 ? `rgba(246,88,122,${0.25})` : `rgba(34,211,238,${0.2})`;
+      ctx.lineWidth = 0.8;
+      ctx.stroke();
+    }
+
+    // Latitude lines (horizontal rings)
+    for (let i = 1; i < 6; i++) {
+      const lat = (i / 6) * Math.PI - Math.PI / 2;
+      const ringR = r * Math.cos(lat);
+      const ringY = cy - r * Math.sin(lat);
+      ctx.beginPath();
+      for (let j = 0; j <= 60; j++) {
+        const a = (j / 60) * Math.PI * 2 + angle;
+        const x = cx + ringR * Math.sin(a);
+        const z = Math.cos(a);
+        if (z < -0.2) continue;
+        if (j === 0) ctx.moveTo(x, ringY);
+        else ctx.lineTo(x, ringY);
+      }
+      ctx.strokeStyle = 'rgba(34,211,238,0.15)';
+      ctx.lineWidth = 0.6;
+      ctx.stroke();
+    }
+
     requestAnimationFrame(draw);
   }
   draw();
@@ -1559,6 +1639,7 @@ function initMatrix() {
 // ========== INIT ==========
 document.addEventListener('DOMContentLoaded', () => {
   initMatrix();
+  initWireframe();
   loadPlayers();
 
   const searchEl = document.getElementById('playerSearch');
