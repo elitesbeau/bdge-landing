@@ -986,33 +986,56 @@ body {
   display: none;
 }
 
-/* Skeleton loading for PFP cards */
+/* Glitch loading for PFP cards */
 .pfp-skeleton {
   position: absolute; inset: 0;
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
   background: var(--bg-card);
+  overflow: hidden;
 }
-.pfp-skeleton-img {
-  width: 100%; height: 0;
-  padding-bottom: 100%;
-  background: linear-gradient(90deg, var(--bg-muted) 25%, var(--bg-elevated) 50%, var(--bg-muted) 75%);
-  background-size: 200% 100%;
-  animation: skeletonPulse 1.5s ease-in-out infinite;
+.pfp-skeleton::before {
+  content: '';
+  position: absolute; inset: 0;
+  background:
+    repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(246,88,122,0.03) 2px, rgba(246,88,122,0.03) 4px),
+    repeating-linear-gradient(90deg, transparent, transparent 30px, rgba(34,211,238,0.02) 30px, rgba(34,211,238,0.02) 31px);
+  animation: glitchScan 2s linear infinite;
 }
-.pfp-skeleton-label {
-  position: absolute; bottom: 14px; left: 50%;
-  transform: translateX(-50%);
-  font-size: 9px;
-  color: var(--t4);
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
+.pfp-skeleton::after {
+  content: 'GENERATING';
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  color: var(--primary);
+  text-shadow: -2px 0 var(--neon-cyan), 2px 0 var(--neon-red);
+  animation: glitchText 0.8s steps(3) infinite, neonPulse 2s ease-in-out infinite;
+  z-index: 1;
 }
-@keyframes skeletonPulse {
-  0% { background-position: 200% 0; }
-  100% { background-position: -200% 0; }
+/* Horizontal scan bar */
+.pfp-skeleton-scan {
+  position: absolute;
+  left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--primary), transparent);
+  animation: pfpScanLine 1.5s ease-in-out infinite;
+  opacity: 0.6;
+  box-shadow: 0 0 12px rgba(246,88,122,0.3);
+}
+@keyframes glitchScan {
+  0% { background-position: 0 0, 0 0; }
+  100% { background-position: 0 100px, 100px 0; }
+}
+@keyframes glitchText {
+  0% { clip-path: inset(0 0 0 0); transform: translate(0); }
+  33% { clip-path: inset(30% 0 40% 0); transform: translate(-2px, 1px); }
+  66% { clip-path: inset(60% 0 10% 0); transform: translate(2px, -1px); }
+  100% { clip-path: inset(0 0 0 0); transform: translate(0); }
+}
+@keyframes pfpScanLine {
+  0% { top: -2px; }
+  100% { top: calc(100% + 2px); }
 }
 
 .pfp-error {
@@ -2303,7 +2326,7 @@ async function generatePFPs(retryCount = 0) {
   const grid = document.getElementById('pfpGrid');
   status.style.display = 'flex';
 
-  grid.innerHTML = PFP_STYLES.map((s, i) => `<div class="pfp-card" id="pfpCard${i}"><div class="pfp-skeleton"><div class="pfp-skeleton-img"></div><span class="pfp-skeleton-label">${s.tag}</span></div><div class="pfp-check"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="3"><path d="M20 6 9 17l-5-5"/></svg></div></div>`).join('');
+  grid.innerHTML = PFP_STYLES.map((s, i) => `<div class="pfp-card" id="pfpCard${i}" style="min-height:250px"><div class="pfp-skeleton"><div class="pfp-skeleton-scan"></div></div><div class="pfp-check"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="3"><path d="M20 6 9 17l-5-5"/></svg></div></div>`).join('');
 
   const playerName = `${star.first_name} ${star.last_name}`;
   document.getElementById('pfpGenSub').textContent = 'BDGE_IS_CREATING_YOUR_PFPS...';
