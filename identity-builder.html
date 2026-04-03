@@ -1319,13 +1319,79 @@ body {
 }
 .hero-card-icon {
   margin-bottom: 14px;
-  opacity: 0.6;
+  opacity: 0.5;
   display: flex;
   justify-content: center;
 }
 .hero-card:hover .hero-card-icon { opacity: 1; }
 .hero-card-icon svg { stroke: var(--primary); }
 .hero-card.secondary .hero-card-icon svg { stroke: var(--neon-cyan); }
+
+/* ========== CYBER DECORATIVE ELEMENTS ========== */
+.cyber-deco {
+  position: absolute;
+  pointer-events: none;
+  opacity: 0.12;
+  z-index: 0;
+}
+.cyber-crosshair {
+  width: 40px; height: 40px;
+}
+.cyber-crosshair circle { fill: none; stroke: var(--neon-cyan); stroke-width: 1; }
+.cyber-crosshair line { stroke: var(--neon-cyan); stroke-width: 0.8; }
+
+.cyber-arrows {
+  display: flex;
+  gap: 2px;
+  opacity: 0.1;
+}
+.cyber-arrows svg { stroke: var(--primary); }
+
+/* Decorative wireframe window */
+.cyber-window {
+  border: 1px solid var(--t5);
+  padding: 4px;
+  opacity: 0.08;
+  position: absolute;
+  pointer-events: none;
+  z-index: 0;
+}
+.cyber-window-bar {
+  height: 8px;
+  border-bottom: 1px solid var(--t5);
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  padding: 0 3px;
+  margin-bottom: 3px;
+}
+.cyber-window-dot {
+  width: 3px; height: 3px;
+  border-radius: 50%;
+  background: var(--t4);
+}
+.cyber-window-lines {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.cyber-window-line {
+  height: 1px;
+  background: var(--t5);
+}
+
+/* Data readout decoration */
+.cyber-readout {
+  position: absolute;
+  pointer-events: none;
+  z-index: 0;
+  font-size: 8px;
+  letter-spacing: 0.15em;
+  color: var(--t5);
+  text-transform: uppercase;
+  line-height: 1.8;
+  opacity: 0.5;
+}
 .hero-card-title {
   font-size: 16px;
   font-weight: 800;
@@ -1460,6 +1526,69 @@ body {
 <div class="scanlines"></div>
 
 <div class="app">
+  <!-- CYBER DECORATIVE ELEMENTS -->
+  <!-- Crosshair top-left -->
+  <svg class="cyber-deco" style="top:120px;left:20px;width:50px;height:50px" viewBox="0 0 50 50">
+    <circle cx="25" cy="25" r="12" fill="none" stroke="rgba(34,211,238,0.3)" stroke-width="1"/>
+    <circle cx="25" cy="25" r="3" fill="none" stroke="rgba(34,211,238,0.4)" stroke-width="0.8"/>
+    <line x1="25" y1="5" x2="25" y2="18" stroke="rgba(34,211,238,0.25)" stroke-width="0.8"/>
+    <line x1="25" y1="32" x2="25" y2="45" stroke="rgba(34,211,238,0.25)" stroke-width="0.8"/>
+    <line x1="5" y1="25" x2="18" y2="25" stroke="rgba(34,211,238,0.25)" stroke-width="0.8"/>
+    <line x1="32" y1="25" x2="45" y2="25" stroke="rgba(34,211,238,0.25)" stroke-width="0.8"/>
+  </svg>
+
+  <!-- Crosshair top-right -->
+  <svg class="cyber-deco" style="top:180px;right:30px;width:40px;height:40px" viewBox="0 0 50 50">
+    <circle cx="25" cy="25" r="10" fill="none" stroke="rgba(246,88,122,0.25)" stroke-width="1"/>
+    <line x1="25" y1="8" x2="25" y2="18" stroke="rgba(246,88,122,0.2)" stroke-width="0.8"/>
+    <line x1="25" y1="32" x2="25" y2="42" stroke="rgba(246,88,122,0.2)" stroke-width="0.8"/>
+    <line x1="8" y1="25" x2="18" y2="25" stroke="rgba(246,88,122,0.2)" stroke-width="0.8"/>
+    <line x1="32" y1="25" x2="42" y2="25" stroke="rgba(246,88,122,0.2)" stroke-width="0.8"/>
+  </svg>
+
+  <!-- Wireframe window decoration left -->
+  <div class="cyber-window" style="top:350px;left:12px;width:80px">
+    <div class="cyber-window-bar"><div class="cyber-window-dot"></div><div class="cyber-window-dot"></div><div class="cyber-window-dot"></div></div>
+    <div class="cyber-window-lines">
+      <div class="cyber-window-line" style="width:90%"></div>
+      <div class="cyber-window-line" style="width:60%"></div>
+      <div class="cyber-window-line" style="width:75%"></div>
+      <div class="cyber-window-line" style="width:40%"></div>
+    </div>
+  </div>
+
+  <!-- Wireframe window decoration right -->
+  <div class="cyber-window" style="top:500px;right:12px;width:70px">
+    <div class="cyber-window-bar"><div class="cyber-window-dot"></div><div class="cyber-window-dot"></div></div>
+    <div class="cyber-window-lines">
+      <div class="cyber-window-line" style="width:100%"></div>
+      <div class="cyber-window-line" style="width:50%"></div>
+      <div class="cyber-window-line" style="width:80%"></div>
+    </div>
+  </div>
+
+  <!-- Data readout left -->
+  <div class="cyber-readout" style="top:260px;left:16px">
+    SYS.INIT // 2099<br>
+    PROC: QUANTUM_AI<br>
+    MODE: ACTIVE<br>
+    SERIAL: BDGE-4072
+  </div>
+
+  <!-- Data readout right -->
+  <div class="cyber-readout" style="top:700px;right:16px;text-align:right">
+    DOWNLOAD_FPS: 144<br>
+    NODE: FANTASY_CORE<br>
+    STATUS: ONLINE<br>
+    // FUTURE_IS_NOW
+  </div>
+
+  <!-- Arrow cluster -->
+  <svg class="cyber-deco" style="top:450px;right:20px;width:30px;height:60px;opacity:0.08" viewBox="0 0 20 50">
+    <path d="M10 0 L17 8 L12 8 L12 18 L8 18 L8 8 L3 8 Z" fill="rgba(246,88,122,0.4)"/>
+    <path d="M10 20 L17 28 L12 28 L12 38 L8 38 L8 28 L3 28 Z" fill="rgba(34,211,238,0.3)"/>
+  </svg>
+
   <!-- STATUS BAR -->
   <div class="status-bar">
     <div class="status-dot"></div>
@@ -1512,13 +1641,13 @@ body {
     <div class="hero-actions" id="heroActions">
       <div class="hero-card" onclick="document.getElementById('screenshotInput').click()">
         <div class="cb-tl"></div><div class="cb-tr"></div><div class="cb-bl"></div><div class="cb-br"></div>
-        <div class="hero-card-icon"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg></div>
+        <div class="hero-card-icon"><svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg></div>
         <div class="hero-card-title">IMPORT_SCREENSHOT</div>
         <div class="hero-card-desc">Upload a screenshot of your fantasy team from any app — AI reads it instantly</div>
       </div>
       <div class="hero-card secondary" onclick="document.getElementById('playerSearch').focus()">
         <div class="cb-tl"></div><div class="cb-tr"></div><div class="cb-bl"></div><div class="cb-br"></div>
-        <div class="hero-card-icon"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg></div>
+        <div class="hero-card-icon"><svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg></div>
         <div class="hero-card-title">SEARCH_PLAYERS</div>
         <div class="hero-card-desc">Search the full NFL database and build your roster one player at a time</div>
       </div>
