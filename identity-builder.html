@@ -2430,19 +2430,44 @@ function selectPFP(idx) {
 }
 
 async function shareToTwitter() {
-  if (selectedPFP === null) { showToast('PICK_A_PFP_FIRST'); return; }
+  // Auto-select first available PFP if none selected
+  if (selectedPFP === null) {
+    const firstIdx = pfpImages.findIndex(Boolean);
+    if (firstIdx >= 0) selectPFP(firstIdx);
+    else { showToast('GENERATE_A_PFP_FIRST'); return; }
+  }
   const tname = teamNames[selectedName]?.name || 'my squad';
   const star = roster[selectedStar] || roster[0];
   const playerName = star ? `${star.first_name} ${star.last_name}` : 'my team';
-  const shareText = `Just built my fantasy football identity 🏈🔥\n\nTeam: ${tname}\nStar Player: ${playerName}\n\nBuilt with @BDGE_official Identity Builder\n#BDGE #FantasyFootball #BigDogsGottaEat`;
+  const shareText = `Just built my fantasy football identity\n\nTeam: ${tname}\nStar Player: ${playerName}\n\nBuild yours: elitesbeau.github.io/bdge-landing/identity-builder.html\n\n@BDGE_official #BDGE #FantasyFootball`;
   const dataUrl = pfpImages[selectedPFP].dataUrl;
   const r = await fetch(dataUrl); const blob = await r.blob();
   const file = new File([blob], `bdge-${tname.toLowerCase().replace(/[^a-z0-9]+/g,'-')}.png`, { type: 'image/png' });
+
+  // Mobile: native share with image
   if (navigator.canShare && navigator.canShare({ files: [file] })) {
-    try { await navigator.share({ files: [file], title: 'My BDGE Team PFP', text: shareText }); trackEvent('pfp_shared', { player: roster[selectedStar]?.last_name }); showToast('SHARED!'); return; } catch(e) { if (e.name === 'AbortError') return; }
+    try {
+      await navigator.share({ files: [file], title: 'My BDGE Team PFP', text: shareText });
+      trackEvent('pfp_shared', { player: roster[selectedStar]?.last_name });
+      showToast('SHARED!');
+      return;
+    } catch(e) { if (e.name === 'AbortError') return; }
   }
-  try { await navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]); showToast('PFP_COPIED — PASTE_IN_TWEET'); } catch(e) { showToast('DOWNLOAD_PFP_THEN_ATTACH'); }
+
+  // Desktop: copy image to clipboard, then open Twitter
+  try {
+    await navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]);
+    showToast('PFP_COPIED_TO_CLIPBOARD — PASTE_IN_YOUR_TWEET');
+  } catch(e) {
+    // Clipboard failed — download instead
+    const link = document.createElement('a');
+    link.download = `bdge-${tname.toLowerCase().replace(/[^a-z0-9]+/g,'-')}.png`;
+    link.href = dataUrl;
+    link.click();
+    showToast('PFP_DOWNLOADED — ATTACH_TO_YOUR_TWEET');
+  }
   window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}`, '_blank');
+  trackEvent('pfp_shared', { player: roster[selectedStar]?.last_name });
 }
 
 function downloadAIPFP() {
