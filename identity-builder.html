@@ -1755,6 +1755,18 @@ body {
         BACK_TO_NAMES
       </button>
     </div>
+
+    <!-- Analyze prompt (shown after PFPs load) -->
+    <div class="analyze-prompt cb-card" id="analyzePrompt" style="display:none;margin-top:24px;max-width:600px;margin-left:auto;margin-right:auto;text-align:center;padding:24px 32px">
+      <div class="cb-tl"></div><div class="cb-tr"></div><div class="cb-bl"></div><div class="cb-br"></div>
+      <div style="font-size:11px;color:var(--t3);letter-spacing:0.08em;margin-bottom:12px">// ROSTER_COMPLETE</div>
+      <div style="font-size:16px;font-weight:800;color:var(--t1);margin-bottom:6px;letter-spacing:0.04em">WANT_TO_ANALYZE_YOUR_ROSTER?</div>
+      <div style="font-size:12px;color:var(--t3);margin-bottom:18px;line-height:1.5">Get your team's system classification, star power rating, position breakdown, and overall grade.</div>
+      <button class="btn btn-primary" onclick="switchModule('analyze')" style="margin:0 auto">
+        ANALYZE_ROSTER
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14m-7-7 7 7-7 7"/></svg>
+      </button>
+    </div>
   </section>
 
   <!-- MODULE 4: ANALYZE -->
@@ -2445,7 +2457,7 @@ async function generatePFPs(retryCount = 0) {
 
   status.style.display = 'none';
   document.getElementById('pfpActions').style.display = 'flex';
-  if (pfpImages.some(Boolean)) fireConfetti();
+  if (pfpImages.some(Boolean)) { fireConfetti(); document.getElementById('analyzePrompt').style.display = 'block'; }
   trackEvent('pfp_generated', { player: playerName, count: pfpImages.filter(Boolean).length });
   if (pfpImages.some(Boolean)) {
     pfpCache[star.player_id] = { images: [...pfpImages] };
