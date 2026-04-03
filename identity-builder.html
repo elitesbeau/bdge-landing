@@ -986,56 +986,50 @@ body {
   display: none;
 }
 
-/* Glitch loading for PFP cards */
+/* PFP loading — DraftBallr style: cyan pulse bars + spinner + terminal text */
 .pfp-skeleton {
   position: absolute; inset: 0;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
+  gap: 16px;
   background: var(--bg-card);
-  overflow: hidden;
 }
-.pfp-skeleton::before {
-  content: '';
-  position: absolute; inset: 0;
-  background:
-    repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(246,88,122,0.03) 2px, rgba(246,88,122,0.03) 4px),
-    repeating-linear-gradient(90deg, transparent, transparent 30px, rgba(34,211,238,0.02) 30px, rgba(34,211,238,0.02) 31px);
-  animation: glitchScan 2s linear infinite;
+.pfp-skeleton-spinner {
+  width: 40px; height: 40px;
+  border: 2px solid rgba(34,211,238,0.15);
+  border-top-color: var(--neon-cyan);
+  border-right-color: var(--neon-gold);
+  border-radius: 50%;
+  animation: spin 0.9s linear infinite;
 }
-.pfp-skeleton::after {
-  content: 'GENERATING';
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.2em;
-  color: var(--primary);
-  text-shadow: -2px 0 var(--neon-cyan), 2px 0 var(--neon-red);
-  animation: glitchText 0.8s steps(3) infinite, neonPulse 2s ease-in-out infinite;
-  z-index: 1;
+.pfp-skeleton-text {
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  color: rgba(34,211,238,0.5);
+  text-transform: uppercase;
+  animation: statusBlink 1.5s ease-in-out infinite;
 }
-/* Horizontal scan bar */
-.pfp-skeleton-scan {
-  position: absolute;
-  left: 0; right: 0;
-  height: 2px;
-  background: linear-gradient(90deg, transparent, var(--primary), transparent);
-  animation: pfpScanLine 1.5s ease-in-out infinite;
-  opacity: 0.6;
-  box-shadow: 0 0 12px rgba(246,88,122,0.3);
+.pfp-skeleton-bars {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 60%;
+  margin-top: 4px;
 }
-@keyframes glitchScan {
-  0% { background-position: 0 0, 0 0; }
-  100% { background-position: 0 100px, 100px 0; }
+.pfp-skeleton-bar {
+  height: 3px;
+  border-radius: 1px;
+  animation: skeletonPulse 1.5s ease-in-out infinite;
 }
-@keyframes glitchText {
-  0% { clip-path: inset(0 0 0 0); transform: translate(0); }
-  33% { clip-path: inset(30% 0 40% 0); transform: translate(-2px, 1px); }
-  66% { clip-path: inset(60% 0 10% 0); transform: translate(2px, -1px); }
-  100% { clip-path: inset(0 0 0 0); transform: translate(0); }
-}
-@keyframes pfpScanLine {
-  0% { top: -2px; }
-  100% { top: calc(100% + 2px); }
+.pfp-skeleton-bar:nth-child(1) { background: rgba(34,211,238,0.12); width: 100%; }
+.pfp-skeleton-bar:nth-child(2) { background: rgba(34,211,238,0.08); width: 70%; animation-delay: 0.15s; }
+.pfp-skeleton-bar:nth-child(3) { background: rgba(34,211,238,0.06); width: 85%; animation-delay: 0.3s; }
+@keyframes skeletonPulse {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 1; }
 }
 
 .pfp-error {
@@ -2326,7 +2320,7 @@ async function generatePFPs(retryCount = 0) {
   const grid = document.getElementById('pfpGrid');
   status.style.display = 'flex';
 
-  grid.innerHTML = PFP_STYLES.map((s, i) => `<div class="pfp-card" id="pfpCard${i}" style="min-height:250px"><div class="pfp-skeleton"><div class="pfp-skeleton-scan"></div></div><div class="pfp-check"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="3"><path d="M20 6 9 17l-5-5"/></svg></div></div>`).join('');
+  grid.innerHTML = PFP_STYLES.map((s, i) => `<div class="pfp-card" id="pfpCard${i}" style="min-height:280px"><div class="pfp-skeleton"><div class="pfp-skeleton-spinner"></div><div class="pfp-skeleton-text">PROCESSING</div><div class="pfp-skeleton-bars"><div class="pfp-skeleton-bar"></div><div class="pfp-skeleton-bar"></div><div class="pfp-skeleton-bar"></div></div></div><div class="pfp-check"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="3"><path d="M20 6 9 17l-5-5"/></svg></div></div>`).join('');
 
   const playerName = `${star.first_name} ${star.last_name}`;
   document.getElementById('pfpGenSub').textContent = 'BDGE_IS_CREATING_YOUR_PFPS...';
